@@ -1,0 +1,88 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+* {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  text-transform: capitalize;
+  user-select: none;
+}
+:root {
+  --background-primary: #faeee9;
+  --background-secondary: #c3c3d5;
+  --text-primary: #2e3538;
+  --text-secondary: #faeee9;
+  --text-heading: #201c27;
+  --nav-links: #f5d698;
+  --button-text: #f5d698;
+  --button-background: #2e3538;
+  --primary-button-color: #f5d698;
+  --primary-button-background: #2e3538;
+  --secondary-button-color: #2e3538;
+  --secondary-button-background: #f5d698;
+  --primary-icon-color: #f5d698;
+  --secondary-icon-color: #2e3538;
+  --hover-color: #f76706;
+  --hover-bg: #2e3538;
+  --footer-bg: #2e3538;
+  --gap: 2rem;
+}
+
+body {
+  font-family: "Red Hat Display", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--background-primary);
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+i {
+  color: var(--primary-icon-color);
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image {
+  position: relative;
+  width: 100%;
+  height: 370px;
+  /* overflow: hidden; */
+}
+
+input,
+textarea,
+select {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px 4px;
+  border: none;
+  outline: none;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 18;
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .image {
+    margin: auto;
+    padding: 0 12px;
+  }
+}
