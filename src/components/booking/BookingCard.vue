@@ -68,6 +68,7 @@
   </div>
 </template>
 <script setup>
+const apiUrl = import.meta.env.VITE_API_URL;
 import buttons from "../utility/buttons.vue";
 import { ref } from "vue";
 const bookingCard = ref(null);
@@ -86,7 +87,7 @@ const formatDuration = (minutes) => {
 
 const downloadPDF = () => {
   const params = new URLSearchParams(props.bookingDetails).toString();
-  window.open(`http://localhost:8000/download-booking?${params}, '_blank'`);
+  window.open(`${apiUrl}/download-booking?${params}, '_blank'`);
 };
 </script>
 
