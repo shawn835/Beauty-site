@@ -8,7 +8,7 @@
       <div
         v-for="(image, index) in images"
         :key="image.id"
-        :class="`image-wrapper image-${index + 1}`">
+        :class="`image image-${index + 1}`">
         <img :src="image.image" :alt="image.alt" />
       </div>
     </div>
@@ -16,14 +16,15 @@
 </template>
 
 <script setup>
-import Headings from "./utility/Headings.vue";
-import imagesData from "@/assets/images.json";
+import Headings from "../utility/Headings.vue";
+import imagesData from "@/assets/portfolioImages.json";
 const images = imagesData.images;
 </script>
 
 <style scoped>
 .gallery-brief {
-  margin-top: 8rem;
+  display: none;
+  margin-top: 2.5rem;
 }
 
 .gallery-image-container {
@@ -33,27 +34,26 @@ const images = imagesData.images;
   gap: 20px;
 }
 .image-2 {
-  grid-row: span 2;
   grid-column: span 2;
 }
 
-@media (max-width: 992px) {
-  .gallery-image-container {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .image-5 {
-    grid-column: span 2;
-    height: 400px;
-  }
+.image-6 {
+  grid-column: span 2;
 }
+
 @media (max-width: 700px) {
+  .gallery-brief {
+    display: block;
+  }
   .gallery-image-container {
     grid-template-columns: 1fr;
   }
 
-  .image-1 {
-    display: none;
+  .image-2 {
+    grid-column: span 1;
+  }
+  .image-6 {
+    grid-column: span 1;
   }
 }
 </style>

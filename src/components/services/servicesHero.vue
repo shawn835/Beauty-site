@@ -1,12 +1,10 @@
 <template>
-  <hero
-    background-image="/hero-images/services-hero-image.jpeg"
-    :style="{ height: '95vh' }">
+  <hero background-image="/hero-images/services-hero-image.jpeg">
     <template #hero-header>
       <Headings heading=" our services" />
     </template>
     <template #heading-text>
-      <p>our luxury SPA</p>
+      <p>have a glance, of what we offer</p>
     </template>
   </hero>
 </template>

@@ -44,4 +44,17 @@ img {
   max-width: 1200px;
   margin-top: 2rem;
 }
+
+@media (max-width: 992px) {
+  .location-working-hours {
+    flex-direction: column;
+    flex-direction: column-reverse;
+  }
+
+  img {
+    border-radius: 0;
+    border-top-left-radius: 40%;
+    border-top-right-radius: 40%;
+  }
+}
 </style>

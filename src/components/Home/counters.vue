@@ -26,14 +26,14 @@ const countUp = () => {
   counters.forEach((counter, index) => {
     const updateCounter = () => {
       const currentValue = counterValues.value[index];
-      const increment = Math.ceil(counter.target / 20); //speed of increment
+      const increment = Math.ceil(counter.target / 150); //speed of increment
 
       if (currentValue < counter.target) {
         counterValues.value[index] = Math.min(
           currentValue + increment,
           counter.target
         );
-        setTimeout(updateCounter, 70);
+        setTimeout(updateCounter, 100);
       }
     };
     updateCounter();
@@ -48,7 +48,7 @@ const resetCounters = () => {
 //scroll evvent handler
 const pageScroll = () => {
   const position = window.scrollY;
-  if (position > 40 && !startedScrolling) {
+  if (position > 30 && !startedScrolling) {
     countUp();
     startedScrolling = true;
   } else if (position < 25 && startedScrolling) {

@@ -26,7 +26,10 @@
       <template #custom="{ service }">
         <div class="product-name">
           <span>{{ service.product }}</span>
-          <buttons button-text="learn more" class-name="primary-button" />
+
+          <router-link to="/comingsoon"
+            ><buttons button-text="learn more" class-name="primary-button" />
+          </router-link>
         </div>
       </template>
     </galleryShowcase>
@@ -35,10 +38,10 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import Headings from "./utility/Headings.vue";
+import Headings from "../utility/Headings.vue";
 import sampleProducts from "@/assets/products.json";
-import galleryShowcase from "./utility/galleryShowcase.vue";
-import buttons from "./utility/buttons.vue";
+import galleryShowcase from "../utility/galleryShowcase.vue";
+import buttons from "../utility/buttons.vue";
 
 const categories = sampleProducts;
 const currentCategory = ref(categories[0].category);

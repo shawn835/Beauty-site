@@ -9,15 +9,6 @@
             <buttons button-text="subscribe" class-name="secondary-button" />
           </form>
 
-          <div class="socials">
-            <span class="social-text">social media</span>
-            <div>
-              <i class="fa-brands fa-facebook"></i>
-              <i class="fa-brands fa-tiktok"></i>
-              <i class="fa-brands fa-instagram"></i>
-              <i class="fa-brands fa-twitter"></i>
-            </div>
-          </div>
         </div>
       </div> -->
 
@@ -36,9 +27,8 @@
 </template>
 
 <script setup>
-import buttons from "./utility/buttons.vue";
-import location from "./utility/location.vue";
-import WorkingDays from "./utility/WorkingDays.vue";
+import location from "../utility/location.vue";
+import WorkingDays from "../utility/WorkingDays.vue";
 
 const date = new Date();
 const year = date.getFullYear();
@@ -72,38 +62,6 @@ h2 {
 input {
   padding: 15px 40px;
   border-radius: 30px;
-}
-
-.socials {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-.socials > div {
-  display: flex;
-  gap: 20px;
-}
-
-.socials i {
-  background-color: var(--background-secondary);
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  cursor: pointer;
-  color: var(--secondary-icon-color);
-  transition: all 0.3s ease-in;
-}
-
-.socials i:hover {
-  transform: rotate(360deg);
-}
-
-.social-text {
-  flex: none;
 }
 
 .copyright {

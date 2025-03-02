@@ -1,7 +1,5 @@
 <template>
-  <hero
-    background-image="/hero-images/contact-hero-image.jpg"
-    :style="{ height: '95vh' }">
+  <hero background-image="/hero-images/contact-hero-image.jpg">
     <template #hero-header>
       <Headings heading="lets talk" />
     </template>

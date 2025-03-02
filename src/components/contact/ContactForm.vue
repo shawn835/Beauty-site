@@ -17,11 +17,11 @@
           v-model="formData.name" />
       </label>
       <label
-        >email:
+        >phone:
         <input
-          type="email"
-          placeholder="enter your email"
-          v-model="formData.email" />
+          type="tel"
+          placeholder="enter your phone number"
+          v-model="formData.phone" />
       </label>
 
       <label>
@@ -44,27 +44,27 @@ import buttons from "../utility/buttons.vue";
 import Headings from "../utility/Headings.vue";
 import location from "../utility/location.vue";
 import { useToast } from "vue-toastification";
+import { validatePhoneNumber } from "@/requestsMethods/validation.js";
 const apiUrl = import.meta.env.VITE_API_URL;
 const toast = useToast();
 
 const formData = ref({
   name: "",
-  email: "",
+  phone: "",
   message: "",
 });
 
 const validateFields = () => {
   const errors = {};
-  const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if (!formData.value.name.trim()) {
     errors.name = "Please enter your name";
   }
-
-  if (!formData.value.email.trim()) {
-    errors.email = "Please enter your email address";
-  } else if (!emailPattern.test(formData.value.email)) {
-    errors.email = "Please enter a valid email address";
+  if (!formData.value.phone.trim()) {
+    errors.name = "Please enter your phone number";
+  } else if (!validatePhoneNumber(formData.value.phone)) {
+    errors.phone =
+      "Invalid phone number. Use a Kenyan format like 07xxxxxxxx or +2547xxxxxxxx.";
   }
 
   if (!formData.value.message.trim()) {
@@ -121,5 +121,15 @@ label {
 
 .form-header {
   margin-top: 2rem;
+}
+
+@media (max-width: 992px) {
+  .form-content {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-secondary);
+    width: 100%;
+  }
 }
 </style>

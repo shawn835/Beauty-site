@@ -26,7 +26,10 @@
   </div>
 
   <!-- Booking Card -->
-  <BookingCard v-if="isAuthenticated" :bookingDetails="fetchedData" />
+  <BookingCard
+    v-if="isAuthenticated"
+    :bookingDetails="fetchedData"
+    confirmation="appointment details!" />
 
   <!-- Reschedule Form -->
   <Reschedule
@@ -80,7 +83,7 @@ const getBookingDetails = async (code) => {
 
 // Check Bookings
 const fetchBookingDetails = async () => {
-  const data = await getBookingDetails(input.value);
+  const data = await getBookingDetails(input.value.toUpperCase());
   if (data) {
     fetchedData.value = data;
     isAuthenticated.value = true;
@@ -142,7 +145,8 @@ const closePoppingWindows = () => {
 .code-password-form {
   display: flex;
   flex-direction: column;
-  width: 550px;
+  max-width: 550px;
+  width: 100%;
   margin: auto;
   height: auto;
   gap: 20px;
@@ -178,8 +182,29 @@ input {
   border-radius: 30px;
 }
 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 18;
+  cursor: pointer;
+}
+
 .options {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+}
+
+@media (max-width: 600px) {
+  .code-password-form {
+    padding: 1rem 0;
+  }
+  h4 {
+    text-align: center;
+    font-size: larger;
+  }
 }
 </style>

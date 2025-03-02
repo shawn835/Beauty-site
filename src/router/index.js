@@ -7,6 +7,10 @@ import GalleryView from "@/views/GalleryView.vue";
 import ContactView from "@/views/ContactView.vue";
 import BookingView from "@/views/BookingView.vue";
 import servicesList from "@/components/services/servicesList.vue";
+import AdminView from "@/views/AdminView.vue";
+import AdminDashboard from "@/components/Admin/AdminDashboard.vue";
+import comingSoon from "@/components/Home/comingSoon.vue";
+import NotFound from "@/components/global/NotFound.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -41,6 +45,34 @@ const router = createRouter({
       path: "/services/:category/:id/serviceslist",
       name: "servicesList",
       component: servicesList,
+    },
+    {
+      path: "/admin/login",
+      name: "admin-dashboard",
+      component: AdminView,
+    },
+
+    {
+      path: "/admin/dashboard",
+      component: AdminDashboard,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("admin")) {
+          next();
+        } else {
+          next("/admin/login");
+        }
+      },
+      meta: { hideLayout: true },
+    },
+    {
+      path: "/comingsoon",
+      name: "coming soon",
+      component: comingSoon,
+    },
+    {
+      path: "/:pathMatch(.*)",
+      component: NotFound,
+      meta: { hideLayout: true },
     },
   ],
 });

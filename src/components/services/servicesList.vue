@@ -11,7 +11,9 @@
   </hero>
 
   <div class="service-list-gallery">
-    <Headings :heading="`${formattedCategory} treatment`" />
+    <Headings
+      :heading="`${formattedCategory} treatment`"
+      :style="{ color: 'var(--text-heading)' }" />
     <TeamGallery :images="filteredServices">
       <template #images="{ content }">
         <img v-lazy="content.image" :alt="content.name" />
@@ -19,7 +21,7 @@
 
       <template #custom-content="{ content }">
         <buttons
-          @click="navigateToBookings(router, content.image, formattedCategory)"
+          @click="bookThis(content)"
           class-name="secondary-button"
           button-text="book this"
           :style="{ borderRadius: '0' }" />
@@ -43,7 +45,7 @@ import buttons from "../utility/buttons.vue";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import servicesData from "@/assets/services.json"; // Import the services JSON
-import { navigateToBookings } from "@/navigateToBooking";
+import { bookService } from "../../../navigateToBookings";
 import { useRouter } from "vue-router";
 const route = useRoute();
 const router = useRouter();
@@ -68,6 +70,11 @@ const filteredServices = computed(() => {
 
   return categoryData ? categoryData.servicesList : [];
 });
+
+const bookThis = (image) => {
+  bookService(image);
+  router.push("/online-bookings");
+};
 </script>
 
 <style scoped>

@@ -24,6 +24,11 @@
       "image": "/images/gallery-5.jpg",
       "alt": "beauty",
       "id": 5
+    },
+    {
+      "image": "/images/gallery-6.jpg",
+      "alt": "beauty",
+      "id": 6
     }
   ]
 }

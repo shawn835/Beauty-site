@@ -111,7 +111,7 @@ const rescheduleData = ref({
     : [],
   phone: props.bookingDetails.phone || "",
   technician: props.bookingDetails.technician || "",
-  duration: 0,
+  duration: props.bookingDetails.duration,
 });
 
 // Get service durations

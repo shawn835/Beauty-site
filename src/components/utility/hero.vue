@@ -97,12 +97,15 @@ defineProps({
   letter-spacing: 2px;
   line-height: 30px;
   color: var(--nav-links);
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 @media (max-width: 1100px) {
   .hero-section {
     height: 50vh;
+  }
+  .heading-text {
+    font-size: 1.2rem;
   }
 }
 </style>

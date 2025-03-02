@@ -12,7 +12,7 @@ defineProps({
 </script>
 <style scoped>
 .main-heading {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 1rem;
   letter-spacing: 2px;
   color: var(--text-secondary);
@@ -21,7 +21,7 @@ defineProps({
 
 @media (max-width: 992px) {
   h1 {
-    font-size: larger;
+    font-size: 2rem;
   }
 }
 </style>

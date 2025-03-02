@@ -1,4 +1,5 @@
 <template>
+  <div class="overlay" v-if="isMenuOpen" @click="isMenuOpen = false"></div>
   <hamburger @toggle-menu="toggleMenu" />
   <div :class="['navbar', { active: isMenuOpen }]">
     <div class="logo">beauty</div>
@@ -31,19 +32,33 @@
             >contact</router-link
           >
         </li>
-        <li @click.prevent="navigateToBookingDetails">bookings</li>
+        <li @click.prevent="navigateToBookingDetails">view booking</li>
       </ul>
     </nav>
-    <router-link to="/online-bookings"
-      ><buttons button-text="book appointment" class-name="primary-button"
-    /></router-link>
+    <div class="buttons">
+      <router-link to="/online-bookings"
+        ><buttons button-text="book appointment" class-name="primary-button"
+      /></router-link>
+      <router-link to="/admin/login"
+        ><buttons button-text="Admin" class-name="primary-button"
+      /></router-link>
+    </div>
+
+    <div class="socials">
+      <div>
+        <i class="fa-brands fa-facebook"></i>
+        <i class="fa-brands fa-tiktok"></i>
+        <i class="fa-brands fa-instagram"></i>
+        <i class="fa-brands fa-twitter"></i>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, defineEmits } from "vue";
+import { ref, onMounted, onUnmounted, defineEmits, watch } from "vue";
 
-import buttons from "./utility/buttons.vue";
+import buttons from "../utility/buttons.vue";
 import hamburger from "./hamburger.vue";
 
 //reactive state
@@ -53,6 +68,10 @@ const isMobile = ref(window.innerWidth < 992);
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
+
+watch(isMenuOpen, (newValue) => {
+  document.body.style.overflow = newValue ? "hidden" : "";
+});
 
 const checkScreenWidth = () => {
   const isNowMobile = window.innerWidth < 992;
@@ -107,14 +126,13 @@ const navigateToBookingDetails = () => {
   padding: 0 2px;
 }
 
-/* Reset default styles for links */
 .navbar-list li a {
-  color: inherit; /* Inherit text color from parent */
+  color: inherit;
   text-decoration: none;
 }
 
 .navbar-list li a:hover {
-  text-decoration: none; /* Prevent underline on hover */
+  text-decoration: none;
 }
 .navbar {
   display: flex;
@@ -125,14 +143,12 @@ const navigateToBookingDetails = () => {
   top: 0;
   right: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 50;
   overflow: hidden;
 }
 
-.isActive {
-  background-color: var(--hover-bg);
-  border-radius: 10px;
-  padding: 0 2px;
+.navbar-list li .isActive {
+  color: var(--hover-color);
 }
 
 .close-icon {
@@ -150,6 +166,40 @@ const navigateToBookingDetails = () => {
   cursor: pointer;
 }
 
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.socials {
+  display: none;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 0;
+}
+.socials > div {
+  display: flex;
+  gap: 20px;
+}
+
+.socials i {
+  background-color: var(--primary-icon-color);
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  color: var(--secondary-icon-color);
+  transition: all 0.3s ease-in;
+}
+
+.socials i:hover {
+  transform: rotate(360deg);
+}
+
 @media (max-width: 992px) {
   .logo {
     display: none;
@@ -159,13 +209,22 @@ const navigateToBookingDetails = () => {
     width: 100%;
   }
 
+  .overlay {
+    position: fixed;
+    inset: 0; /*top 0, left 0, height and witdh 100vh/100vw*/
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 18;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
   .navbar {
     top: 0;
     right: 0;
     flex-direction: column;
     justify-content: start;
     width: 300px;
-    background-color: var(--background-primary);
+    background-color: var(--background-secondary);
     align-items: flex-start;
     height: 100vh;
     padding: 10px;
@@ -194,8 +253,24 @@ const navigateToBookingDetails = () => {
   }
 
   .navbar-list li {
-    border-bottom: 1px solid var(--background-secondary);
+    border-bottom: 1px solid var(--text-primary);
     width: 100%;
+  }
+
+  .navbar-list li:hover {
+    background: none;
+  }
+
+  .isActive {
+    background: none;
+  }
+
+  .navbar-list li .isActive {
+    color: var(--hover-color);
+  }
+
+  .socials {
+    display: flex;
   }
 }
 </style>

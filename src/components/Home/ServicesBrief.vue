@@ -15,38 +15,40 @@
       </span>
     </div>
 
-    <galleryShowcase
-      :services="services"
-      :style-one="{ rowGap: '6rem' }"
-      class="gallery-showcase">
+    <galleryShowcase :services="services">
       <template #image="{ service }">
         <img v-lazy="service.image" :alt="service.product" />
       </template>
+
       <template #custom="{ service }">
-        <router-link
-          :to="`/services/${generateSlug(
-            service.category,
-            service.id
-          )}/serviceslist`">
-          <div class="card">
-            <div class="card-content">
-              <span class="service-category">{{ service.category }}</span>
-              <span class="service-description">{{ service.description }}</span>
-              <buttons
-                :button-text="`${service.category} services`"
-                class-name="secondary-button" />
+        <div class="custom-gallery-content">
+          <router-link
+            :to="`/services/${generateSlug(
+              service.category,
+              service.id
+            )}/serviceslist`">
+            <div class="card">
+              <div class="card-content">
+                <span class="service-category">{{ service.category }}</span>
+                <span class="service-description">{{
+                  service.description
+                }}</span>
+                <buttons
+                  :button-text="`${service.category} services`"
+                  class-name="secondary-button" />
+              </div>
             </div>
-          </div>
-        </router-link>
+          </router-link>
+        </div>
       </template>
     </galleryShowcase>
   </div>
 </template>
 
 <script setup>
-import Headings from "./utility/Headings.vue";
-import buttons from "./utility/buttons.vue";
-import galleryShowcase from "./utility/galleryShowcase.vue";
+import Headings from "../utility/Headings.vue";
+import buttons from "../utility/buttons.vue";
+import galleryShowcase from "../utility/galleryShowcase.vue";
 import servicesData from "@/assets/services.json";
 import { RouterLink } from "vue-router";
 import { generateSlug } from "@/slug";
@@ -76,7 +78,7 @@ span {
   justify-content: center;
   align-items: center;
   height: 100%;
-  gap: 20px;
+  gap: 1rem;
 }
 
 .service-category {
@@ -92,10 +94,14 @@ span {
   transition: color 0.3s ease;
 }
 
+.custom-gallery-content {
+  position: relative;
+}
+
 .card {
   background-color: var(--button-background);
   position: absolute;
-  bottom: -25%;
+  bottom: -1rem;
   left: 50%;
   transform: translateX(-50%);
   transform-origin: center;
@@ -106,7 +112,8 @@ span {
   padding: 10px;
   cursor: pointer;
   width: 250px;
-  height: 250px;
+  height: auto;
+  padding: 1.5rem;
 }
 
 .card:hover {
@@ -122,8 +129,9 @@ span {
 
 @media (max-width: 992px) {
   .card {
-    width: 150px;
-    height: 180px;
+    max-width: 200px;
+    width: 100%;
+    height: auto;
     bottom: -18px;
   }
 
@@ -134,9 +142,6 @@ span {
   .service-description {
     font-size: 0.8rem;
     line-height: 20px;
-  }
-  .gallery-showcase {
-    row-gap: 4rem;
   }
 }
 </style>

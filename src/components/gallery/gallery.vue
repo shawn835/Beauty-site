@@ -1,9 +1,7 @@
 <template>
   <div class="gallery">
     <div class="gallery-hero">
-      <hero
-        :style="{ backgroundColor: 'none', height: '95vh' }"
-        background-image="">
+      <hero background-image="/gallery/manicure-image-10.jpg">
         <template #hero-header>
           <Headings heading="content of what you desire" />
         </template>
@@ -12,10 +10,12 @@
     </div>
 
     <div class="container">
+      <Headings
+        heading="look for what you like"
+        :style="{ color: 'var(--text-heading)' }" />
       <div class="pagination-container">
         <TeamGallery
           :images="paginatedItems"
-          :style="{ gridTemplateColumns: 'repeat(3, 1fr)' }"
           :custom-content-style="{
             flexDirection: 'column',
             gap: '10px',
@@ -29,9 +29,9 @@
           <template #custom-content="{ content }">
             <span class="name">
               {{
-                content.category === "ear"
+                content.category === "piercing"
                   ? `ear ${content.category}`
-                  : content.name === "facial"
+                  : content.category === "facial"
                   ? `${content.category} treatment`
                   : content.category === "pedicure" ||
                     content.category === "manicure"
@@ -41,9 +41,7 @@
             </span>
 
             <buttons
-              @click="
-                navigateToBookings(router, content.image, content.category)
-              "
+              @click="bookThis(content)"
               :button-text="`book this`"
               class-name="secondary-button"
               :style="{ borderRadius: '0' }" />
@@ -75,24 +73,22 @@ import Headings from "../utility/Headings.vue";
 import buttons from "../utility/buttons.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
 import { useRouter } from "vue-router";
-import galleryImages from "@/assets/gallery.json";
-import { navigateToBookings } from "@/navigateToBooking.js";
+import images from "@/assets/gallery.json";
+import { bookService } from "../../../navigateToBookings";
 
 const router = useRouter();
 //pagination settings
-const itemsPerPage = 6; //image numbers per page
+const itemsPerPage = 8; //image numbers per page
 const currentPage = ref(1);
 
 //total number of pages
-const totalPages = computed(() =>
-  Math.ceil(galleryImages.length / itemsPerPage)
-);
+const totalPages = computed(() => Math.ceil(images.length / itemsPerPage));
 
 // Get the items for the current page
 const paginatedItems = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage;
   const end = start + itemsPerPage;
-  return galleryImages.slice(start, end);
+  return images.slice(start, end);
 });
 
 //navigate previous page
@@ -107,6 +103,11 @@ const nextPage = () => {
   if (currentPage.value < totalPages.value) {
     currentPage.value++;
   }
+};
+
+const bookThis = (image) => {
+  bookService(image);
+  router.push("/online-bookings");
 };
 </script>
 
@@ -135,5 +136,9 @@ img {
 .name {
   font-weight: bold;
   font-size: 30px;
+}
+
+.container {
+  margin-top: 2rem;
 }
 </style>

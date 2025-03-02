@@ -9,7 +9,7 @@
   </slidingContent>
 </template>
 <script setup>
-import slidingContent from "./utility/slidingContent.vue";
+import slidingContent from "../utility/slidingContent.vue";
 import beautyQuotes from "@/assets/BeautyQuotes.json";
 
 const quotes = beautyQuotes;

@@ -7,7 +7,7 @@
         </div>
         <div class="booking-details">
           <div class="confirm-text-id">
-            <h2>Your Appointment is Confirmed!</h2>
+            <h4>{{ props.confirmation }}</h4>
             <p>
               Confirmation Code:
               <span class="confirmation-code">{{
@@ -56,22 +56,13 @@
             Tech.
           </p>
         </div>
-      </div>
-
-      <div class="options">
-        <buttons
-          class-name="primary-button"
-          button-text="Re-schedule"
-          :style="{ borderRadius: '0' }" />
-        <buttons
-          class-name="primary-button"
-          button-text="exit"
-          :style="{ borderRadius: '0' }" />
-        <buttons
-          @click="downloadPDF"
-          class-name="primary-button"
-          button-text="Download"
-          :style="{ borderRadius: '0' }" />
+        <div class="download">
+          <buttons
+            @click="downloadPDF"
+            class-name="primary-button"
+            button-text="Download"
+            :style="{ borderRadius: '0', width: '100%' }" />
+        </div>
       </div>
     </div>
   </div>
@@ -82,6 +73,7 @@ import { ref } from "vue";
 const bookingCard = ref(null);
 const props = defineProps({
   bookingDetails: Object,
+  confirmation: String,
 });
 
 const formatDuration = (minutes) => {
@@ -101,21 +93,24 @@ const downloadPDF = () => {
 <style scoped>
 .booking-card {
   position: fixed;
-  top: 10px;
+  top: 5px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   gap: 20px;
-  z-index: 1000;
-  height: 100vh;
+  z-index: 20;
+  max-width: 450px;
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  border-radius: 20px;
 }
 .card-info {
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  width: 650px;
   margin: auto;
 }
 
@@ -138,7 +133,7 @@ const downloadPDF = () => {
 .confirm-text-id {
   text-align: center;
 }
-.confirm-text-id h2 {
+.confirm-text-id h4 {
   color: rgb(18, 202, 18);
 }
 .booking-info {
@@ -165,9 +160,9 @@ const downloadPDF = () => {
   font-style: oblique;
   text-align: center;
 }
-.options {
+.download {
   display: flex;
-  justify-content: space-between;
-  padding: 0 4px;
+  justify-content: center;
+  width: 100%;
 }
 </style>

@@ -21,7 +21,7 @@ const emitToggleMenu = () => {
   position: fixed;
   top: 15px;
   right: 20px;
-  z-index: 10;
+  z-index: 50;
   cursor: pointer;
   display: none;
 }

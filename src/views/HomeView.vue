@@ -1,19 +1,19 @@
 <template>
   <HeroSection />
   <scroll />
-  <counters />
   <QuoteContent />
+  <counters />
   <ServicesBrief />
   <GalleryBrief />
   <SampleProduct />
 </template>
 
 <script setup>
-import HeroSection from "@/components/home-hero.vue";
-import counters from "@/components/counters.vue";
-import scroll from "@/components/scroll.vue";
-import QuoteContent from "@/components/QuoteContent.vue";
-import ServicesBrief from "@/components/ServicesBrief.vue";
-import GalleryBrief from "@/components/GalleryBrief.vue";
-import SampleProduct from "@/components/SampleProduct.vue";
+import HeroSection from "@/components/Home/home-hero.vue";
+import counters from "@/components/Home/counters.vue";
+import scroll from "@/components/Home/scroll.vue";
+import QuoteContent from "@/components/Home/QuoteContent.vue";
+import ServicesBrief from "@/components/Home/ServicesBrief.vue";
+import GalleryBrief from "@/components/Home/portfolio.vue";
+import SampleProduct from "@/components/Home/SampleProduct.vue";
 </script>

@@ -1,6 +1,6 @@
 <template>
   <button :class="[computedClass]">
-    {{ buttonText }} <i class="fas fa-arrow-right"></i>
+    {{ buttonText }}
   </button>
 </template>
 
@@ -26,10 +26,6 @@ button {
 
 button:hover {
   opacity: 0.9;
-}
-
-i {
-  color: var(--primary-icon-color);
 }
 
 button.primary-button {

@@ -5,7 +5,7 @@
   margin: 0;
   box-sizing: border-box;
   text-transform: capitalize;
-  user-select: none;
+  /* user-select: none; */
 }
 :root {
   --background-primary: #faeee9;
@@ -34,6 +34,13 @@ body {
   font-weight: 400;
   font-style: normal;
   background-color: var(--background-primary);
+}
+
+.more-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
 }
 
 .container {
@@ -67,17 +74,6 @@ select {
   padding: 10px 4px;
   border: none;
   outline: none;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 18;
-  cursor: pointer;
 }
 
 @media (max-width: 992px) {

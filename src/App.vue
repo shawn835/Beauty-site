@@ -1,17 +1,20 @@
 <template>
-  <navbar @toggle-modal="isModalOpen = true" />
+  <navbar @toggle-modal="isModalOpen = true" v-if="!$route.meta.hideLayout" />
   <RouterView />
-  <footerSection />
+  <footerSection v-if="!$route.meta.hideLayout" />
 
   <CodeModal v-if="isModalOpen" @close-modal="isModalOpen = false" />
 </template>
 
 <script setup>
-import { ref } from "vue";
-import navbar from "./components/navbar.vue";
+import { ref, watch } from "vue";
+import navbar from "./components/global/navbar.vue";
 import { RouterView } from "vue-router";
-import footerSection from "./components/footerSection.vue";
+import footerSection from "./components/global/footerSection.vue";
 import CodeModal from "./components/utility/CodeModal.vue";
 
 const isModalOpen = ref(false);
+watch(isModalOpen, (newValue) => {
+  document.body.style.overflow = newValue ? "hidden" : "";
+});
 </script>
