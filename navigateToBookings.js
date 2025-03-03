@@ -1,8 +1,9 @@
 export const bookService = (image) => {
-  // Retrieve existing form data or initialize an empty object
+  // local storage retrieve
   const storedData = JSON.parse(localStorage.getItem("bookingForm")) || {};
+  if (!storedData.samples) storedData.samples = [];
 
-  // Ensure `services` and `galleryImages` arrays exist
+  // Ensure both arrays exist
   storedData.services = storedData.services || [];
   storedData.galleryImages = storedData.galleryImages || [];
 
@@ -12,7 +13,9 @@ export const bookService = (image) => {
   }
 
   // Add image URL to galleryImages
-  storedData.galleryImages.push(image.image);
+  if (!storedData.galleryImages.includes(image.image)) {
+    storedData.galleryImages.push(image.image);
+  }
 
   // Save updated data to local storage
   localStorage.setItem("bookingForm", JSON.stringify(storedData));

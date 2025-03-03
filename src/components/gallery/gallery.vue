@@ -28,16 +28,7 @@
 
           <template #custom-content="{ content }">
             <span class="name">
-              {{
-                content.category === "piercing"
-                  ? `ear ${content.category}`
-                  : content.category === "facial"
-                  ? `${content.category} treatment`
-                  : content.category === "pedicure" ||
-                    content.category === "manicure"
-                  ? content.category
-                  : `nail ${content.category}`
-              }}
+              {{ content.category }}
             </span>
 
             <buttons

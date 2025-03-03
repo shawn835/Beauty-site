@@ -37,11 +37,18 @@ const generateImageJson = async () => {
     let imagesData = Array.from(imageSet).map((file) => {
       const fileNameWithoutExt = path.parse(file).name; // Remove extension
       const parts = fileNameWithoutExt.split("-");
-      const name = parts[0];
+      let category;
+      if (parts[0] === "art") {
+        category = "nail art";
+      } else if (parts[0] === "enhancement") {
+        category = "nail enhancement";
+      } else {
+        category = parts[0];
+      }
       const id = parseInt(parts[parts.length - 1]);
 
       return {
-        name,
+        category,
         id: isNaN(id) ? null : id, // Ensure ID is a number, else null
         image: `/gallery/${file}`,
       };

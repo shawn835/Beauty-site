@@ -160,16 +160,6 @@ const closePoppingWindows = () => {
   z-index: 20;
 }
 
-.close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  color: var(--primary-icon-color);
-  z-index: 100;
-  cursor: pointer;
-  font-size: 2rem;
-}
-
 form {
   display: flex;
   justify-content: center;

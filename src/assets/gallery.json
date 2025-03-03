@@ -1,73 +1,13 @@
 [
   {
-    "category": "facial",
-    "id": 1,
-    "image": "/gallery/facial-image-1.jpg"
-  },
-  {
     "category": "manicure",
     "id": 1,
     "image": "/gallery/manicure-image-1.jpg"
   },
   {
-    "category": "pedicure",
-    "id": 5,
-    "image": "/gallery/pedicure-image-5.jpg"
-  },
-  {
-    "category": "enhancement",
-    "id": 2,
-    "image": "/gallery/enhancement-image-2.jpg"
-  },
-  {
-    "category": "facial",
-    "id": 4,
-    "image": "/gallery/facial-image-4.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 4,
-    "image": "/gallery/manicure-image-4.jpg"
-  },
-  {
-    "category": "enhancement",
+    "category": "nail enhancement",
     "id": 5,
     "image": "/gallery/enhancement-image-5.jpg"
-  },
-  {
-    "category": "facial",
-    "id": 5,
-    "image": "/gallery/facial-image-5.jpg"
-  },
-  {
-    "category": "enhancement",
-    "id": 7,
-    "image": "/gallery/enhancement-image-7.jpg"
-  },
-  {
-    "category": "art",
-    "id": 9,
-    "image": "/gallery/art-image-9.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 5,
-    "image": "/gallery/manicure-image-5.jpg"
-  },
-  {
-    "category": "art",
-    "id": 13,
-    "image": "/gallery/art-image-13.jpg"
-  },
-  {
-    "category": "enhancement",
-    "id": 4,
-    "image": "/gallery/enhancement-image-4.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 1,
-    "image": "/gallery/piercing-image-1.jpg"
   },
   {
     "category": "pedicure",
@@ -76,53 +16,73 @@
   },
   {
     "category": "facial",
+    "id": 4,
+    "image": "/gallery/facial-image-4.jpg"
+  },
+  {
+    "category": "pedicure",
+    "id": 3,
+    "image": "/gallery/pedicure-image-3.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 7,
+    "image": "/gallery/piercing-image-7.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 8,
+    "image": "/gallery/manicure-image-8.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 1,
+    "image": "/gallery/enhancement-image-1.jpeg"
+  },
+  {
+    "category": "facial",
     "id": 3,
     "image": "/gallery/facial-image-3.jpg"
   },
   {
-    "category": "manicure",
-    "id": 9,
-    "image": "/gallery/manicure-image-9.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 3,
-    "image": "/gallery/manicure-image-3.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 10,
-    "image": "/gallery/piercing-image-10.jpg"
-  },
-  {
-    "category": "art",
-    "id": 14,
-    "image": "/gallery/art-image-14.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 4,
-    "image": "/gallery/piercing-image-4.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 10,
-    "image": "/gallery/manicure-image-10.jpg"
-  },
-  {
-    "category": "art",
+    "category": "nail art",
     "id": 12,
     "image": "/gallery/art-image-12.jpg"
   },
   {
-    "category": "art",
+    "category": "facial",
     "id": 2,
-    "image": "/gallery/art-image-2.jpg"
+    "image": "/gallery/facial-image-2.jpg"
   },
   {
-    "category": "manicure",
-    "id": 6,
-    "image": "/gallery/manicure-image-6.jpg"
+    "category": "pedicure",
+    "id": 7,
+    "image": "/gallery/pedicure-image-7.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 4,
+    "image": "/gallery/enhancement-image-4.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 5,
+    "image": "/gallery/art-image-5.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 15,
+    "image": "/gallery/art-image-15.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 11,
+    "image": "/gallery/art-image-11.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 2,
+    "image": "/gallery/piercing-image-2.jpg"
   },
   {
     "category": "pedicure",
@@ -130,14 +90,99 @@
     "image": "/gallery/pedicure-image-1.jpg"
   },
   {
-    "category": "enhancement",
-    "id": 3,
-    "image": "/gallery/enhancement-image-3.jpg"
+    "category": "piercing",
+    "id": 8,
+    "image": "/gallery/piercing-image-8.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 5,
+    "image": "/gallery/piercing-image-5.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 4,
+    "image": "/gallery/manicure-image-4.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 8,
+    "image": "/gallery/enhancement-image-8.jpg"
   },
   {
     "category": "facial",
+    "id": 5,
+    "image": "/gallery/facial-image-5.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 14,
+    "image": "/gallery/art-image-14.jpg"
+  },
+  {
+    "category": "pedicure",
+    "id": 5,
+    "image": "/gallery/pedicure-image-5.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 4,
+    "image": "/gallery/piercing-image-4.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 4,
+    "image": "/gallery/art-image-4.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 2,
+    "image": "/gallery/enhancement-image-2.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 2,
+    "image": "/gallery/art-image-2.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 10,
+    "image": "/gallery/piercing-image-10.jpg"
+  },
+  {
+    "category": "pedicure",
     "id": 6,
-    "image": "/gallery/facial-image-6.jpg"
+    "image": "/gallery/pedicure-image-6.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 13,
+    "image": "/gallery/manicure-image-13.jpeg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 6,
+    "image": "/gallery/enhancement-image-6.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 5,
+    "image": "/gallery/manicure-image-5.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 10,
+    "image": "/gallery/art-image-10.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 2,
+    "image": "/gallery/manicure-image-2.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 1,
+    "image": "/gallery/piercing-image-1.jpg"
   },
   {
     "category": "manicure",
@@ -150,164 +195,34 @@
     "image": "/gallery/pedicure-image-2.jpg"
   },
   {
-    "category": "piercing",
-    "id": 9,
-    "image": "/gallery/piercing-image-9.jpg"
-  },
-  {
-    "category": "pedicure",
-    "id": 3,
-    "image": "/gallery/pedicure-image-3.jpg"
-  },
-  {
-    "category": "pedicure",
-    "id": 4,
-    "image": "/gallery/pedicure-image-4.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 12,
-    "image": "/gallery/manicure-image-12.jpeg"
-  },
-  {
-    "category": "art",
-    "id": 10,
-    "image": "/gallery/art-image-10.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 7,
-    "image": "/gallery/piercing-image-7.jpg"
-  },
-  {
-    "category": "facial",
-    "id": 2,
-    "image": "/gallery/facial-image-2.jpg"
-  },
-  {
-    "category": "art",
-    "id": 15,
-    "image": "/gallery/art-image-15.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 8,
-    "image": "/gallery/manicure-image-8.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 8,
-    "image": "/gallery/piercing-image-8.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 3,
-    "image": "/gallery/piercing-image-3.jpg"
-  },
-  {
-    "category": "art",
-    "id": 4,
-    "image": "/gallery/art-image-4.jpg"
-  },
-  {
-    "category": "art",
-    "id": 11,
-    "image": "/gallery/art-image-11.jpg"
-  },
-  {
-    "category": "pedicure",
-    "id": 6,
-    "image": "/gallery/pedicure-image-6.jpg"
-  },
-  {
     "category": "facial",
     "id": 7,
     "image": "/gallery/facial-image-7.jpeg"
   },
   {
     "category": "manicure",
-    "id": 13,
-    "image": "/gallery/manicure-image-13.jpeg"
-  },
-  {
-    "category": "enhancement",
     "id": 9,
-    "image": "/gallery/enhancement-image-9.jpg"
+    "image": "/gallery/manicure-image-9.jpg"
   },
   {
-    "category": "enhacement",
-    "id": 1,
-    "image": "/gallery/enhacement-image-1.jpeg"
-  },
-  {
-    "category": "manicure",
-    "id": 2,
-    "image": "/gallery/manicure-image-2.jpg"
-  },
-  {
-    "category": "manicure",
-    "id": 14,
-    "image": "/gallery/manicure-image-14.jpeg"
-  },
-  {
-    "category": "pedicure",
-    "id": 10,
-    "image": "/gallery/pedicure-image-10.jpg"
-  },
-  {
-    "category": "art",
-    "id": 8,
-    "image": "/gallery/art-image-8.jpg"
-  },
-  {
-    "category": "enhancement",
-    "id": 8,
-    "image": "/gallery/enhancement-image-8.jpg"
-  },
-  {
-    "category": "pedicure",
-    "id": 8,
-    "image": "/gallery/pedicure-image-8.jpg"
-  },
-  {
-    "category": "enhancement",
-    "id": 6,
-    "image": "/gallery/enhancement-image-6.jpg"
-  },
-  {
-    "category": "art",
+    "category": "nail art",
     "id": 3,
     "image": "/gallery/art-image-3.jpg"
   },
   {
-    "category": "art",
+    "category": "manicure",
+    "id": 10,
+    "image": "/gallery/manicure-image-10.jpg"
+  },
+  {
+    "category": "nail art",
     "id": 7,
     "image": "/gallery/art-image-7.jpg"
   },
   {
-    "category": "piercing",
-    "id": 2,
-    "image": "/gallery/piercing-image-2.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 11,
-    "image": "/gallery/piercing-image-11.jpg"
-  },
-  {
-    "category": "piercing",
-    "id": 5,
-    "image": "/gallery/piercing-image-5.jpg"
-  },
-  {
-    "category": "art",
-    "id": 1,
-    "image": "/gallery/art-image-1.jpg"
-  },
-  {
-    "category": "art",
-    "id": 5,
-    "image": "/gallery/art-image-5.jpg"
+    "category": "facial",
+    "id": 6,
+    "image": "/gallery/facial-image-6.jpg"
   },
   {
     "category": "pedicure",
@@ -315,13 +230,98 @@
     "image": "/gallery/pedicure-image-9.jpg"
   },
   {
+    "category": "facial",
+    "id": 1,
+    "image": "/gallery/facial-image-1.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 3,
+    "image": "/gallery/manicure-image-3.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 3,
+    "image": "/gallery/piercing-image-3.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 11,
+    "image": "/gallery/piercing-image-11.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 12,
+    "image": "/gallery/manicure-image-12.jpeg"
+  },
+  {
     "category": "pedicure",
-    "id": 7,
-    "image": "/gallery/pedicure-image-7.jpg"
+    "id": 8,
+    "image": "/gallery/pedicure-image-8.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 9,
+    "image": "/gallery/enhancement-image-9.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 14,
+    "image": "/gallery/manicure-image-14.jpeg"
+  },
+  {
+    "category": "nail art",
+    "id": 9,
+    "image": "/gallery/art-image-9.jpg"
   },
   {
     "category": "manicure",
     "id": 7,
     "image": "/gallery/manicure-image-7.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 13,
+    "image": "/gallery/art-image-13.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 1,
+    "image": "/gallery/art-image-1.jpg"
+  },
+  {
+    "category": "nail art",
+    "id": 8,
+    "image": "/gallery/art-image-8.jpg"
+  },
+  {
+    "category": "pedicure",
+    "id": 4,
+    "image": "/gallery/pedicure-image-4.jpg"
+  },
+  {
+    "category": "pedicure",
+    "id": 10,
+    "image": "/gallery/pedicure-image-10.jpg"
+  },
+  {
+    "category": "piercing",
+    "id": 9,
+    "image": "/gallery/piercing-image-9.jpg"
+  },
+  {
+    "category": "manicure",
+    "id": 6,
+    "image": "/gallery/manicure-image-6.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 7,
+    "image": "/gallery/enhancement-image-7.jpg"
+  },
+  {
+    "category": "nail enhancement",
+    "id": 3,
+    "image": "/gallery/enhancement-image-3.jpg"
   }
 ]
