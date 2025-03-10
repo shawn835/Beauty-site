@@ -27,6 +27,11 @@
             >gallery</router-link
           >
         </li>
+        <!-- <li>
+          <router-link to="/blogs" exact-active-class="isActive"
+            >blog</router-link
+          >
+        </li> -->
         <li>
           <router-link to="/contact-us" exact-active-class="isActive"
             >contact</router-link
@@ -46,6 +51,7 @@
 
     <div class="socials">
       <div>
+        <!-- https://www.facebook.com/share/16D9v4tqFh/ -->
         <i class="fa-brands fa-facebook"></i>
         <i class="fa-brands fa-tiktok"></i>
         <i class="fa-brands fa-instagram"></i>

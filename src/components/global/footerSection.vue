@@ -1,22 +1,11 @@
 <template>
   <footer class="footer-container">
     <div>
-      <!-- <div class="footer-section-one">
-        <h2>subscribe to our newsletter</h2>
-        <div class="footer-section-inner">
-          <form @submit="">
-            <input type="email" placeholder="enter email address" />
-            <buttons button-text="subscribe" class-name="secondary-button" />
-          </form>
-
-        </div>
-      </div> -->
-
-      <div class="footer-section-two">
+      <div class="working-days">
         <working-days :style="{ color: 'var(--primary-button-color)' }" />
       </div>
 
-      <div class="footer-section-three">
+      <div class="location">
         <location :style="{ color: 'var(--primary-button-color)' }" />
       </div>
     </div>
@@ -52,17 +41,6 @@ h2 {
   padding: 20px;
   border-bottom: 1px solid white;
 }
-.footer-section-inner {
-  margin-top: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-input {
-  padding: 15px 40px;
-  border-radius: 30px;
-}
 
 .copyright {
   display: flex;
@@ -83,8 +61,8 @@ input {
     display: none;
   }
 
-  .footer-section-two,
-  .footer-section-three {
+  .working-days,
+  .location {
     width: 100%;
   }
 }

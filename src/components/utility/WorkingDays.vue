@@ -14,13 +14,13 @@
 
 <script setup>
 const schedule = [
-  { name: "Monday", hours: "8AM-9PM" },
-  { name: "Tuesday", hours: "8AM-9PM" },
-  { name: "Wednesday", hours: "8AM-9PM" },
-  { name: "Thursday", hours: "8AM-9PM" },
-  { name: "Friday", hours: "8AM-9PM" },
-  { name: "Saturday", hours: "8AM-9PM" },
-  { name: "Sunday", hours: "8AM-9PM" },
+  { name: "Monday", hours: "6AM-9PM" },
+  { name: "Tuesday", hours: "6AM-9PM" },
+  { name: "Wednesday", hours: "6AM-9PM" },
+  { name: "Thursday", hours: "6AM-9PM" },
+  { name: "Friday", hours: "6AM-9PM" },
+  { name: "Saturday", hours: "6AM-9PM" },
+  { name: "Sunday", hours: "10AM-8PM" },
 ];
 
 defineProps({

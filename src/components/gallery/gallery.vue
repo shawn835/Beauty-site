@@ -15,7 +15,7 @@
         :style="{ color: 'var(--text-heading)' }" />
       <div class="pagination-container">
         <TeamGallery
-          :images="paginatedItems"
+          :array="paginatedItems"
           :custom-content-style="{
             flexDirection: 'column',
             gap: '10px',

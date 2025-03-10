@@ -1,8 +1,8 @@
 <template>
   <div class="content-container">
     <div class="content-track" :style="style">
-      <div class="content-info" v-for="(image, index) in images" :key="index">
-        <div class="image">
+      <div class="content-info" v-for="(image, index) in array" :key="index">
+        <div class="image" :style="style">
           <slot name="images" :content="image" />
           <div class="custom-content-info" :style="customContentStyle">
             <slot name="custom-content" :content="image"></slot>
@@ -17,7 +17,7 @@
 
 <script setup>
 defineProps({
-  images: Array,
+  array: Array,
   style: Object,
   customContentStyle: Object,
 });
@@ -75,6 +75,7 @@ defineProps({
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 20px;
   position: absolute;
   top: 80%;

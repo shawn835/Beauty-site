@@ -3,7 +3,7 @@
     <Headings
       heading="our professionals"
       :style="{ color: 'var(--text-heading)', textDecoration: 'underline' }" />
-    <TeamGallery :images="ourTeam">
+    <TeamGallery :array="ourTeam">
       <template #images="{ content }">
         <img v-lazy="content.image" :alt="content.name" />
       </template>

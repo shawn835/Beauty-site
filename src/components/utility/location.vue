@@ -6,7 +6,7 @@
         <i class="fa-solid fa-location-dot" :style="iconStyle"></i>
         <div class="info">
           <span :style="style">address</span>
-          <span>121 Waldeck Street, NY, USA</span>
+          <span>Nakuru town, main street.</span>
         </div>
       </div>
 
@@ -22,7 +22,7 @@
         <i class="fa-solid fa-envelope" :style="iconStyle"></i>
         <div class="info">
           <span :style="style">email</span>
-          <span>nahashonm851@gmail.com</span>
+          <span>chegesimon949@gmail.com</span>
         </div>
       </div>
     </div>

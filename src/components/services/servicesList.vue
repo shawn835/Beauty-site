@@ -14,7 +14,7 @@
     <Headings
       :heading="`${formattedCategory} treatment`"
       :style="{ color: 'var(--text-heading)' }" />
-    <TeamGallery :images="filteredServices">
+    <TeamGallery :array="filteredServices">
       <template #images="{ content }">
         <img v-lazy="content.image" :alt="content.name" />
       </template>
@@ -43,10 +43,9 @@ import TeamGallery from "../utility/TeamGallery.vue";
 import hero from "../utility/hero.vue";
 import buttons from "../utility/buttons.vue";
 import { computed } from "vue";
-import { useRoute } from "vue-router";
 import servicesData from "@/assets/services.json"; // Import the services JSON
 import { bookService } from "../../../navigateToBookings";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 const route = useRoute();
 const router = useRouter();
 

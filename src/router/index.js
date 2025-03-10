@@ -3,10 +3,12 @@ import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "@/views/HomeView.vue";
 import AboutView from "@/views/AboutView.vue";
 import ServicesView from "@/views/ServicesView.vue";
+import servicesList from "@/components/services/servicesList.vue";
 import GalleryView from "@/views/GalleryView.vue";
 import ContactView from "@/views/ContactView.vue";
 import BookingView from "@/views/BookingView.vue";
-import servicesList from "@/components/services/servicesList.vue";
+import BlogView from "@/views/BlogView.vue";
+import BlogPost from "@/components/Blogs/BlogPost.vue";
 import AdminView from "@/views/AdminView.vue";
 import AdminDashboard from "@/components/Admin/AdminDashboard.vue";
 import comingSoon from "@/components/Home/comingSoon.vue";
@@ -45,6 +47,16 @@ const router = createRouter({
       path: "/services/:category/:id/serviceslist",
       name: "servicesList",
       component: servicesList,
+    },
+    {
+      path: "/blogs",
+      name: "blogs",
+      component: BlogView,
+    },
+    {
+      path: "/blogposts/:slug",
+      name: "blog-post",
+      component: BlogPost,
     },
     {
       path: "/admin/login",

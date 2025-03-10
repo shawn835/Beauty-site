@@ -120,6 +120,9 @@ export const submitBooking = async (bookingData) => {
       body: JSON.stringify(payload),
     });
 
+    if (response.status === 429) {
+      throw new Error("Too many requests, please slow down!");
+    }
     const data = await response.json();
 
     if (response.ok) {
