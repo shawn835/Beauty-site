@@ -22,6 +22,4 @@ app.use(router);
 app.use(AosPlugin);
 app.use(Toast);
 
-injectSpeedInsights();
-
 app.mount("#app");
