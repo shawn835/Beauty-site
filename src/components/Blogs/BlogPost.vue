@@ -1,52 +1,34 @@
 <template>
-  <div v-if="blog" class="blog-post">
+  <!-- <div v-if="blog" class="blog-post">
     <h1>{{ blog.title }}</h1>
     <p class="author-date">By {{ blog.author }} - {{ blog.publishedDate }}</p>
     <img :src="blog.imageDisplay" :alt="blog.title" />
     <div v-html="formattedContent"></div>
   </div>
-  <p v-else>Loading...</p>
+  <p v-else>Loading...</p> -->
   <!-- Show loading if blog is null -->
 </template>
-
-<script setup>
-import { ref, onMounted, computed } from "vue";
-import { marked } from "marked";
+<!-- <script setup>
+import { computed } from "vue";
 import { useRoute } from "vue-router";
-const route = useRoute();
-const apiUrl = import.meta.env.VITE_API_URL;
+import { marked } from "marked";
+import DOMPurify from "dompurify";
 
-const blog = ref(null);
-
-const fetchBlogPost = async () => {
-  try {
-    const response = await fetch(`${apiUrl}/blogPost/${route.params.slug}`);
-    if (response.ok) {
-      let post = await response.json();
-      // Append API URL to image paths inside the Markdown content
-      post.imageDisplay = `${apiUrl}${post.imageDisplay}`;
-      post.content = post.content.replace(
-        /!\[(.*?)\]\((\/.*?)\)/g,
-        `![$1](${apiUrl}$2)`
-      );
-
-      blog.value = post;
-      console.log(blog.value.title);
-    } else {
-      throw new Error("Failed to load blog post");
-    }
-  } catch (error) {
-    console.error(error.message);
-  }
-};
-
-const formattedContent = computed(() =>
-  blog.value ? marked(blog.value.content) : ""
-);
-onMounted(() => {
-  fetchBlogPost();
+const props = defineProps({
+  blogs: Array, // Receive pre-fetched blogs from Vite SSG
 });
-</script>
+
+const route = useRoute();
+const slug = route.params.slug;
+
+// Find the blog post from pre-fetched data
+const blog = computed(() => props.blogs.find((b) => b.slug === slug) || null);
+
+// Convert Markdown securely
+const formattedContent = computed(() =>
+  blog.value ? DOMPurify.sanitize(marked(blog.value.content)) : ""
+);
+</script> -->
 
 <style scoped>
 .blog-post {

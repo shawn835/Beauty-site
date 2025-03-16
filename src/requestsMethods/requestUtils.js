@@ -6,9 +6,19 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const toast = useToast();
 export const showBookingCard = ref(false);
 
+//min date
 export const getTodayDate = () => {
   const today = new Date();
   return today.toISOString().split("T")[0];
+};
+
+export const getCurrentTime = () => {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0"); // Format hour as 2 digits
+  const minutes = String(now.getMinutes()).padStart(2, "0"); // Format minutes as 2 digits
+
+  // Return time in HH:mm format (24-hour format)
+  return `${hours}:${minutes}`;
 };
 
 // src/utils/bookingUtils.js

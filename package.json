@@ -9,20 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.2.0",
     "aos": "^2.3.4",
     "chart.js": "^4.4.8",
+    "dompurify": "^3.2.4",
     "marked": "^15.0.7",
     "vue": "^3.5.13",
     "vue-lazyload": "^3.0.0",
     "vue-meta": "^2.4.0",
-    "vue-router": "^4.5.0",
     "vue-toastification": "^2.0.0-rc.5"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
-    "html-webpack-plugin": "^5.6.3",
-    "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2",
-    "vite-ssg": "^25.2.0"
+    "vue-router": "^4.5.0"
   }
 }

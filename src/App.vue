@@ -14,7 +14,7 @@ import footerSection from "./components/global/footerSection.vue";
 import CodeModal from "./components/utility/CodeModal.vue";
 
 const isModalOpen = ref(false);
-watch(isModalOpen, (newValue) => {
-  document.body.style.overflow = newValue ? "hidden" : "";
-});
+// watch(isModalOpen, (newValue) => {
+//   document.body.style.overflow = newValue ? "hidden" : "";
+// });
 </script>

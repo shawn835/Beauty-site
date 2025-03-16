@@ -74,6 +74,12 @@ const getBookingDetails = async (code) => {
       toast.error(data.message || "Booking not found.");
       return null;
     }
+
+    if (data.status === "cancelled") {
+      toast.error("This booking has been cancelled and cannot be accessed.");
+      return null;
+    }
+
     return data;
   } catch (error) {
     toast.error("An error occurred. Please try again.");
@@ -107,16 +113,29 @@ const handleCancel = async () => {
     return;
   }
 
+  // Fetch booking details first to check its status
+  const data = await getBookingDetails(input.value.toUpperCase());
+
+  if (!data) return;
+
+  // Check if the booking is already cancelled
+  if (data.status === "cancelled") {
+    toast.error(
+      "This booking has already been cancelled and cannot be cancelled again."
+    );
+    return;
+  }
+
   if (!confirm("Are you sure you want to cancel this booking?")) return;
 
   try {
     const response = await fetch(`${apiUrl}/cancel-booking?id=${input.value}`, {
       method: "DELETE",
     });
-    const data = await response.json();
+    const responseData = await response.json();
 
     if (!response.ok) {
-      toast.error(data.error || "Failed to cancel booking.");
+      toast.error(responseData.error || "Failed to cancel booking.");
       return;
     }
 

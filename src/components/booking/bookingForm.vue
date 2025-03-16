@@ -55,7 +55,12 @@
             </label>
             <label>
               time
-              <input type="time" required v-model="bookingData.time" />
+              <input
+                type="time"
+                required
+                v-model="bookingData.time"
+                min="6:00"
+                max="21:00" />
             </label>
             <label>
               technician
@@ -156,6 +161,7 @@ import { useToast } from "vue-toastification";
 import {
   submitBooking,
   getTodayDate,
+  getCurrentTime,
   clearLocalStorage,
   uploadFileToServer,
 } from "@/requestsMethods/requestUtils";
@@ -182,7 +188,6 @@ const bookingData = ref({
   duration: 0,
 });
 
-onMounted(() => {});
 // Get service durations
 const serviceDurations = getServiceDuration(services);
 

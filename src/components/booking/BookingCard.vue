@@ -87,7 +87,7 @@ const formatDuration = (minutes) => {
 
 const downloadPDF = () => {
   const params = new URLSearchParams(props.bookingDetails).toString();
-  window.open(`${apiUrl}/download-booking?${params}, '_blank'`);
+  window.open(`${apiUrl}/download-booking?${params}`, "_blank");
 };
 </script>
 

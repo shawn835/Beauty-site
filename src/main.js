@@ -6,6 +6,7 @@ import AosPlugin from "./plugins/Aos";
 import VueLazyload from "vue-lazyload";
 import { createApp } from "vue";
 import App from "./App.vue";
+// import { injectSpeedInsights } from "@vercel/speed-insights";
 
 const app = createApp(App);
 
@@ -19,5 +20,7 @@ app.use(VueLazyload, {
 app.use(router);
 app.use(AosPlugin);
 app.use(Toast);
+
+// injectSpeedInsights();
 
 app.mount("#app");

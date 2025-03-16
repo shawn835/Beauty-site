@@ -1,6 +1,5 @@
-const apiUrl = import.meta.env.VITE_API_URL;
-
-export const fetchBlogs = async () => {
+// src/components/Blogs/fetchBlogs.js
+export const fetchBlogs = async (apiUrl) => {
   try {
     const response = await fetch(`${apiUrl}/blogs`, {
       method: "GET",
@@ -14,10 +13,10 @@ export const fetchBlogs = async () => {
     let data = await response.json();
     return data.map((blog) => ({
       ...blog,
-      imageDisplay: `${apiUrl}${blog.imageDisplay}`, // Ensure correct image URL
+      imageDisplay: `${apiUrl}${blog.imageDisplay}`,
     }));
   } catch (error) {
     console.error("Fetch error:", error.message);
-    return []; // Ensure components using fetchBlogs don't break
+    return [];
   }
 };

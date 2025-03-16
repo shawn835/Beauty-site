@@ -103,5 +103,10 @@ defineProps({
   .content-track {
     grid-template-columns: 1fr;
   }
+
+  .custom-content-info {
+    visibility: visible;
+    opacity: 1;
+  }
 }
 </style>

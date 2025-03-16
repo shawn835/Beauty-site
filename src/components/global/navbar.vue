@@ -2,7 +2,18 @@
   <div class="overlay" v-if="isMenuOpen" @click="isMenuOpen = false"></div>
   <hamburger @toggle-menu="toggleMenu" />
   <div :class="['navbar', { active: isMenuOpen }]">
-    <div class="logo">beauty</div>
+    <router-link to="/">
+      <div class="logo-container">
+        <img
+          src="/images/logo.webp"
+          alt="Pulchritude Nail Art Salon Logo"
+          class="logo-image" />
+        <div class="logo-text">
+          <h1>symos nail spa</h1>
+          <p>NAIL SALON</p>
+        </div>
+      </div>
+    </router-link>
 
     <div class="close-icon">
       <span @click="toggleMenu">X</span>
@@ -27,11 +38,11 @@
             >gallery</router-link
           >
         </li>
-        <!-- <li>
-          <router-link to="/blogs" exact-active-class="isActive"
+        <li>
+          <router-link to="/blogposts" exact-active-class="isActive"
             >blog</router-link
           >
-        </li> -->
+        </li>
         <li>
           <router-link to="/contact-us" exact-active-class="isActive"
             >contact</router-link
@@ -62,7 +73,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, defineEmits, watch } from "vue";
+import {
+  ref,
+  onMounted,
+  onUnmounted,
+  defineEmits,
+  watch,
+  onBeforeUnmount,
+} from "vue";
 
 import buttons from "../utility/buttons.vue";
 import hamburger from "./hamburger.vue";
@@ -75,8 +93,14 @@ const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
 
-watch(isMenuOpen, (newValue) => {
-  document.body.style.overflow = newValue ? "hidden" : "";
+onMounted(() => {
+  watch(isMenuOpen, (newValue) => {
+    document.body.style.overflow = newValue ? "hidden" : "";
+  });
+});
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = ""; // Reset when component unmounts
 });
 
 const checkScreenWidth = () => {
@@ -111,6 +135,44 @@ const navigateToBookingDetails = () => {
 };
 </script>
 <style scoped>
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.logo-image {
+  width: 80px;
+  height: auto;
+}
+
+.logo-text {
+  text-align: left;
+  line-height: 30px;
+}
+
+.logo-text h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--nav-links);
+  letter-spacing: 1px;
+}
+
+.logo-text p {
+  font-size: 14px;
+  color: var(--hover-color);
+  letter-spacing: 1px;
+  margin-top: -5px;
+}
+
+.logo-container img {
+  border-radius: 20px;
+}
+
 .navbar-list {
   display: flex;
   gap: 20px;
@@ -132,7 +194,7 @@ const navigateToBookingDetails = () => {
   padding: 0 2px;
 }
 
-.navbar-list li a {
+a {
   color: inherit;
   text-decoration: none;
 }

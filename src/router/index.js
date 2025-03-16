@@ -1,72 +1,61 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import HomeView from "@/views/HomeView.vue";
-import AboutView from "@/views/AboutView.vue";
-import ServicesView from "@/views/ServicesView.vue";
-import servicesList from "@/components/services/servicesList.vue";
-import GalleryView from "@/views/GalleryView.vue";
-import ContactView from "@/views/ContactView.vue";
-import BookingView from "@/views/BookingView.vue";
-import BlogView from "@/views/BlogView.vue";
-import BlogPost from "@/components/Blogs/BlogPost.vue";
-import AdminView from "@/views/AdminView.vue";
-import AdminDashboard from "@/components/Admin/AdminDashboard.vue";
-import comingSoon from "@/components/Home/comingSoon.vue";
-import NotFound from "@/components/global/NotFound.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", name: "home", component: HomeView },
+    {
+      path: "/",
+      name: "home",
+      component: () => import("@/views/HomeView.vue"),
+    },
     {
       path: "/services",
       name: "services",
-      component: ServicesView,
+      component: () => import("@/views/ServicesView.vue"),
     },
     {
       path: "/photos",
       name: "gallery",
-      component: GalleryView,
+      component: () => import("@/views/GalleryView.vue"),
     },
     {
       path: "/about-us",
       name: "about us",
-      component: AboutView,
+      component: () => import("@/views/AboutView.vue"),
     },
     {
       path: "/contact-us",
       name: "contact us",
-      component: ContactView,
+      component: () => import("@/views/ContactView.vue"),
     },
-
     {
       path: "/online-bookings",
       name: "booking",
-      component: BookingView,
+      component: () => import("@/views/BookingView.vue"),
     },
     {
       path: "/services/:category/:id/serviceslist",
       name: "servicesList",
-      component: servicesList,
+      component: () => import("@/components/services/servicesList.vue"),
     },
     {
-      path: "/blogs",
+      path: "/blogposts",
       name: "blogs",
-      component: BlogView,
+      component: () => import("@/views/BlogView.vue"),
     },
     {
       path: "/blogposts/:slug",
       name: "blog-post",
-      component: BlogPost,
+      component: () => import("@/components/Blogs/BlogPost.vue"),
     },
     {
       path: "/admin/login",
       name: "admin-dashboard",
-      component: AdminView,
+      component: () => import("@/components/Admin/AdminLogin.vue"),
     },
-
     {
       path: "/admin/dashboard",
-      component: AdminDashboard,
+      component: () => import("@/components/Admin/AdminDashboard.vue"),
       beforeEnter: (to, from, next) => {
         if (localStorage.getItem("admin")) {
           next();
@@ -79,13 +68,18 @@ const router = createRouter({
     {
       path: "/comingsoon",
       name: "coming soon",
-      component: comingSoon,
+      component: () => import("@/components/Home/comingSoon.vue"),
     },
     {
       path: "/:pathMatch(.*)",
-      component: NotFound,
+      component: () => import("@/components/global/NotFound.vue"),
       meta: { hideLayout: true },
     },
   ],
+
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0, behavior: "smooth" };
+  },
 });
+
 export default router;

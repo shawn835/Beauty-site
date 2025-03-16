@@ -1,9 +1,10 @@
 <template>
   <hero>
     <template #hero-header>
-      <Headings heading="blogs and articles" />
+      <Headings heading="Blogs and Articles" />
     </template>
   </hero>
+
   <div class="blogs-container">
     <TeamGallery
       :array="blogs"
@@ -22,21 +23,22 @@
           <img v-lazy="content.imageDisplay" :alt="content.category" />
         </router-link>
       </template>
+
       <template #custom-content="{ content }">
-        <router-link :to="`/blogposts/${content.slug}`">
+        <router-link :to="`/blogposts/${content.slug}`" class="blog-card">
           <div class="translate">
             <buttons
               :button-text="content.category"
               class-name="secondary-button"
               :style="{ borderRadius: '0', padding: '4px 6px' }" />
 
-            <h3 class="title">{{ content.slug }}</h3>
+            <h3 class="title">{{ content.title }}</h3>
             <div class="author-date">
               <span class="author">{{ content.author }}</span>
               <span class="date">{{ content.publishedDate }}</span>
             </div>
             <span class="read-more"
-              >check more <i class="fas fa-arrow-right"></i
+              >Check more <i class="fas fa-arrow-right"></i
             ></span>
           </div>
         </router-link>
@@ -44,25 +46,18 @@
     </TeamGallery>
   </div>
 </template>
+
 <script setup>
-import { onMounted, ref } from "vue";
 import Headings from "../utility/Headings.vue";
 import hero from "../utility/hero.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
-import { fetchBlogs } from "./fetchBlogs.js";
 import buttons from "../utility/buttons.vue";
-import { useToast } from "vue-toastification";
-const toast = useToast();
-const blogs = ref([]);
 
-onMounted(async () => {
-  const data = await fetchBlogs();
-  if (data.length === 0) {
-    toast.error("failed to load blogs");
-  }
-  blogs.value = data;
-});
+import { ref, onMounted } from "vue";
+
+const blogs = ref([]);
 </script>
+
 <style scoped>
 .author-date {
   display: flex;

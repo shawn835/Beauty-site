@@ -2,7 +2,9 @@
   <div class="hero-home">
     <hero background-video="/Videos/home-bg-video.mp4">
       <template #hero-header>
-        <Headings heading="step into luxury-your at-home nail retreat awaits" />
+        <Headings
+          heading="Welcome to Symos Nail SPA – Where Beauty Meets Bliss!"
+          :style="{ fontStyle: 'italic' }" />
       </template>
       <template #heading-text>
         <p>- manicure mastery-from classic to avant-garde</p>
