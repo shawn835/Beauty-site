@@ -44,6 +44,7 @@
         </router-link>
       </template>
     </TeamGallery>
+    <comingSoon />
   </div>
 </template>
 
@@ -52,7 +53,7 @@ import Headings from "../utility/Headings.vue";
 import hero from "../utility/hero.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
 import buttons from "../utility/buttons.vue";
-
+import comingSoon from "../Home/comingSoon.vue";
 import { ref, onMounted } from "vue";
 
 const blogs = ref([]);

@@ -6,7 +6,7 @@
       <template #time="{ item }">{{ item.time }}</template>
       <template #status="{ item }">{{ item.status }}</template>
       <template #phone="{ item }">{{ item.phone }}</template>
-      <template #technician="{ item }">{{ item.name }}</template>
+      <template #technician="{ item }">{{ item.technician }}</template>
       <template #services="{ item }">{{ item.services.join(", ") }}</template>
       <template #image="{ item }">
         <img

@@ -106,7 +106,7 @@ export const submitBooking = async (bookingData) => {
     return;
   }
 
-  // ✅ Convert samples to URLs (assuming they are already uploaded)
+  // Convert samples to URLs
   const sampleUrls = bookingData.samples.map((sample) => sample.url);
 
   const payload = {
@@ -116,9 +116,9 @@ export const submitBooking = async (bookingData) => {
     time: bookingData.time,
     duration: bookingData.duration,
     technician: bookingData.technician,
-    galleryImages: bookingData.galleryImages, // Already URLs
-    samples: sampleUrls, // Array of uploaded image URLs
-    services: bookingData.services, // Array
+    galleryImages: bookingData.galleryImages,
+    samples: sampleUrls,
+    services: bookingData.services,
   };
 
   try {
@@ -130,20 +130,18 @@ export const submitBooking = async (bookingData) => {
       body: JSON.stringify(payload),
     });
 
-    if (response.status === 429) {
-      throw new Error("Too many requests, please slow down!");
-    }
     const data = await response.json();
 
-    if (response.ok) {
-      bookingDetails.value = data.booking;
-      toast.success(data.success);
-      clearLocalStorage();
-      return;
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message || "Failed to submit booking."
+      );
     }
-
-    toast.error(data.error || "Failed to submit booking.");
+    bookingDetails.value = data.booking;
+    toast.success(data.success);
+    clearLocalStorage();
   } catch (error) {
     toast.error("Booking failed: " + error.message);
+    console.log("Error submitting booking:", error.message);
   }
 };
