@@ -9,25 +9,25 @@
       "servicesList": [
         {
           "name": "french",
-          "price": 3000,
+          "price": 1500,
           "image": "/gallery/facial-image-6.jpg",
           "description": "A simple yet effective treatment for your nails. Includes nail trimming, shaping, and moisturizing."
         },
         {
           "name": "classic",
-          "price": 2600,
+          "price": 1675,
           "image": "/gallery/manicure-image-4.jpg",
           "description": "A simple yet effective treatment for your nails. Includes nail trimming, shaping, and moisturizing."
         },
         {
           "name": "hot oil",
-          "price": 3900,
+          "price": 1300,
           "image": "/gallery/manicure-image-2.jpg",
           "description": "A simple yet effective treatment for your nails. Includes nail trimming, shaping, and moisturizing."
         },
         {
           "name": "gel",
-          "price": 2600,
+          "price": 900,
           "image": "/gallery/manicure-image-10.jpg",
           "description": "A simple yet effective treatment for your nails. Includes nail trimming, shaping, and moisturizing."
         }
@@ -42,19 +42,19 @@
       "servicesList": [
         {
           "name": "Classic Pedicure",
-          "price": 3250,
+          "price": 1250,
           "image": "/gallery/pedicure-image-1.jpg",
           "description": "Includes nail trimming, exfoliation, foot massage, and polish."
         },
         {
           "name": "french",
-          "price": 4550,
+          "price": 1550,
           "image": "/gallery/pedicure-image-3.jpg",
           "description": "Includes nail trimming, exfoliation, foot massage, and polish."
         },
         {
           "name": "spa",
-          "price": 5850,
+          "price": 1850,
           "image": "/gallery/pedicure-image-5.jpg",
           "description": "Includes nail trimming, exfoliation, foot massage, and polish."
         },
@@ -81,7 +81,7 @@
         },
         {
           "name": "marble effect",
-          "price": 2600,
+          "price": 1600,
           "image": "/gallery/art-image-4.jpg",
           "description": "Basic nail art designs with minimal detailing."
         },
@@ -108,25 +108,25 @@
       "servicesList": [
         {
           "name": "classic",
-          "price": 5850,
+          "price": 1850,
           "image": "/gallery/facial-image-1.jpg",
           "description": "Basic nail polish designs with minimal detailing."
         },
         {
           "name": "anti-aging",
-          "price": 7890,
+          "price": 1890,
           "image": "/gallery/facial-image-2.jpg",
           "description": "Basic nail polish designs with minimal detailing."
         },
         {
           "name": "hydrating",
-          "price": 5478,
+          "price": 1478,
           "image": "/gallery/facial-image-3.jpg",
           "description": "Basic nail polish designs with minimal detailing."
         },
         {
           "name": "acne treatment",
-          "price": 7345,
+          "price": 1345,
           "image": "/gallery/facial-image-4.jpg",
           "description": "Basic nail polish designs with minimal detailing."
         }
@@ -141,19 +141,19 @@
       "servicesList": [
         {
           "name": "helix",
-          "price": 5930,
+          "price": 1930,
           "image": "/gallery/piercing-image-3.jpg",
           "description": "just nail piercing!"
         },
         {
           "name": "belly button",
-          "price": 3280,
+          "price": 1280,
           "image": "/gallery/piercing-image-2.jpg",
           "description": "just nail piercing!"
         },
         {
           "name": "tragus",
-          "price": 5850,
+          "price": 1850,
           "image": "/gallery/piercing-image-4.jpg",
           "description": "just nail piercing!"
         },
@@ -174,25 +174,25 @@
       "servicesList": [
         {
           "name": "acrylic full set",
-          "price": 7895,
-          "image": "/gallery/enhacement-image-1.jpeg",
+          "price": 1895,
+          "image": "/gallery/enhancement-image-1.jpeg",
           "description": "just nail enhancement!"
         },
         {
           "name": "hard gel overlay",
-          "price": 6537,
+          "price": 1537,
           "image": "/gallery/enhancement-image-2.jpg",
           "description": "just nail enhancement!"
         },
         {
           "name": "dip powder nails",
-          "price": 2456,
+          "price": 1456,
           "image": "/gallery/enhancement-image-3.jpg",
           "description": "just nail enhancement!"
         },
         {
           "name": "polygel application",
-          "price": 6550,
+          "price": 550,
           "image": "/gallery/enhancement-image-7.jpg",
           "description": "just nail enhancement!"
         }

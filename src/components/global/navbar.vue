@@ -3,16 +3,7 @@
   <hamburger @toggle-menu="toggleMenu" />
   <div :class="['navbar', { active: isMenuOpen }]">
     <router-link to="/">
-      <div class="logo-container">
-        <img
-          src="/images/logo.webp"
-          alt="Pulchritude Nail Art Salon Logo"
-          class="logo-image" />
-        <div class="logo-text">
-          <h1>symos nail spa</h1>
-          <p>NAIL SALON</p>
-        </div>
-      </div>
+      <div class="logo">symos-spa</div>
     </router-link>
 
     <div class="close-icon">
@@ -135,44 +126,11 @@ const navigateToBookingDetails = () => {
 };
 </script>
 <style scoped>
-.logo-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  background-color: #fff;
-  cursor: pointer;
+.logo {
+  color: var(--background-secondary);
+  font-style: oblique;
+  font-size: 1.5rem;
 }
-
-.logo-image {
-  width: 80px;
-  height: auto;
-}
-
-.logo-text {
-  text-align: left;
-  line-height: 30px;
-}
-
-.logo-text h1 {
-  font-size: 24px;
-  font-weight: bold;
-  color: var(--nav-links);
-  letter-spacing: 1px;
-}
-
-.logo-text p {
-  font-size: 14px;
-  color: var(--hover-color);
-  letter-spacing: 1px;
-  margin-top: -5px;
-}
-
-.logo-container img {
-  border-radius: 20px;
-}
-
 .navbar-list {
   display: flex;
   gap: 20px;

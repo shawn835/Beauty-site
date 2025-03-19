@@ -1,26 +1,37 @@
 <template>
   <div class="quote-container">
-    <transition @after-leave="onTransitionEnd">
-      <div
-        class="slidingContent-section"
-        v-if="quoteVisible"
-        :key="currentContent.id">
-        <div class="quote">
-          <slot name="content" :currentContent="currentContent" />
-        </div>
-        <div class="custom-content">
-          <slot name="custom-content" />
-        </div>
-        <div class="author">
-          <slot name="author" :currentContent="currentContent" />
-        </div>
+    <div class="">
+      <headings heading="hello world" :style="{ color: 'black' }" />
+      <div class="">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ratione
+        perferendis consequuntur aliquid a quam enim obcaecati expedita vel
+        sunt!
       </div>
-    </transition>
+    </div>
+    <div>
+      <transition @after-leave="onTransitionEnd">
+        <div
+          class="slidingContent-section"
+          v-if="quoteVisible"
+          :key="currentContent.id">
+          <div class="quote">
+            <slot name="content" :currentContent="currentContent" />
+          </div>
+          <div class="custom-content">
+            <slot name="custom-content" />
+          </div>
+          <div class="author">
+            <slot name="author" :currentContent="currentContent" />
+          </div>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
+import Headings from "./Headings.vue";
 
 const props = defineProps({
   slidingContent: Array,
@@ -42,21 +53,32 @@ const hideQuote = () => {
 
 const onTransitionEnd = () => {
   if (!quoteVisible.value) {
-    showRandomQuote(); // Display a new quote after the old one fades out
+    showRandomQuote();
   }
 };
 
 onMounted(() => {
-  showRandomQuote(); // Start with a random quote
+  showRandomQuote();
 });
 </script>
 
 <style scoped>
 .quote-container {
-  background-color: var(--background-secondary);
+  background-image: url("/images/gallery-2.jpg");
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.quote-container > div:nth-child(2) {
+  background-color: var(--background-primary);
   overflow: hidden;
-  height: auto;
-  overflow: hidden;
+  width: 650px;
+  height: 15rem;
+  margin: 0 auto; /* Centers it */
+  border-radius: 10px;
 }
 
 .slidingContent-section {
@@ -85,7 +107,8 @@ onMounted(() => {
 }
 
 .quote {
-  font-size: 3rem;
+  font-size: 1.2rem;
+  color: #9f9d9d;
 }
 
 .author {
