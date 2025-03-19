@@ -1,13 +1,5 @@
 <template>
   <div class="quote-container">
-    <div class="">
-      <headings heading="hello world" :style="{ color: 'black' }" />
-      <div class="">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime ratione
-        perferendis consequuntur aliquid a quam enim obcaecati expedita vel
-        sunt!
-      </div>
-    </div>
     <div>
       <transition @after-leave="onTransitionEnd">
         <div
@@ -64,23 +56,13 @@ onMounted(() => {
 
 <style scoped>
 .quote-container {
-  background-image: url("/images/gallery-2.jpg");
+  background-color: var(--background-secondary);
   height: 300px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background-repeat: no-repeat;
-  background-size: cover;
+  justify-content: center;
+  color: var(--background-primary);
 }
-.quote-container > div:nth-child(2) {
-  background-color: var(--background-primary);
-  overflow: hidden;
-  width: 650px;
-  height: 15rem;
-  margin: 0 auto; /* Centers it */
-  border-radius: 10px;
-}
-
 .slidingContent-section {
   display: flex;
   flex-direction: column;
@@ -107,8 +89,8 @@ onMounted(() => {
 }
 
 .quote {
-  font-size: 1.2rem;
-  color: #9f9d9d;
+  font-size: 1.8rem;
+  color: #000;
 }
 
 .author {
