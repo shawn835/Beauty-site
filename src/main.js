@@ -12,7 +12,7 @@ const app = createApp(App);
 
 app.use(VueLazyload, {
   preload: 1.3,
-  error: "/images/facial.jpg",
+  // error: "/images/facial.jpg",
   loading: "/images/gallery-5.jpg",
   attempt: 1,
 });

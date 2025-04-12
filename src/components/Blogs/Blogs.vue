@@ -19,13 +19,18 @@
       }"
       :style="{ gridTemplateColumns: 'repeat(3, 1fr)', cursor: 'pointer' }">
       <template #images="{ content }">
-        <router-link :to="`/blogposts/${content.slug}`">
-          <img v-lazy="content.imageDisplay" :alt="content.category" />
+        <router-link
+          :to="`/blogposts/${content.slug}`"
+          custom
+          v-slot="{ href, navigate }">
+          <a :href="href" @click="navigate">
+            <img v-lazy="content.imageDisplay" :alt="content.category" />
+          </a>
         </router-link>
       </template>
 
       <template #custom-content="{ content }">
-        <router-link :to="`/blogposts/${content.slug}`" class="blog-card">
+        <router-link :to="`/blogposts/${content.slug}`" class="blog-link">
           <div class="translate">
             <buttons
               :button-text="content.category"
@@ -44,8 +49,8 @@
         </router-link>
       </template>
     </TeamGallery>
-    <comingSoon />
   </div>
+  <blogPostForm />
 </template>
 
 <script setup>
@@ -53,10 +58,20 @@ import Headings from "../utility/Headings.vue";
 import hero from "../utility/hero.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
 import buttons from "../utility/buttons.vue";
-import comingSoon from "../Home/comingSoon.vue";
 import { ref, onMounted } from "vue";
+import { fetchBlogs } from "./fetchBlogs.js";
+import blogPostForm from "./blogPostForm.vue";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const blogs = ref([]);
+
+onMounted(async () => {
+  const posts = await fetchBlogs(apiUrl);
+  if (posts) {
+    blogs.value = posts;
+    console.log(blogs.value);
+  }
+});
 </script>
 
 <style scoped>

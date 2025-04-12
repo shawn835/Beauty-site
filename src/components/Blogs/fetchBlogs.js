@@ -1,7 +1,7 @@
 // src/components/Blogs/fetchBlogs.js
 export const fetchBlogs = async (apiUrl) => {
   try {
-    const response = await fetch(`${apiUrl}/blogs`, {
+    const response = await fetch(`${apiUrl}/api/blogs`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
@@ -11,10 +11,8 @@ export const fetchBlogs = async (apiUrl) => {
     }
 
     let data = await response.json();
-    return data.map((blog) => ({
-      ...blog,
-      imageDisplay: `${apiUrl}${blog.imageDisplay}`,
-    }));
+
+    return data;
   } catch (error) {
     console.error("Fetch error:", error.message);
     return [];

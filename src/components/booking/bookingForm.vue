@@ -240,7 +240,7 @@ const handleFileUpload = async (event) => {
   for (let file of files) {
     if (file.size > MAX_FILE_SIZE) {
       toast.error(`${file.name} exceeds the 5MB limit.`);
-      event.target.value = ""; // Clear file input
+      event.target.value = "";
       return;
     }
 

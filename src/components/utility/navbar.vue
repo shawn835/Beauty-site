@@ -9,72 +9,48 @@
     <div class="close-icon">
       <span @click="toggleMenu">X</span>
     </div>
+
     <nav>
       <ul class="navbar-list">
-        <li>
-          <router-link to="/" exact-active-class="isActive">home</router-link>
+        <li v-for="item in navLinks" :key="item.text">
+          <router-link
+            v-if="item.to"
+            :to="item.to"
+            exact-active-class="isActive">
+            {{ item.text }}
+          </router-link>
+          <span v-else @click="item.action">{{ item.text }}</span>
         </li>
-        <li>
-          <router-link to="/about-us" exact-active-class="isActive"
-            >about</router-link
-          >
-        </li>
-        <li>
-          <router-link to="/services" exact-active-class="isActive"
-            >services</router-link
-          >
-        </li>
-        <li>
-          <router-link to="/photos" exact-active-class="isActive"
-            >gallery</router-link
-          >
-        </li>
-        <li>
-          <router-link to="/blogposts" exact-active-class="isActive"
-            >blog</router-link
-          >
-        </li>
-        <li>
-          <router-link to="/contact-us" exact-active-class="isActive"
-            >contact</router-link
-          >
-        </li>
-        <li @click.prevent="navigateToBookingDetails">view booking</li>
       </ul>
     </nav>
+
     <div class="buttons">
-      <router-link to="/online-bookings"
-        ><buttons button-text="book appointment" class-name="primary-button"
-      /></router-link>
-      <router-link to="/admin/login"
-        ><buttons button-text="Admin" class-name="primary-button"
-      /></router-link>
+      <router-link
+        v-for="(button, index) in btns"
+        :key="index"
+        :to="button.path">
+        <buttons :button-text="button.text" :class-name="button.className" />
+      </router-link>
     </div>
 
     <div class="socials">
       <div>
-        <!-- https://www.facebook.com/share/16D9v4tqFh/ -->
-        <i class="fa-brands fa-facebook"></i>
-        <i class="fa-brands fa-tiktok"></i>
-        <i class="fa-brands fa-instagram"></i>
-        <i class="fa-brands fa-twitter"></i>
+        <i v-for="(icon, index) in socialIcons" :key="index" :class="icon"></i>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
-import {
-  ref,
-  onMounted,
-  onUnmounted,
-  defineEmits,
-  watch,
-  onBeforeUnmount,
-} from "vue";
+import { ref, onMounted, onUnmounted, watch, onBeforeUnmount } from "vue";
 
-import buttons from "../utility/buttons.vue";
-import hamburger from "./hamburger.vue";
+import buttons from "./buttons.vue";
+import hamburger from "../global/hamburger.vue";
+
+defineProps({
+  navLinks: { type: Array, required: true },
+  btns: { type: Array },
+  socialIcons: { type: Array },
+});
 
 //reactive state
 const isMenuOpen = ref(false);
@@ -91,7 +67,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  document.body.style.overflow = ""; // Reset when component unmounts
+  document.body.style.overflow = "";
 });
 
 const checkScreenWidth = () => {
@@ -116,15 +92,8 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", checkScreenWidth);
 });
-
-//**toggling confirmation modal */
-const emit = defineEmits(["toggle-modal"]);
-
-//booking details route
-const navigateToBookingDetails = () => {
-  emit("toggle-modal");
-};
 </script>
+
 <style scoped>
 .logo {
   color: var(--background-secondary);

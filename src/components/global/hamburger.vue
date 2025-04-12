@@ -1,16 +1,24 @@
 <template>
-  <div class="hamburger" @click="emitToggleMenu">
-    <span class="top"></span>
-    <span class="middle"></span>
-    <span class="bottom"></span>
+  <div class="hamburger" @click="handleClick" :style="props.display">
+    <span class="top" :style="props.style"></span>
+    <span class="middle" :style="props.style"></span>
+    <span class="bottom" :style="props.style"></span>
   </div>
 </template>
 
 <script setup>
+const props = defineProps({
+  style: Object,
+  display: Object,
+  customClick: Function,
+});
 const emit = defineEmits(["toggle-menu"]);
-
-const emitToggleMenu = () => {
-  emit("toggle-menu");
+const handleClick = () => {
+  if (props.customClick) {
+    props.customClick();
+  } else {
+    emit("toggle-menu");
+  }
 };
 </script>
 

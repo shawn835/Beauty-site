@@ -3,18 +3,27 @@
     <h3>Admin Dashboard</h3>
     <div class="log-out" @click="logout">
       <i class="fa-solid fa-right-from-bracket"></i>
-      log-out
     </div>
+    <!-- <hamburger
+      :style="{ background: 'black' }"
+      :display="{ display: 'block' }"
+      :custom-click="toggleAdminMenu" />-->
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
+import hamburger from "../global/hamburger.vue";
+import { defineEmits } from "vue";
 const router = useRouter();
 const logout = () => {
   localStorage.removeItem("admin");
   router.push("/admin/login");
 };
+// const emit = defineEmits(["toggle-admin-menu"]);
+// const toggleAdminMenu = () => {
+//   emit("toggle-admin-menu");
+// };
 </script>
 
 <style scoped>

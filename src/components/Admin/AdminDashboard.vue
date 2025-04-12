@@ -24,6 +24,7 @@
 import dashboardHeader from "./dashboardHeader.vue";
 import currentBookings from "./currentBookings.vue";
 import dashboardCards from "./dashboardCards.vue";
+import hamburger from "../global/hamburger.vue";
 </script>
 <style scoped>
 .dashboard {
