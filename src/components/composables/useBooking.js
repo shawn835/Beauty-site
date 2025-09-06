@@ -1,13 +1,11 @@
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
-import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 
 export function useBooking() {
   const loading = ref(false);
   const toast = useToast();
   const error = ref(null);
-  const userStore = useUserStore();
 
   const handleBooking = async (form) => {
     loading.value = true;
@@ -22,12 +20,18 @@ export function useBooking() {
       fd.append("technician", form.staff);
       fd.append("notes", form.notes);
       // Services array
-      if (Array.isArray(form.services) && form.services.length > 0) {
-        form.services.forEach((s) => fd.append("services[]", s));
+
+      if (form.gallery.length === 0) {
+        //to avoid services duplication
+        if (Array.isArray(form.services) && form.services.length > 0) {
+          form.services.forEach((s) => fd.append("services[]", s));
+        }
       }
-      if (Array.isArray(form.gallery) && form.gallery.length > 0) {
-        form.gallery.forEach((url) => fd.append("gallery[]", url));
-      }
+
+      form.gallery.forEach((item) =>
+        fd.append("gallery[]", JSON.stringify(item))
+      );
+
       if (Array.isArray(form.custom) && form.custom.length > 0) {
         form.custom.forEach((file) => fd.append("custom[]", file));
       }
@@ -49,10 +53,9 @@ export function useBooking() {
       toast.success(data.message || "Booking created successfully!");
       return data;
     } catch (err) {
-      error.value = err.message;
       console.log(err.stack);
-
       toast.error(err.message);
+      throw err;
     } finally {
       loading.value = false;
     }

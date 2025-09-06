@@ -28,7 +28,7 @@
       <div class="form-row">
         <div class="form-group">
           <label for="service">Select Service</label>
-          <select id="service" v-model="form.services" required>
+          <select id="service" v-model="form.services" required multiple>
             <option value="" disabled>Select Service</option>
             <option
               v-for="service in servicesNames"
@@ -187,9 +187,14 @@ function resetForm() {
   bookingStore.clearServices();
 }
 
-function handleSubmit() {
-  handleBooking(form);
-  resetForm();
+async function handleSubmit() {
+  try {
+    await handleBooking(form); // wait until booking finishes
+    resetForm(); // now reset form only if booking succeeded
+  } catch (err) {
+    console.error("Booking failed:", err);
+    // optionally show error to user
+  }
 }
 
 onMounted(async () => {

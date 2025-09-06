@@ -102,7 +102,7 @@ const addToBooking = (item) => {
     serviceId: item.serviceId,
     name: sub.name,
     price: sub.price,
-    duration: formatDuration(sub.duration),
+    duration: sub.duration,
     image: sub.image,
   });
 
