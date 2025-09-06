@@ -1,13 +1,15 @@
 import "./assets/main.css";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
-import router from "./router";
+import router from "./router/router";
 import AosPlugin from "./plugins/Aos";
 import VueLazyload from "vue-lazyload";
+import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 import { createApp } from "vue";
 import App from "./App.vue";
-// import { injectSpeedInsights } from "@vercel/speed-insights";
-
+import { createPinia } from "pinia";
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedState);
 const app = createApp(App);
 
 app.use(VueLazyload, {
@@ -16,7 +18,7 @@ app.use(VueLazyload, {
   loading: "/images/gallery-5.jpg",
   attempt: 1,
 });
-
+app.use(pinia);
 app.use(router);
 app.use(AosPlugin);
 app.use(Toast);

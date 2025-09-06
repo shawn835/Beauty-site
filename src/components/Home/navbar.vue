@@ -7,51 +7,55 @@
     </router-link>
 
     <div class="close-icon">
-      <span @click="toggleMenu">X</span>
+      <span @click="toggleMenu"><i class="fa-solid fa-xmark"></i></span>
     </div>
 
     <nav>
       <ul class="navbar-list">
         <li v-for="item in navLinks" :key="item.text">
-          <router-link
-            v-if="item.to"
-            :to="item.to"
-            exact-active-class="isActive">
+          <router-link :to="item.path" exact-active-class="isActive">
             {{ item.text }}
           </router-link>
-          <span v-else @click="item.action">{{ item.text }}</span>
         </li>
       </ul>
     </nav>
 
     <div class="buttons">
-      <router-link
-        v-for="(button, index) in btns"
-        :key="index"
-        :to="button.path">
-        <buttons :button-text="button.text" :class-name="button.className" />
-      </router-link>
+      <!-- Logged in: show booking -->
+      <button v-if="userStore.user" class="primary-button" @click="goBooking">
+        Book Appointment
+      </button>
+
+      <!-- Not logged in... show register -->
+      <button v-else class="primary-button" @click="goRegister">
+        Register
+      </button>
     </div>
 
-    <div class="socials">
+    <!-- <div class="socials">
       <div>
         <i v-for="(icon, index) in socialIcons" :key="index" :class="icon"></i>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
 import { ref, onMounted, onUnmounted, watch, onBeforeUnmount } from "vue";
-
-import buttons from "./buttons.vue";
+import { useUserStore } from "../store/userStore";
 import hamburger from "../global/hamburger.vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-defineProps({
-  navLinks: { type: Array, required: true },
-  btns: { type: Array },
-  socialIcons: { type: Array },
-});
+const userStore = useUserStore();
 
+const navLinks = [
+  { text: "Home", path: "/" },
+  { text: "About", path: "/about-us" },
+  { text: "Services", path: "/services" },
+  { text: "Gallery", path: "/photos" },
+  { text: "Blog", path: "/blogposts" },
+  { text: "Contact", path: "/contact-us" },
+];
 //reactive state
 const isMenuOpen = ref(false);
 const isMobile = ref(window.innerWidth < 992);
@@ -92,6 +96,14 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", checkScreenWidth);
 });
+
+function goRegister() {
+  router.push("/register");
+}
+
+function goBooking() {
+  router.push("/book-appointment");
+}
 </script>
 
 <style scoped>
@@ -105,6 +117,7 @@ onUnmounted(() => {
   gap: 20px;
   color: var(--nav-links);
   padding: 0.8rem 0;
+  position: relative;
 }
 
 .navbar-list li {

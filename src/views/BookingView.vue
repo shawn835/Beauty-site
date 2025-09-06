@@ -1,7 +1,7 @@
 <template>
   <bookingHero />
   <bookingForm />
-  <bookingsFAQs />
+  <!-- <bookingsFAQs /> -->
 </template>
 
 <script setup>

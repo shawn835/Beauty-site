@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/components/store/userStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -29,9 +30,10 @@ const router = createRouter({
       component: () => import("@/views/ContactView.vue"),
     },
     {
-      path: "/online-bookings",
+      path: "/book-appointment",
       name: "booking",
       component: () => import("@/views/BookingView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/services/:category/:id/serviceslist",
@@ -49,9 +51,20 @@ const router = createRouter({
       component: () => import("@/components/Blogs/BlogPost.vue"),
     },
     {
-      path: "/admin/login",
-      name: "admin-dashboard",
-      component: () => import("@/components/Admin/AdminLogin.vue"),
+      path: "/register",
+      name: "register",
+      component: () => import("@/components/register.vue"),
+    },
+
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("@/components/loginPage.vue"),
+    },
+    {
+      path: "/verify/token",
+      name: "verify",
+      component: () => import("@/components/verify.vue"),
     },
     {
       path: "/admin/dashboard",
@@ -82,4 +95,16 @@ const router = createRouter({
   },
 });
 
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  if (to.meta.requiresAuth) {
+    if (!userStore.user) {
+      const currentUser = await userStore.fetchUser();
+      if (!currentUser) return next("/login");
+    }
+  }
+
+  next();
+});
 export default router;

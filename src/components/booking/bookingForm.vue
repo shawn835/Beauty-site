@@ -1,414 +1,358 @@
 <template>
-  <div class="container">
-    <Headings
-      heading="book now for faster services"
-      :style="{ color: 'var(--text-primary)' }" />
-    <div class="form-container">
-      <div class="image form-side-image">
-        <img v-lazy="'/gallery/art-image-11.jpg'" alt="booking-hero-image" />
+  <div class="appointment-container">
+    <h1 class="title">Book an Appointment</h1>
+    <p class="subtitle">
+      Please fill out the appointment form below to make appointment
+    </p>
+    <form @submit.prevent="handleSubmit" class="appointment-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">date*</label>
+          <input
+            type="date"
+            id="firstName"
+            v-model="form.date"
+            placeholder="date"
+            required />
+        </div>
+        <div class="form-group">
+          <label for="time">time*</label>
+          <input
+            type="time"
+            id="lastName"
+            v-model="form.time"
+            placeholder="time"
+            required />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="service">Select Service</label>
+          <select id="service" v-model="form.services" required>
+            <option value="" disabled>Select Service</option>
+            <option
+              v-for="service in servicesNames"
+              :key="service._id"
+              :value="service._id">
+              {{ service.name }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="staff">Select Staff</label>
+          <select id="staff" v-model="form.staff" required>
+            <option value="" disabled>Select Staff</option>
+            <option v-for="t in technicians" :value="t.name" :key="t._id">
+              {{ t.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
-      <form @submit.prevent="handleSubmit" enctype="multipart/form-data">
-        <div class="form-flex">
-          <div class="form-section">
-            <label>
-              name
-              <input
-                type="text"
-                required
-                placeholder="name"
-                maxlength="10"
-                v-model="bookingData.name" />
-            </label>
-
-            <label>
-              date
-              <input
-                type="date"
-                required
-                v-model="bookingData.date"
-                :min="getTodayDate()" />
-            </label>
-
-            <label>
-              Services
-              <select multiple required v-model="bookingData.services">
-                <option
-                  v-for="service in services"
-                  :key="service.category"
-                  :value="service.category">
-                  {{ service.category }}
-                </option>
-              </select>
-            </label>
-          </div>
-
-          <div class="form-section">
-            <label>
-              phone
-              <input
-                type="tel"
-                required
-                placeholder="phone"
-                maxlength="13"
-                v-model="bookingData.phone" />
-            </label>
-            <label>
-              time
-              <input
-                type="time"
-                required
-                v-model="bookingData.time"
-                min="6:00"
-                max="21:00" />
-            </label>
-            <label>
-              technician
-              <select required v-model="bookingData.technician">
-                <option
-                  v-for="team in technicians"
-                  :key="team.name"
-                  :value="team.name">
-                  {{ team.name }}
-                </option>
-              </select>
-            </label>
-            <label>
-              Sample Upload?(optional)
-              <input
-                multiple
-                ref="fileInput"
-                type="file"
-                placeholder="sample upload"
-                @change="handleFileUpload"
-                accept="image/*" />
-            </label>
-          </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>
+            Upload Sample Design (Optional)
+            <input
+              ref="customInput"
+              type="file"
+              accept="image/*"
+              multiple
+              @change="handleFileUpload" />
+          </label>
         </div>
+        <div class="form-group">
+          <label>
+            Notes (Optional)
+            <textarea
+              v-model="form.notes"
+              placeholder="e.g. I want nude gel polish"></textarea>
+          </label>
+        </div>
+      </div>
 
-        <div class="desktop-preview">
-          <div
-            v-if="bookingData.samples && bookingData.samples.length"
-            class="preview">
-            <div
-              v-for="(image, index) in bookingData.samples"
-              :key="index"
-              class="image">
-              <img :src="image.preview" alt="Uploaded Preview" />
-            </div>
-          </div>
+      <!-- Gallery Samples -->
+      <div v-if="form.gallery.length" class="gallery">
+        <h3>Picked from our Gallery:</h3>
 
+        <div class="gallery-list">
           <div
-            v-if="bookingData.galleryImages && bookingData.galleryImages.length"
-            class="preview">
-            <div
-              v-for="(image, index) in bookingData.galleryImages"
-              :key="index"
-              class="image">
-              <img :src="image" alt="Gallery Preview" />
+            v-for="(img, idx) in form.gallery"
+            :key="idx"
+            class="gallery-card">
+            <!-- Remove Icon -->
+            <button
+              type="button"
+              class="remove-btn"
+              @click="removeGalleryItem(idx, img)">
+              ✖
+            </button>
+
+            <img :src="img.image" alt="Sample" class="gallery-img-large" />
+
+            <div class="gallery-info">
+              <!-- <p class="gallery-service">{{ img.serviceName }}</p> -->
+              <p class="gallery-name">{{ img.name }}</p>
+              <p class="gallery-duration">{{ img.duration }}</p>
+              <p class="gallery-price">KES {{ img.price }}</p>
             </div>
           </div>
         </div>
-        <div class="buttons">
-          <buttons button-text="book appointment" class-name="primary-button" />
-          <buttons
-            button-text="clear form"
-            class-name="secondary-button"
-            @click="clearForm" />
-        </div>
-      </form>
 
-      <div class="mobile-preview">
-        <div
-          v-if="bookingData.samples && bookingData.samples.length"
-          class="preview">
-          <div
-            v-for="(image, index) in bookingData.samples"
-            :key="index"
-            class="image">
-            <img :src="image.preview" alt="Uploaded Preview" />
-          </div>
+        <!-- Total -->
+        <div class="gallery-total">
+          <strong>Total: </strong>
+          <span>
+            KES
+            {{ bookingStore.totalPrice }}
+          </span>
         </div>
+      </div>
 
-        <div
-          v-if="bookingData.galleryImages && bookingData.galleryImages.length"
-          class="preview">
+      <!-- Preview Area -->
+      <div v-if="previews.length" class="preview-area">
+        <h3>Selected Designs</h3>
+        <div class="preview-images">
           <div
-            v-for="(image, index) in bookingData.galleryImages"
-            :key="index"
-            class="image">
-            <img :src="image" alt="Gallery Preview" />
+            v-for="(img, idx) in previews"
+            :key="idx"
+            class="preview-wrapper">
+            <img :src="img" alt="Preview" class="preview-img" />
+            <button type="button" @click="removeFile(idx)" class="remove-btn">
+              ✖
+            </button>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div v-if="bookingDetails">
-    <BookingCard
-      :booking-details="bookingDetails"
-      confirmation="booking successfuly confirmed! Please copy the code, or download the card for reference" />
+      <button type="submit" class="primary-button">Submit</button>
+    </form>
   </div>
 </template>
-
 <script setup>
-import Headings from "../utility/Headings.vue";
-import { ref, onMounted, watch } from "vue";
-import buttons from "../utility/buttons.vue";
-import technicians from "@/assets/team.json";
-import servicesData from "@/assets/services.json";
-import { useToast } from "vue-toastification";
-import {
-  submitBooking,
-  getTodayDate,
-  getCurrentTime,
-  clearLocalStorage,
-  uploadFileToServer,
-} from "@/requestsMethods/requestUtils";
-import { getServiceDuration } from "@/requestsMethods/requestUtils";
-import { calculateTotalDuration } from "@/requestsMethods/requestUtils";
-import { showBookingCard } from "@/requestsMethods/requestUtils";
-import BookingCard from "./BookingCard.vue";
-import { bookingDetails } from "@/requestsMethods/requestUtils";
+import { onMounted, reactive, ref, onBeforeUnmount } from "vue";
+import { useFileUpload } from "../composables/useFileUpload";
+import { useBooking } from "../composables/useBooking";
+import { fetchServicesNames, fetchTechnicians } from "../composables/useFetch";
+import { useBookingStore } from "../store/useBookingStore";
 
-const services = servicesData.services;
-const toast = useToast();
-const fileInput = ref(null);
-const maxImages = 5;
+const { handleBooking } = useBooking();
+const servicesNames = ref([]);
+const technicians = ref([]);
+const customInput = ref(null);
+const bookingStore = useBookingStore();
+const { previews, files, handleFileUpload, removeFile } = useFileUpload();
 
-const bookingData = ref({
-  name: "",
-  phone: "",
+const form = reactive({
+  services: [],
+  price: [],
+  duration: [],
+  gallery: [],
+  custom: files,
   date: "",
   time: "",
-  services: [],
-  technician: "simon chege",
-  samples: [],
-  galleryImages: [],
-  duration: 0,
+  staff: "",
+  notes: "",
 });
 
-// Get service durations
-const serviceDurations = getServiceDuration(services);
-
-// Watch for changes to the selected services and update the total duration dynamically
-watch(
-  () => bookingData.value.services,
-  () => {
-    bookingData.value.duration = calculateTotalDuration(
-      bookingData.value.services,
-      serviceDurations
-    );
-  },
-  { deep: true }
-);
-
-const removeImage = (index) => {
-  bookingData.value.samples.splice(index, 1);
-  bookingData.value.galleryImages.splice(index, 1);
-};
-
+//prefill from store when form opens
 onMounted(() => {
-  const savedData = JSON.parse(localStorage.getItem("bookingForm")) || {};
-  Object.assign(bookingData.value, savedData);
+  if (bookingStore.selectedServices.length > 0) {
+    form.gallery = [...bookingStore.selectedServices];
+  }
+  if (bookingStore.serviceIds.length > 0) {
+    form.services = [...bookingStore.serviceIds];
+  }
 });
 
-// Save form data to localStorage
-const saveFormDataToLocalStorage = () => {
-  try {
-    localStorage.setItem("bookingForm", JSON.stringify(bookingData.value));
-  } catch (error) {
-    console.error("Error saving form data to localStorage:", error);
-  }
-};
+function removeGalleryItem(idx, img) {
+  form.gallery.splice(idx, 1);
+  bookingStore.removeService(img.name, img.serviceId);
+}
 
-const handleFileUpload = async (event) => {
-  if (!bookingData.value.samples) bookingData.value.samples = [];
+function resetForm() {
+  form.services = [];
+  form.date = "";
+  form.time = "";
+  form.staff = "";
+  form.notes = "";
+  form.gallery = [];
 
-  const files = event.target.files;
-  if (!files.length) return;
+  clearAll();
 
-  if (Array.from(files).length > maxImages) {
-    toast.error(`You can upload a maximum of ${maxImages} images.`);
-    event.target.value = "";
-    return;
+  if (customInput.value) {
+    customInput.value.value = "";
   }
 
-  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
-  const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
+  bookingStore.clearServices();
+}
 
-  for (let file of files) {
-    if (file.size > MAX_FILE_SIZE) {
-      toast.error(`${file.name} exceeds the 5MB limit.`);
-      event.target.value = "";
-      return;
-    }
+function handleSubmit() {
+  handleBooking(form);
+  resetForm();
+}
 
-    if (!allowedMimeTypes.includes(file.type)) {
-      toast.error(`Invalid file type: ${file.type}`);
-      event.target.value = "";
-      return;
-    }
-
-    const previewURL = URL.createObjectURL(file); // Preview for frontend
-
-    // Upload the file and get the URL
-    const fileUrl = await uploadFileToServer(file);
-
-    if (fileUrl) {
-      bookingData.value.samples.push({
-        url: fileUrl,
-        preview: previewURL,
-      });
-    }
-  }
-
-  saveFormDataToLocalStorage();
-};
-
-//watch changes and update local storage
-watch(bookingData, (newData) => saveFormDataToLocalStorage(newData), {
-  deep: true,
+onMounted(async () => {
+  servicesNames.value = await fetchServicesNames();
+  technicians.value = await fetchTechnicians();
 });
 
-// Load saved form data from localStorage
-const loadFormDataFromLocalStorage = () => {
-  const storedData = localStorage.getItem("bookingForm");
-
-  try {
-    if (!storedData) {
-      console.warn("No booking form data found in localStorage.");
-      return;
-    }
-
-    bookingData.value = JSON.parse(storedData);
-  } catch (error) {
-    console.error("Error parsing localStorage data:", error);
-    localStorage.removeItem("bookingForm");
-  }
-};
-
-// Call load function when component mounts
-onMounted(() => {
-  loadFormDataFromLocalStorage();
+onBeforeUnmount(() => {
+  previews.value.forEach((p) => URL.revokeObjectURL(p.url));
 });
-
-const handleSubmit = async () => {
-  const bookingId = await submitBooking(bookingData.value);
-  if (bookingId) {
-    showBookingCard.value = true;
-  }
-};
-
-const clearForm = () => {
-  bookingData.value = {
-    name: "",
-    phone: "",
-    time: "",
-    date: "",
-    technician: "",
-    services: [],
-    samples: [],
-    galleryImages: [],
-  };
-  clearLocalStorage();
-};
 </script>
 <style scoped>
-.container {
-  margin-top: 2rem;
-  position: relative;
-}
-.form-container {
-  margin-top: 2rem;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 50px;
+.appointment-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  font-family: "Georgia", serif;
+  text-align: center;
 }
 
-.form-flex {
+.title {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.appointment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+input,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: "Arial", sans-serif;
+  transition: border-color 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: #d81b60;
+}
+
+.gallery {
+  margin: 1.5rem 0;
+}
+
+.gallery-list,
+.preview-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+}
+
+.gallery-card,
+.preview-wrapper {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-4px);
+}
+
+.remove-btn {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background: #e91e63;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+
+.gallery-img-large {
   width: 100%;
-  gap: 20px;
+  height: 100px;
+  object-fit: cover;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
-  padding: 15px;
-  border-radius: 15px;
+.gallery-info {
+  padding: 10px;
+  text-align: center;
 }
 
-.form-section {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
+.gallery-service {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #888;
+  margin-bottom: 4px;
 }
 
-.mobile-preview {
-  display: none;
-}
-
-.preview {
-  display: flex;
-  gap: 10px;
-}
-
-.preview .image {
-  height: 200px;
-}
-
-.remove-booking-image {
-  position: absolute;
-  top: 0;
-  left: 10px;
-  font-size: 1.5rem;
+.gallery-name {
+  font-size: 1rem;
   font-weight: bold;
-  color: white;
-  cursor: pointer;
+  color: #333;
 }
 
-.buttons {
-  display: flex;
-  justify-content: space-around;
+.gallery-duration {
+  font-size: 0.85rem;
+  color: #555;
 }
-@media (max-width: 770px) {
-  .form-side-image {
-    display: none;
-  }
 
-  .form-container {
-    grid-template-columns: 1fr;
-    background-image: url("/gallery/art-image-11.jpg");
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    position: relative;
-    padding: 20px 0;
-    max-width: 900px;
-    margin: auto;
-  }
+.gallery-price {
+  margin-top: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #d81b60;
+}
 
-  form {
-    width: 350px;
-    margin: auto;
-    background-color: var(--background-secondary);
-  }
+.gallery-total {
+  margin-top: 1rem;
+  text-align: right;
+  font-size: 1.1rem;
+}
 
-  .form-flex {
+@media (max-width: 600px) {
+  .form-row {
     flex-direction: column;
-  }
-
-  .desktop-preview {
-    display: none;
-  }
-
-  .mobile-preview {
-    display: block;
   }
 }
 </style>

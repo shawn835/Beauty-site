@@ -13,7 +13,7 @@
     :toggleMenu="toggleAdminMenu" />
 </template>
 <script setup>
-import navbar from "../utility/navbar.vue";
+import navbar from "../Home/navbar.vue";
 import {
   defineEmits,
   ref,
@@ -22,10 +22,6 @@ import {
   onUnmounted,
   watch,
 } from "vue";
-const emit = defineEmits(["toggle-modal"]);
-const navigateToBookingDetails = () => {
-  emit("toggle-modal");
-};
 
 const isAdminMenuOpen = ref(false);
 const isMobile = ref(window.innerWidth < 992);
