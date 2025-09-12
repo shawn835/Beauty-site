@@ -58,20 +58,8 @@ import Headings from "../utility/Headings.vue";
 import hero from "../utility/hero.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
 import buttons from "../utility/buttons.vue";
-import { ref, onMounted } from "vue";
-import { fetchBlogs } from "./fetchBlogs.js";
-import blogPostForm from "./blogPostForm.vue";
-const apiUrl = import.meta.env.VITE_API_URL;
-
+import { ref } from "vue";
 const blogs = ref([]);
-
-onMounted(async () => {
-  const posts = await fetchBlogs(apiUrl);
-  if (posts) {
-    blogs.value = posts;
-    console.log(blogs.value);
-  }
-});
 </script>
 
 <style scoped>

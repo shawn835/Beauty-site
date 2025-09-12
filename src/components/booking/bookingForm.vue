@@ -13,6 +13,7 @@
             id="firstName"
             v-model="form.date"
             placeholder="date"
+            :min="today"
             required />
         </div>
         <div class="form-group">
@@ -22,6 +23,7 @@
             id="lastName"
             v-model="form.time"
             placeholder="time"
+            :min="minTime"
             required />
         </div>
       </div>
@@ -128,13 +130,26 @@
       <button type="submit" class="primary-button">Submit</button>
     </form>
   </div>
+
+  <div v-if="isProcessing" class="spinner-overlay">
+    <div>
+      <div class="spinner"></div>
+      <div class="spinner-message">
+        Please check your phone and enter your M-Pesa PIN<br />
+        <small>Do not close or refresh this page</small>
+      </div>
+    </div>
+  </div>
 </template>
 <script setup>
-import { onMounted, reactive, ref, onBeforeUnmount } from "vue";
+import { computed, onMounted, reactive, ref, onBeforeUnmount } from "vue";
 import { useFileUpload } from "../composables/useFileUpload";
 import { useBooking } from "../composables/useBooking";
+import { usePaymentPolling } from "../composables/usePaymentpolling";
 import { fetchServicesNames, fetchTechnicians } from "../composables/useFetch";
 import { useBookingStore } from "../store/useBookingStore";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const { handleBooking } = useBooking();
 const servicesNames = ref([]);
@@ -142,7 +157,11 @@ const technicians = ref([]);
 const customInput = ref(null);
 const bookingStore = useBookingStore();
 const { previews, files, handleFileUpload, removeFile } = useFileUpload();
+const router = useRouter();
+const toast = useToast();
+const today = new Date().toISOString().split("T")[0];
 
+const { isProcessing, startPolling } = usePaymentPolling(toast, router);
 const form = reactive({
   services: [],
   price: [],
@@ -153,6 +172,15 @@ const form = reactive({
   time: "",
   staff: "",
   notes: "",
+});
+
+const isToday = computed(() => form.date === today);
+const minTime = computed(() => {
+  if (isToday.value) {
+    const now = new Date();
+    return now.toTimeString().slice(0, 5); // "HH:MM"
+  }
+  return "00:00";
 });
 
 //prefill from store when form opens
@@ -178,8 +206,6 @@ function resetForm() {
   form.notes = "";
   form.gallery = [];
 
-  clearAll();
-
   if (customInput.value) {
     customInput.value.value = "";
   }
@@ -189,11 +215,11 @@ function resetForm() {
 
 async function handleSubmit() {
   try {
-    await handleBooking(form); // wait until booking finishes
-    resetForm(); // now reset form only if booking succeeded
+    const { bookingId, requiresPayment } = await handleBooking(form);
+    if (requiresPayment) startPolling(bookingId);
+    resetForm();
   } catch (err) {
     console.error("Booking failed:", err);
-    // optionally show error to user
   }
 }
 
@@ -353,6 +379,45 @@ select:focus {
   margin-top: 1rem;
   text-align: right;
   font-size: 1.1rem;
+}
+
+.spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8); /* light blur */
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999; /* make sure it's on top */
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #ccc;
+  border-top: 5px solid #0d6efd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-message {
+  text-align: center;
+  margin-top: 16px;
+  color: #333;
+  font-size: 16px;
 }
 
 @media (max-width: 600px) {

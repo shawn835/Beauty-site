@@ -44,7 +44,6 @@ import buttons from "../utility/buttons.vue";
 import Headings from "../utility/Headings.vue";
 import location from "../utility/location.vue";
 import { useToast } from "vue-toastification";
-import { validatePhoneNumber } from "@/requestsMethods/validation.js";
 const apiUrl = import.meta.env.VITE_API_URL;
 const toast = useToast();
 

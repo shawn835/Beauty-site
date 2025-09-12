@@ -1,6 +1,5 @@
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
-import { useUserStore } from "../store/userStore";
 
 export function useBooking() {
   const loading = ref(false);
@@ -44,7 +43,6 @@ export function useBooking() {
       const data = await res.json();
 
       if (!res.ok) {
-        // prefer backend error if present
         throw new Error(
           data.error || data.message || "Failed to create booking"
         );

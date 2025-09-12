@@ -5,7 +5,7 @@
   margin: 0;
   box-sizing: border-box;
   text-transform: capitalize;
-  /* user-select: none; */
+  text-decoration: none;
 }
 :root {
   --background-primary: #faeee9;
@@ -50,6 +50,12 @@ body {
 
 i {
   color: var(--primary-icon-color);
+}
+
+a {
+  font-weight: 600;
+  color: #201c27;
+  font-size: 17px;
 }
 
 img {
@@ -99,13 +105,13 @@ button:hover {
 }
 
 .primary-button {
-  background-color: var(--primary-button-background);
-  color: var(--primary-button-color);
+  background-color: #fca3c3;
+  color: var(--text-secondary);
   border-radius: 25px;
 }
 
 .secondary-button {
-  background-color: var(--secondary-button-background);
+  background-color: #fca3c3;
   color: var(--secondary-button-color);
   border-radius: 30px;
 }

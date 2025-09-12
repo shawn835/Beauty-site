@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import CryptoJS from "crypto-js";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 const secret = import.meta.env.VITE_ENCRYPTION_SECRET;
 export const useUserStore = defineStore("user", {
@@ -34,6 +36,29 @@ export const useUserStore = defineStore("user", {
       } catch (err) {
         this.clearUser();
         return null;
+      }
+    },
+
+    async logOutUser(router) {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
+          method: "POST",
+          credentials: "include",
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          this.user = null;
+          router.push("/login");
+          toast.success(data.message || "Logout successful");
+          return;
+        }
+
+        throw new Error(data.message || "Logout failed");
+      } catch (error) {
+        console.error(error.message || "Error occurred when logging out!");
+        toast.error(error.message || "Logout failed");
       }
     },
   },

@@ -36,9 +36,16 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/services/:category/:id/serviceslist",
-      name: "servicesList",
-      component: () => import("@/components/services/servicesList.vue"),
+      path: "/my/bookings",
+      name: "mybookingslist",
+      component: () => import("@/views/myBookingsView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/mybookings/:bookingId",
+      name: "mybookings",
+      component: () => import("@/views/BookingDetailsView.vue"),
+      meta: { requiresAuth: true },
     },
     {
       path: "/blogposts",
@@ -46,37 +53,20 @@ const router = createRouter({
       component: () => import("@/views/BlogView.vue"),
     },
     {
-      path: "/blogposts/:slug",
-      name: "blog-post",
-      component: () => import("@/components/Blogs/BlogPost.vue"),
-    },
-    {
       path: "/register",
       name: "register",
-      component: () => import("@/components/register.vue"),
+      component: () => import("@/components/user/register.vue"),
     },
 
     {
       path: "/login",
       name: "login",
-      component: () => import("@/components/loginPage.vue"),
+      component: () => import("@/components/user/loginPage.vue"),
     },
     {
       path: "/verify/token",
       name: "verify",
-      component: () => import("@/components/verify.vue"),
-    },
-    {
-      path: "/admin/dashboard",
-      component: () => import("@/components/Admin/AdminDashboard.vue"),
-      beforeEnter: (to, from, next) => {
-        if (localStorage.getItem("admin")) {
-          next();
-        } else {
-          next("/admin/login");
-        }
-      },
-      meta: { hideLayout: true },
+      component: () => import("@/components/user/verify.vue"),
     },
     {
       path: "/comingsoon",
