@@ -1,4 +1,5 @@
 <template>
+  <div v-if="menuOpen" class="overlay" @click="menuOpen = false"></div>
   <div class="navbar">
     <!-- Logo -->
     <router-link to="/">
@@ -56,13 +57,16 @@
     </div>
 
     <!-- User Menu Integration -->
-    <h3 class="mobile-account-heading">Account</h3>
-    <drawer />
+    <div v-if="userStore.user">
+      <h3 class="mobile-account-heading">Account</h3>
+      <drawer />
+      >
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import drawer from "../user/drawer.vue";
@@ -89,6 +93,10 @@ function goRegister() {
 function goBooking() {
   router.push("/book-appointment");
 }
+
+watch(menuOpen, (val) => {
+  document.body.style.overflow = val ? "hidden" : "";
+});
 </script>
 
 <style scoped>
@@ -201,6 +209,15 @@ a:hover {
     color: var(--text-primary);
     border-bottom: 2px solid black;
     text-align: center;
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0; /*top 0, left 0, height and witdh 100vh/100vw*/
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 18;
+    cursor: pointer;
+    overflow: hidden;
   }
 }
 

@@ -94,12 +94,12 @@ const fetchBookings = async () => {
         credentials: "include",
       }
     );
+    const data = await res.json();
 
     if (!res.ok) {
       throw new Error(data.message || "failed to fetch bookings");
     }
 
-    const data = await res.json();
     bookings.value = data.bookings;
     totalPages.value = data.totalPages;
   } catch (error) {
