@@ -27,8 +27,8 @@
             <!-- {{ booking.services.map((s) => s.name).join(", ") }} -->
           </h3>
 
-          <span class="card-date"
-            >{{ booking.date }} at {{ booking.time }}</span
+          <span class="card-date">
+            {{ booking.date }} at {{ booking.time }}</span
           >
         </div>
         <div class="card-details">

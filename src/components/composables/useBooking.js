@@ -1,11 +1,13 @@
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
+import { handleResponse } from "../utility/response";
 
 export function useBooking() {
   const loading = ref(false);
   const toast = useToast();
   const error = ref(null);
 
+  // post booking
   const handleBooking = async (form) => {
     loading.value = true;
     error.value = null;
@@ -40,13 +42,8 @@ export function useBooking() {
         body: fd,
         credentials: "include",
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(
-          data.error || data.message || "Failed to create booking"
-        );
-      }
+      const data = await handleResponse(res);
 
       toast.success(data.message || "Booking created successfully!");
       return data;
@@ -59,5 +56,55 @@ export function useBooking() {
     }
   };
 
-  return { handleBooking };
+  // cancel booking
+  const cancelBooking = async (bookingId) => {
+    loading.value = true;
+    error.value = null;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/cancel`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
+
+      const data = await handleResponse(res);
+
+      toast.success(data.message || "Booking cancelled successfully!");
+    } catch (error) {
+      console.log(error.stack);
+      toast.error(error.message);
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  // fetch booking by id
+  const fetchBookingById = async (bookingId) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`,
+        {
+          credentials: "include",
+        }
+      );
+
+      const data = await handleResponse(res);
+
+      return data.booking;
+    } catch (err) {
+      console.error("something went wrong", err);
+      error.value = err.message;
+      throw error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return { handleBooking, cancelBooking, fetchBookingById, loading, error };
 }

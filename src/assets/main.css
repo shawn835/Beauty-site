@@ -125,6 +125,27 @@ button:hover {
   background-color: var(--primary-button-background);
 }
 
+.form-extra {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.extra-text {
+  margin: 0;
+}
+
+.extra-link {
+  color: #d81b60;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.extra-link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 992px) {
   .image {
     margin: auto;

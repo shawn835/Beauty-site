@@ -4,7 +4,7 @@
       <span>← Back to Bookings</span>
     </div>
     <h1 class="title">Booking Details</h1>
-    <div v-if="isLoading" class="loading-overlay">
+    <div v-if="loading" class="loading-overlay">
       <div class="spinner"></div>
     </div>
     <div v-else class="details-content">
@@ -19,8 +19,8 @@
       </div>
       <div class="details-info">
         <p>
-          <strong>Date & Time:</strong> {{ formatDate(booking.date) }} at
-          {{ booking.time }}
+          <strong>Date & Time:</strong>
+          {{ formatDate(booking.date) }} at {{ booking.time }}
         </p>
         <p><strong>Technician:</strong> {{ booking.technician }}</p>
         <p v-if="booking?.payment?.amount !== undefined">
@@ -62,7 +62,7 @@
       <div class="actions" v-if="booking.bookingId">
         <button
           v-if="booking.bookingStatus === 'upcoming'"
-          @click="cancelBooking"
+          @click="handleCancel"
           class="action-btn cancel-btn">
           Cancel Booking
         </button>
@@ -73,7 +73,7 @@
           View Receipt
         </button>
       </div>
-      <p v-if="!booking.bookingId && !isLoading" class="no-details">
+      <p v-if="!booking.bookingId && !loading" class="no-details">
         Booking details not found.
       </p>
     </div>
@@ -103,7 +103,10 @@
             }}</span>
           </p>
           <p><strong>Transaction ID:</strong> #{{ booking.id || "N/A" }}</p>
-          <p><strong>Issued:</strong> {{ formatDateTime(new Date()) }}</p>
+          <p>
+            <strong>Issued:</strong>
+            {{ formatDate(new Date(), { withTime: true }) }}
+          </p>
         </div>
         <button class="print-btn" @click="printReceipt">Print Receipt</button>
       </div>
@@ -114,77 +117,25 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useBooking } from "@/components/composables/useBooking";
+import { formatDate } from "@/utils";
 
 const router = useRouter();
+const { fetchBookingById, cancelBooking, loading } = useBooking();
 
 // State
 const booking = ref({});
 const showReceipt = ref(false);
-const isLoading = ref(true);
 const { bookingId } = useRoute().params;
 
 onMounted(async () => {
-  isLoading.value = true;
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/booking/${bookingId}`,
-      {
-        credentials: "include",
-      }
-    );
-
-    const data = await res.json();
-    if (!res.ok) {
-      throw new Error(data.message || "fetch failed");
-    }
-    console.log(data.booking);
-
-    booking.value = data.booking;
-  } catch (error) {
-    console.error("something went wrong", error);
-  } finally {
-    isLoading.value = false;
-  }
+  booking.value = await fetchBookingById(bookingId);
 });
-// Format date
-const formatDate = (dateStr) => {
-  if (!dateStr) return "N/A";
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
 
-// Format date and time (for receipt issuance)
-const formatDateTime = (date) => {
-  return date.toLocaleString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Africa/Nairobi",
-    hour12: true,
-  });
+const handleCancel = async () => {
+  await cancelBooking(bookingId);
+  router.push("/my/bookings");
 };
-
-// Check if booking is upcoming
-const isUpcoming = computed(() => {
-  if (!booking.value.date || !booking.value.time) return false;
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  const bookingDate = new Date(booking.value.date);
-  bookingDate.setHours(0, 0, 0, 0);
-  const bookingTime = new Date(`1970-01-01 ${booking.value.time}`);
-  const currentTime = new Date();
-  currentTime.setHours(now.getHours(), now.getMinutes(), 0, 0);
-  return (
-    bookingDate > now ||
-    (bookingDate.getTime() === now.getTime() && bookingTime >= currentTime)
-  );
-});
 
 // Modal controls
 const openReceipt = () => {
@@ -195,27 +146,6 @@ const closeReceipt = () => {
 };
 const printReceipt = () => {
   window.print();
-};
-
-// Cancel booking
-const cancelBooking = () => {
-  if (confirm("Are you sure you want to cancel this booking?")) {
-    booking.value.status = "Cancelled";
-    alert("Booking cancelled successfully.");
-    // API call to update status on backend
-  }
-};
-
-// Rebook booking
-const rebookBooking = () => {
-  router.push({
-    path: "/appointment",
-    query: {
-      service: booking.value.service,
-      date: booking.value.date,
-      time: booking.value.time,
-    },
-  });
 };
 </script>
 

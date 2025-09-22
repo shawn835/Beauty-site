@@ -36,6 +36,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/profile",
+      name: "profile",
+      component: () => import("@/views/profileView.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/my/bookings",
       name: "mybookingslist",
       component: () => import("@/views/myBookingsView.vue"),
@@ -64,7 +70,7 @@ const router = createRouter({
       component: () => import("@/components/user/loginPage.vue"),
     },
     {
-      path: "/verify/token",
+      path: "/token/confirmation",
       name: "verify",
       component: () => import("@/components/user/verify.vue"),
     },

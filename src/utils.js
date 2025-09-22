@@ -42,3 +42,26 @@ export const showToast = (msg) => {
   toast.value.visible = true;
   setTimeout(() => (toast.value.visible = false), 2500);
 };
+
+export const formatDate = (dateInput, { withTime = false } = {}) => {
+  const date = new Date(dateInput);
+
+  if (withTime) {
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Africa/Nairobi",
+      hour12: true,
+    });
+  }
+
+  return date.toLocaleDateString("en-GB", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};

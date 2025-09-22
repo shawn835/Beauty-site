@@ -26,7 +26,7 @@ const userStore = useUserStore();
 const router = useRouter();
 
 const userMenu = [
-  { label: "profile", route: "/my/profile" },
+  { label: "profile", route: "/profile" },
   { label: "bookings", route: "/my/bookings" },
   { label: "favourites", route: "/my/favourites" },
   { label: "logout", action: "logout" },

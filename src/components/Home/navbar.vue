@@ -82,7 +82,7 @@ const navLinks = [
   { text: "About", path: "/about-us" },
   { text: "Services", path: "/services" },
   { text: "Gallery", path: "/photos" },
-  { text: "Blog", path: "/blogposts" },
+  // { text: "Blog", path: "/blogposts" },
   { text: "Contact", path: "/contact-us" },
 ];
 
