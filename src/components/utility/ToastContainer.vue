@@ -13,7 +13,7 @@
 
 <script setup>
 import { useToast } from "../composables/useToast";
-import Toast from "./toast.vue";
+import Toast from "../Toast.vue";
 
 // Get reactive toasts array and remove function
 const { toasts, remove } = useToast();
