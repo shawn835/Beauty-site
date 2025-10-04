@@ -1,59 +1,93 @@
-import { ref } from "vue";
-const perPage = 8;
-export const images = ref([]);
-export const currentPage = ref(1);
-export const totalPages = ref(1);
-export const loading = ref(false);
-export const totalCount = ref(0);
+import { ref, unref, watch } from "vue";
 
-export const fetchServicesNames = async () => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/services/names`
-    );
-    const data = await res.json();
-    if (!res.ok)
-      throw new Error(data.message || "Failed to fetch services names");
-    return data.names;
-  } catch (error) {
-    console.error("Error fetching service names:", error);
-    return [];
-  }
-};
+export function useApi(
+  baseUrl,
+  { perPage = null, options = {}, withCredentials = false } = {}
+) {
+  const data = ref(null);
+  const error = ref(null);
+  const loading = ref(false);
 
-export const fetchTechnicians = async () => {
-  try {
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/technicians`);
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Failed to fetch technicians");
-    return data.technicians;
-  } catch (error) {
-    console.error("Error fetching technicians:", error);
-    return [];
-  }
-};
-export const fetchGalleryItems = async (page = 1) => {
-  loading.value = true;
-  try {
-    const res = await fetch(
-      `${
-        import.meta.env.VITE_API_URL
-      }/api/gallery/images?page=${page}&limit=${perPage}`
-    );
+  // pagination
+  const page = ref(1);
+  const totalPages = ref(1);
+  const totalCount = ref(0);
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch: ${res.status}`);
+  const fetchData = async (overrideUrl = null) => {
+    loading.value = true;
+    error.value = null;
+
+    try {
+      let url = overrideUrl || unref(baseUrl);
+
+      // attach pagination if perPage is set
+      if (perPage) {
+        const connector = url.includes("?") ? "&" : "?";
+        url = `${url}${connector}page=${page.value}&limit=${perPage}`;
+      }
+
+      const finalOptions = {
+        ...options,
+        ...(withCredentials ? { credentials: "include" } : {}),
+      };
+
+      const res = await fetch(url, finalOptions);
+      const json = await res.json();
+
+      if (!res.ok) throw new Error(json.message || `Failed with ${res.status}`);
+
+      data.value = json;
+
+      // update pagination
+      if (perPage && json.pagination) {
+        totalPages.value = json.pagination.totalPages || 1;
+        totalCount.value = json.pagination.totalCount || 0;
+        page.value = json.pagination.page || 1;
+      }
+    } catch (err) {
+      console.error("useApi error:", err);
+      error.value = err.message;
+      data.value = null;
+    } finally {
+      loading.value = false;
     }
+  };
 
-    const data = await res.json();
-    images.value = data.images;
-    totalPages.value = data.pagination.totalPages;
-    currentPage.value = data.pagination.page;
-    totalCount.value = data.pagination.totalCount;
-  } catch (error) {
-    console.error("Error fetching gallery images:", error);
-    images.value = [];
-  } finally {
-    loading.value = false;
+  const nextPage = async () => {
+    if (page.value < totalPages.value) {
+      page.value++;
+      await fetchData();
+    }
+  };
+
+  const prevPage = async () => {
+    if (page.value > 1) {
+      page.value--;
+      await fetchData();
+    }
+  };
+
+  // auto-refetch when baseUrl is reactive
+  if (typeof baseUrl !== "string") {
+    watch(
+      baseUrl,
+      () => {
+        page.value = 1;
+        fetchData();
+      },
+      { immediate: true }
+    );
   }
-};
+
+  return {
+    data,
+    error,
+    loading,
+    fetchData,
+    page,
+    totalPages,
+    totalCount,
+    nextPage,
+    prevPage,
+  };
+}

@@ -28,6 +28,13 @@
       <button v-else class="primary-button" @click="goRegister">
         Register
       </button>
+
+      <button
+        class="primary-button"
+        @click="goTo('admin')"
+        v-if="userStore.user?.role === 'admin'">
+        admin
+      </button>
     </div>
 
     <!-- User menu (desktop) -->
@@ -48,11 +55,21 @@
 
     <!-- Mobile buttons -->
     <div class="buttons">
-      <button v-if="userStore.user" class="primary-button" @click="goBooking">
+      <button
+        v-if="userStore.user"
+        class="primary-button"
+        @click="goTo('book-appointment')">
         Book Appointment
       </button>
-      <button v-else class="primary-button" @click="goRegister">
+      <button v-else class="primary-button" @click="goTo('register')">
         Register
+      </button>
+
+      <button
+        class="primary-button"
+        @click="goTo('admin')"
+        v-if="userStore.user?.role === 'admin'">
+        admin
       </button>
     </div>
 
@@ -88,6 +105,10 @@ const navLinks = [
 
 function goRegister() {
   router.push("/register");
+}
+
+function goTo(route) {
+  router.push(`/${route}`);
 }
 
 function goBooking() {

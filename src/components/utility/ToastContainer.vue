@@ -25,12 +25,12 @@ const { toasts, remove } = useToast();
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2000;
+  z-index: 10000;
   width: 90%;
   max-width: 500px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  pointer-events: none; /* Prevent interaction with background */
+  pointer-events: none;
 }
 </style>

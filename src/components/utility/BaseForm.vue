@@ -34,6 +34,7 @@
       <!-- Submit button -->
       <button type="submit" class="submit-btn" :disabled="loading">
         <span v-if="!loading">{{ buttonText }}</span>
+        <span v-else-if="buttonText === 'login'">redirecting...</span>
         <span v-else class="spinner"></span>
       </button>
     </form>

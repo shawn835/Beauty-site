@@ -22,6 +22,7 @@ export function useSendUserData() {
       return data;
     } catch (err) {
       console.error(err.message);
+      loading.value = false;
       throw err;
     } finally {
       loading.value = false;
@@ -42,18 +43,17 @@ export function useSendUserData() {
 
       for (const key in form) {
         if (Object.hasOwn(form, key)) {
-          console.log(form[key]);
-
           form[key] = "";
         }
       }
 
       setTimeout(() => {
         router.push("/");
-      }, 5000);
+      }, 1000);
 
       return data;
     } catch (err) {
+      console.error(err.message);
       loading.value = false;
       throw err;
     } finally {
@@ -77,6 +77,8 @@ export function useSendUserData() {
       const data = await handleResponse(res);
       return data;
     } catch (err) {
+      console.error(err.message);
+      loading.value = false;
       throw err;
     } finally {
       loading.value = false;
@@ -99,10 +101,31 @@ export function useSendUserData() {
       const data = await handleResponse(res);
       return data;
     } catch (err) {
-      console.error(err.stack);
+      console.error(err.message);
+      loading.value = false;
       throw err;
     } finally {
       loading.value = false;
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    loading.value = true;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/deleteuser`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await handleResponse(res);
+      return data;
+    } catch (err) {
+      console.error(err.message);
+      loading.value = false;
+      throw err;
     }
   };
 
@@ -112,5 +135,6 @@ export function useSendUserData() {
     loading,
     updateProfile,
     updatePassword,
+    handleDeleteAccount,
   };
 }

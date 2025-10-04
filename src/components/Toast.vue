@@ -60,6 +60,7 @@ defineExpose({ showToast, dismissToast });
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
   pointer-events: auto;
+  z-index: 10000;
 }
 
 .toast-success {

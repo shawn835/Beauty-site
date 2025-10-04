@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import CryptoJS from "crypto-js";
-import { useToast } from "vue-toastification";
-const toast = useToast();
+import { useToast } from "../composables/useToast";
+const { show } = useToast();
 
 const secret = import.meta.env.VITE_ENCRYPTION_SECRET;
 export const useUserStore = defineStore("user", {
@@ -51,14 +51,17 @@ export const useUserStore = defineStore("user", {
         if (res.ok) {
           this.user = null;
           router.push("/login");
-          toast.success(data.message || "Logout successful");
+          show({
+            message: data.message || "Logout successful",
+            type: "success",
+          });
           return;
         }
 
         throw new Error(data.message || "Logout failed");
       } catch (error) {
         console.error(error.message || "Error occurred when logging out!");
-        toast.error(error.message || "Logout failed");
+        show({ message: error.message || "Logout failed", type: "error" });
       }
     },
   },

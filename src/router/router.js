@@ -80,9 +80,48 @@ const router = createRouter({
       component: () => import("@/components/Home/comingSoon.vue"),
     },
     {
+      path: "/unauthorized",
+      name: "coming soon",
+      component: () => import("@/views/Unauthorized.vue"),
+    },
+    {
       path: "/:pathMatch(.*)",
       component: () => import("@/components/global/NotFound.vue"),
       meta: { hideLayout: true },
+    },
+
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("@/views/admin/AdminLayout.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true, hideLayout: true },
+      children: [
+        {
+          path: "dashboard",
+          name: "admin-dashboard",
+          component: () => import("@/views/admin/DashboardView.vue"),
+        },
+        {
+          path: "bookings",
+          name: "admin-bookings",
+          component: () => import("@/views/admin/Bookings/BookingsView.vue"),
+        },
+        {
+          path: "services",
+          name: "admin-services",
+          component: () => import("@/views/admin/Services/ServicesView.vue"),
+        },
+        {
+          path: "users",
+          name: "admin-users",
+          component: () => import("@/views/admin/UsersView.vue"),
+        },
+        {
+          path: "payments",
+          name: "admin-payments",
+          component: () => import("@/views/admin/PaymentsView.vue"),
+        },
+      ],
     },
   ],
 
@@ -101,6 +140,17 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
+  if (to.meta.requiresAdmin) {
+    if (!userStore.user || userStore.user.role !== "admin") {
+      return next("/unauthorized");
+    }
+  }
+
+  if (to.name === "admin" && userStore.user.role === "admin") {
+    return next("/admin/dashboard");
+  }
+
   next();
 });
+
 export default router;

@@ -28,7 +28,7 @@
           </h3>
 
           <span class="card-date">
-            {{ booking.date }} at {{ booking.time }}</span
+            {{ formatDate(booking.date) }} at {{ booking.time }}</span
           >
         </div>
         <div class="card-details">
@@ -52,72 +52,35 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination">
-      <button
-        :disabled="currentPage === 1"
-        @click="currentPage--"
-        class="pagination-btn">
-        Previous
-      </button>
-      <span class="pagination-info">{{ currentPage }} of {{ totalPages }}</span>
-      <button
-        :disabled="currentPage === totalPages"
-        @click="currentPage++"
-        class="pagination-btn">
-        Next
-      </button>
-    </div>
+    <Paginator
+      :page="page"
+      :total-pages="totalPages"
+      :next-page="nextPage"
+      :prev-page="prevPage" />
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useApi } from "@/components/composables/useFetch";
+import Paginator from "@/components/utility/Paginator.vue";
+import { formatDate } from "@/utils";
 
 // Tabs and state
-const tabs = ["All", "Upcoming", "Past", "Cancelled"];
+const tabs = ["All", "Upcoming", "Complete", "Cancelled"];
 const activeTab = ref("All");
-const currentPage = ref(1);
-const itemsPerPage = 8;
-const bookings = ref([]);
-const totalPages = ref(1);
-
 const router = useRouter();
 
-const fetchBookings = async () => {
-  try {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/mybookings?tab=${
-        activeTab.value
-      }&page=${currentPage.value}&limit=${itemsPerPage}`,
-      {
-        credentials: "include",
-      }
-    );
-    const data = await res.json();
+const url = computed(
+  () => `${import.meta.env.VITE_API_URL}/api/mybookings?tab=${activeTab.value}`
+);
 
-    if (!res.ok) {
-      throw new Error(data.message || "failed to fetch bookings");
-    }
-
-    bookings.value = data.bookings;
-    totalPages.value = data.totalPages;
-  } catch (error) {
-    console.error("something went wrong", error);
-  }
-};
-
-watch(activeTab, () => {
-  currentPage.value = 1;
-  fetchBookings();
+const { data, loading, page, totalPages, nextPage, prevPage } = useApi(url, {
+  perPage: 8,
+  withCredentials: true,
 });
-
-watch(currentPage, fetchBookings);
-
-onMounted(() => {
-  fetchBookings();
-});
-
+const bookings = computed(() => data.value?.bookings || []);
 // Navigate to details
 const goToDetails = (bookingId) => {
   router.push(`/mybookings/${bookingId}`);

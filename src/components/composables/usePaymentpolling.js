@@ -1,6 +1,7 @@
 import { ref, onUnmounted } from "vue";
-
-export function usePaymentPolling(toast, router) {
+import { useToast } from "./useToast";
+const { show } = useToast();
+export function usePaymentPolling(router) {
   const isProcessing = ref(false);
   let pollInterval = null;
   let timeoutHandle = null;
@@ -13,7 +14,7 @@ export function usePaymentPolling(toast, router) {
     // Safety timeout (60s)
     timeoutHandle = setTimeout(() => {
       stopPolling();
-      toast.error("Payment timeout. Please try again.");
+      show({ message: "Payment timeout. Please try again.", type: "error" });
     }, 60000);
 
     // Poll every 3s
@@ -32,13 +33,17 @@ export function usePaymentPolling(toast, router) {
 
         if (data.status === "confirmed") {
           stopPolling();
-          toast.success(
-            data.message || "Payment successful. Booking confirmed 🎉"
-          );
+          show({
+            message: data.message || "Payment successful. Booking confirmed!",
+            type: "success",
+          });
           router.push(`/orders/track-order/${bookingId}`);
         } else if (data.status === "payment_failed") {
           stopPolling();
-          toast.error(data.message || "Payment failed. Please try again.");
+          show({
+            message: data.message || "Payment failed. Please try again.",
+            type: "error",
+          });
         }
       } catch (error) {
         console.error("Error polling payment status:", error);

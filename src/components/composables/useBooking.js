@@ -1,16 +1,12 @@
 import { ref } from "vue";
-import { useToast } from "vue-toastification";
 import { handleResponse } from "../utility/response";
 
 export function useBooking() {
   const loading = ref(false);
-  const toast = useToast();
-  const error = ref(null);
 
   // post booking
   const handleBooking = async (form) => {
     loading.value = true;
-    error.value = null;
 
     try {
       const fd = new FormData();
@@ -44,12 +40,10 @@ export function useBooking() {
       });
 
       const data = await handleResponse(res);
-
-      toast.success(data.message || "Booking created successfully!");
       return data;
     } catch (err) {
       console.log(err.stack);
-      toast.error(err.message);
+      loading.value = false;
       throw err;
     } finally {
       loading.value = false;
@@ -59,7 +53,6 @@ export function useBooking() {
   // cancel booking
   const cancelBooking = async (bookingId) => {
     loading.value = true;
-    error.value = null;
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/cancel`,
@@ -71,10 +64,10 @@ export function useBooking() {
 
       const data = await handleResponse(res);
 
-      toast.success(data.message || "Booking cancelled successfully!");
+      return data;
     } catch (error) {
       console.log(error.stack);
-      toast.error(error.message);
+      loading.value = false;
       throw error;
     } finally {
       loading.value = false;
@@ -84,7 +77,6 @@ export function useBooking() {
   // fetch booking by id
   const fetchBookingById = async (bookingId) => {
     loading.value = true;
-    error.value = null;
 
     try {
       const res = await fetch(
@@ -97,14 +89,14 @@ export function useBooking() {
       const data = await handleResponse(res);
 
       return data.booking;
-    } catch (err) {
+    } catch (error) {
       console.error("something went wrong", err);
-      error.value = err.message;
+      loading.value = false;
       throw error;
     } finally {
       loading.value = false;
     }
   };
 
-  return { handleBooking, cancelBooking, fetchBookingById, loading, error };
+  return { handleBooking, cancelBooking, fetchBookingById, loading };
 }

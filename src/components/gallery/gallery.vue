@@ -34,7 +34,7 @@
             <p class="card-description">{{ img.subservice.description }}</p>
             <button
               @click="addToBooking(img)"
-              class="book-button"
+              class="primary-button"
               :aria-label="`Book ${img.subservice.name}`">
               book this
             </button>
@@ -43,56 +43,39 @@
 
         <!-- Pagination controls -->
         <div class="pagination-controls">
-          <button
-            @click="prevPage"
-            class="primary-button"
-            :disabled="currentPage === 1">
-            Previous
-          </button>
-          <span>Page {{ currentPage }} of {{ totalPages }}</span>
-          <button
-            @click="nextPage"
-            class="primary-button"
-            :disabled="currentPage === totalPages">
-            Next
-          </button>
+          <Paginator
+            :page="currentPage"
+            :total-pages="totalPages"
+            :next-page="nextPage"
+            :prev-page="prevPage" />
         </div>
       </div>
     </div>
   </div>
-
-  <div v-if="toast.visible" class="toast">{{ toast.message }}</div>
 </template>
 
 <script setup>
+import { onMounted, computed } from "vue";
 import hero from "../utility/hero.vue";
 import Headings from "../utility/Headings.vue";
-import {
-  images,
-  fetchGalleryItems,
-  currentPage,
-  totalPages,
-  loading,
-} from "../composables/useFetch";
+import { useApi } from "../composables/useFetch";
 import { formatDuration } from "@/utils";
 import { useBookingStore } from "../store/useBookingStore";
-import { showToast, toast } from "@/utils";
+import { useToast } from "../composables/useToast";
+import Paginator from "../utility/Paginator.vue";
 
+const {
+  data,
+  page: currentPage,
+  totalPages,
+  fetchData,
+  nextPage,
+  prevPage,
+} = useApi(`${import.meta.env.VITE_API_URL}/api/gallery/images`, {
+  perPage: 8,
+});
+const { show } = useToast();
 const bookingStore = useBookingStore();
-
-//navigate previous page
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    fetchGalleryItems(currentPage.value - 1);
-  }
-};
-
-//navigate to the next page
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    fetchGalleryItems(currentPage.value + 1);
-  }
-};
 
 const addToBooking = (item) => {
   const sub = item.subservice;
@@ -106,10 +89,13 @@ const addToBooking = (item) => {
     image: sub.image,
   });
 
-  showToast(`${sub.name} added to your preview`);
+  show({ message: `${sub.name} added to your preview`, type: "success" });
 };
 
-fetchGalleryItems();
+onMounted(async () => {
+  await fetchData();
+});
+const images = computed(() => data.value?.images || []);
 </script>
 
 <style scoped>
@@ -141,14 +127,11 @@ fetchGalleryItems();
 .card-image {
   position: relative;
   width: 100%;
-  height: 200px;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
 }
 
 .card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -248,57 +231,6 @@ fetchGalleryItems();
   align-items: center;
   gap: 20px;
   margin-top: 30px;
-}
-
-.primary-button {
-  padding: 8px 15px;
-  border-radius: 20px;
-  border: none;
-  background-color: #d81b60;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-.primary-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.toast {
-  position: fixed;
-  top: 10%;
-  right: 50%;
-  background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
-  color: #fff;
-  font-family: "Lora", serif;
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 14px 22px;
-  border-radius: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  opacity: 0;
-  animation: fadeInOut 2.5s ease forwards;
-  z-index: 9999;
-}
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  15% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  85% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
 }
 
 @media (max-width: 768px) {

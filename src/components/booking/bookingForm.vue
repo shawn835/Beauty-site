@@ -127,7 +127,10 @@
         </div>
       </div>
 
-      <button type="submit" class="primary-button">Submit</button>
+      <button type="submit" class="primary-button" :disabled="loading">
+        <span v-if="loading">submiting booking</span>
+        <span v-else>submit</span>
+      </button>
     </form>
   </div>
 
@@ -146,22 +149,24 @@ import { computed, onMounted, reactive, ref, onBeforeUnmount } from "vue";
 import { useFileUpload } from "../composables/useFileUpload";
 import { useBooking } from "../composables/useBooking";
 import { usePaymentPolling } from "../composables/usePaymentpolling";
-import { fetchServicesNames, fetchTechnicians } from "../composables/useFetch";
 import { useBookingStore } from "../store/useBookingStore";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toastification";
+import { useServices } from "../composables/useServices";
+import { useTechnicians } from "../composables/useTechnician";
+import { useToast } from "../composables/useToast";
 
-const { handleBooking } = useBooking();
-const servicesNames = ref([]);
-const technicians = ref([]);
+const { servicesNames, fetchData: fetchServices } = useServices();
+const { technicians, fetchData: fetchTechnicians } = useTechnicians();
+
+const { handleBooking, loading } = useBooking();
 const customInput = ref(null);
 const bookingStore = useBookingStore();
 const { previews, files, handleFileUpload, removeFile } = useFileUpload();
 const router = useRouter();
-const toast = useToast();
 const today = new Date().toISOString().split("T")[0];
+const { show } = useToast();
 
-const { isProcessing, startPolling } = usePaymentPolling(toast, router);
+const { isProcessing, startPolling } = usePaymentPolling(router);
 const form = reactive({
   services: [],
   price: [],
@@ -215,17 +220,19 @@ function resetForm() {
 
 async function handleSubmit() {
   try {
-    const { bookingId, requiresPayment } = await handleBooking(form);
+    const { bookingId, requiresPayment, message } = await handleBooking(form);
+    show({ message: message, type: "success" });
     if (requiresPayment) startPolling(bookingId);
     resetForm();
   } catch (err) {
+    show({ message: err.message || "something went wrong!", type: "error" });
     console.error("Booking failed:", err);
   }
 }
 
 onMounted(async () => {
-  servicesNames.value = await fetchServicesNames();
-  technicians.value = await fetchTechnicians();
+  await fetchServices();
+  await fetchTechnicians();
 });
 
 onBeforeUnmount(() => {
@@ -392,7 +399,7 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999; /* make sure it's on top */
+  z-index: 9999;
 }
 
 .spinner {

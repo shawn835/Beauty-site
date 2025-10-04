@@ -29,7 +29,7 @@ const submitProfile = async (formData) => {
   } catch (err) {
     console.error("Profile update failed:", err);
     show({
-      message: "Failed to update password.",
+      message: err.message || "Failed to update profile.",
       type: "error",
       duration: 5000,
     });
