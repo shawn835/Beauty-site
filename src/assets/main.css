@@ -8,9 +8,17 @@
   text-decoration: none;
 }
 :root {
-  --background-primary: #faeee9;
-  --background-secondary: #c3c3d5;
-  --text-primary: #2e3538;
+  --bg-dark: #2e3538;
+  --bg-grey: #ccc;
+  --bg-pink: #d81b60;
+  --bg-light: #fff;
+  --text-dark: #2e3538;
+  --text-pink: #d81b60;
+  --text-light: #fff;
+  --text-gray: #ccc;
+  --dark-gray: #666;
+  --overlay-color: rgba(0, 0, 0, 0.4);
+
   --text-secondary: #faeee9;
   --text-heading: #201c27;
   --nav-links: #f5d698;
@@ -29,11 +37,11 @@
 }
 
 body {
-  font-family: "Red Hat Display", serif;
+  font-family: "Lora", serif;
   font-optical-sizing: auto;
   font-weight: 400;
   font-style: normal;
-  background-color: var(--background-primary);
+  background-color: var(--bg-grey);
 }
 
 .more-info {
@@ -54,7 +62,7 @@ i {
 
 a {
   font-weight: 600;
-  color: #201c27;
+  color: var(--bg-dark);
   font-size: 17px;
 }
 
@@ -106,7 +114,7 @@ button:hover {
 }
 
 .primary-button {
-  background-color: #d81b60;
+  background-color: var(--bg-pink);
   color: var(--text-secondary);
   border-radius: 25px;
 }
@@ -127,16 +135,16 @@ button:hover {
 }
 
 .primary-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  background-color: var(--bg-grey);
   pointer-events: none;
+  cursor: not-allowed;
 }
 
 .form-extra {
   margin-top: 1rem;
   text-align: center;
   font-size: 0.9rem;
-  color: #555;
+  color: var(--text-grey);
 }
 
 .extra-text {
@@ -144,7 +152,7 @@ button:hover {
 }
 
 .extra-link {
-  color: #d81b60;
+  color: var(--text-pink);
   font-weight: 600;
   text-decoration: none;
 }

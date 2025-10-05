@@ -55,7 +55,7 @@
 
 <script setup>
 import Headings from "../utility/Headings.vue";
-import hero from "../utility/hero.vue";
+import hero from "../utility/Hero.vue";
 import TeamGallery from "../utility/TeamGallery.vue";
 import buttons from "../utility/buttons.vue";
 import { ref } from "vue";

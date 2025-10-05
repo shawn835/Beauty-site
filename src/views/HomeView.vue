@@ -1,13 +1,13 @@
 <template>
-  <HeroSection />
-  <scroll />
-  <QuoteContent />
+  <HomeHeroSection />
+  <Scroll />
   <counters />
+  <HomePage />
 </template>
 
 <script setup>
-import HeroSection from "@/components/Home/home-hero.vue";
+import HomeHeroSection from "@/components/Home/HomeHeroSection.vue";
 import counters from "@/components/Home/counters.vue";
-import scroll from "@/components/Home/scroll.vue";
-import QuoteContent from "@/components/Home/QuoteContent.vue";
+import Scroll from "@/components/Home/Scroll.vue";
+import HomePage from "@/components/Home/HomePage.vue";
 </script>

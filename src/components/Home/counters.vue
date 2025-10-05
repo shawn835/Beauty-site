@@ -3,7 +3,7 @@
     <div
       class="counter"
       v-for="(counter, index) in counters"
-      :data-target="counter"
+      :data-target="counter.target"
       :key="index">
       <div class="class-label">{{ counter.label }}</div>
       <div class="counter-number">{{ counterValues[index] }}+</div>
@@ -12,105 +12,142 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
-const counters = [
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { useTechnicians } from "../composables/useTechnician";
+
+const { technicians, fetchData } = useTechnicians();
+
+// reactive counters
+const techs = ref(0);
+const counters = computed(() => [
   { label: "customers served", target: 1000 },
-  { label: "team members", target: 4 },
+  { label: "team members", target: techs.value },
   { label: "years of experience", target: 9 },
-];
-const counterValues = ref(Array(counters.length).fill(0));
-let startedScrolling = false;
+]);
 
-// animating counters
-const countUp = () => {
-  counters.forEach((counter, index) => {
-    const updateCounter = () => {
-      const currentValue = counterValues.value[index];
-      const increment = Math.ceil(counter.target / 150); //speed of increment
+const counterValues = ref(Array(3).fill(0));
+let observer;
 
-      if (currentValue < counter.target) {
-        counterValues.value[index] = Math.min(
-          currentValue + increment,
-          counter.target
-        );
-        setTimeout(updateCounter, 100);
-      }
-    };
-    updateCounter();
+// animation settings
+const duration = 2000; // 2s
+let startTime = null;
+let animating = false;
+
+const animateCounters = (timestamp) => {
+  if (!startTime) startTime = timestamp;
+  const progress = Math.min((timestamp - startTime) / duration, 1);
+
+  counters.value.forEach((counter, index) => {
+    counterValues.value[index] = Math.floor(counter.target * progress);
   });
-};
 
-//reseting counters to 0
-const resetCounters = () => {
-  counterValues.value = Array(counters.length).fill(0);
-};
-
-//scroll evvent handler
-const pageScroll = () => {
-  const position = window.scrollY;
-  if (position > 30 && !startedScrolling) {
-    countUp();
-    startedScrolling = true;
-  } else if (position < 25 && startedScrolling) {
-    resetCounters();
-    startedScrolling = false;
+  if (progress < 1) {
+    requestAnimationFrame(animateCounters);
+  } else {
+    animating = false; // finished
   }
 };
 
-onMounted(() => {
-  window.addEventListener("scroll", pageScroll);
+const resetCounters = () => {
+  counterValues.value = Array(counters.value.length).fill(0);
+  startTime = null;
+  animating = false;
+};
+
+onMounted(async () => {
+  await fetchData();
+  techs.value = technicians.value.length;
+
+  const section = document.querySelector(".counter-container");
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !animating) {
+          animating = true;
+          requestAnimationFrame(animateCounters);
+        } else if (!entry.isIntersecting) {
+          resetCounters();
+        }
+      });
+    },
+    { threshold: 0.3 } // trigger when 30% is visible
+  );
+
+  if (section) observer.observe(section);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", pageScroll);
+  if (observer) observer.disconnect();
 });
 </script>
 
 <style scoped>
 .counter-container {
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  font-size: 2rem;
-  font-weight: bold;
-  position: relative;
-  margin-top: 1rem;
+  justify-content: center;
+  gap: 30px;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe4e1 100%);
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  max-width: 1200px;
 }
 
 .counter {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.counter::after {
-  content: "";
-  position: absolute;
-  right: -50px;
-  top: 10%;
-  bottom: 10%;
-  width: 2px;
-  background-color: var(--background-secondary);
-  overflow: hidden;
+.counter:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-.counter:last-child::after {
-  display: none;
+.class-label {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  color: #d81b60;
+  margin-bottom: 10px;
+  text-transform: capitalize;
 }
 
-@media (max-width: 992px) {
+.counter-number {
+  font-family: "Lora", serif;
+  font-size: 2rem;
+  color: #333;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.counter:hover .counter-number {
+  color: #ad1457;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .counter-container {
     flex-direction: column;
-    gap: 25px;
+    padding: 20px 10px;
+    margin: 20px;
   }
 
   .counter {
-    gap: 25px;
+    width: 100%;
+    margin-bottom: 20px;
   }
-}
 
-.counter::after {
-  display: none;
+  .class-label {
+    font-size: 1rem;
+  }
+
+  .counter-number {
+    font-size: 1.5rem;
+  }
 }
 </style>

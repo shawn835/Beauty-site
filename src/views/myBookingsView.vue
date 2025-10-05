@@ -95,21 +95,19 @@ const goToDetails = (bookingId) => {
   background: linear-gradient(135deg, #fff5f7 0%, #ffe4e1 100%);
   border-radius: 15px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Lora", serif;
   text-align: center;
 }
 
 .title {
-  font-family: "Playfair Display", serif;
   font-size: 2.5rem;
-  color: #d81b60;
+  color: var(--text-pink);
   margin-bottom: 10px;
   font-weight: 700;
 }
 
 .subtitle {
   font-size: 1.1rem;
-  color: #555;
+  color: var(--dark-gray);
   margin-bottom: 30px;
 }
 
@@ -122,19 +120,19 @@ const goToDetails = (bookingId) => {
 
 .tab-btn {
   padding: 10px 20px;
-  background: #fff;
-  border: 1px solid #ddd;
+  background: var(--bg-light);
+  border: 1px solid var(--dark-gray);
   border-radius: 20px;
   font-size: 1rem;
-  color: #333;
+  color: var(--light-dark);
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .tab-btn.active {
-  background-color: #d81b60;
-  color: #fff;
-  border-color: #d81b60;
+  background-color: var(--bg-pink);
+  color: var(--text-light);
+  border-color: var(--text-pink);
 }
 
 .tab-btn:hover:not(.active) {

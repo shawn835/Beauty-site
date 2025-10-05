@@ -30,7 +30,6 @@ h2 {
 .footer-container {
   margin-top: 1.5rem;
   background-color: var(--footer-bg);
-
   color: var(--text-secondary);
 }
 .footer-container > div {
