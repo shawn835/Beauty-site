@@ -11,6 +11,6 @@
 </template>
 
 <script setup>
-import hero from "../utility/Hero.vue";
+import hero from "../utility/HeroContent.vue";
 import Headings from "../utility/Headings.vue";
 </script>

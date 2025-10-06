@@ -56,7 +56,7 @@
 
 <script setup>
 import { onMounted, computed } from "vue";
-import hero from "../utility/Hero.vue";
+import hero from "../utility/HeroContent.vue";
 import Headings from "../utility/Headings.vue";
 import { useApi } from "../composables/useFetch";
 import { formatDuration } from "@/utils";
