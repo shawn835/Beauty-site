@@ -5,7 +5,8 @@
     :fields="passwordFields"
     button-text="Update Password"
     :loading="loading"
-    @submit="submitPassword" />
+    @submit="submitPassword"
+  />
 </template>
 <script setup>
 import BaseForm from "./utility/BaseForm.vue";

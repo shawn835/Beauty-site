@@ -37,7 +37,7 @@ export const useVerifyEmail = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code: token, email: email.value }),
-        }
+        },
       );
 
       const data = await handleResponse(res);
@@ -62,7 +62,7 @@ export const useVerifyEmail = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ email: email.value }),
-        }
+        },
       );
 
       const data = await handleResponse(res);

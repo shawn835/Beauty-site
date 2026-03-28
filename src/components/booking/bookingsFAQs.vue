@@ -3,7 +3,8 @@
     <div class="faq-header">
       <Headings
         heading="Appointment & Policy FAQs"
-        :style="{ color: 'var(--text-heading)' }" />
+        :style="{ color: 'var(--text-heading)' }"
+      />
     </div>
     <div class="query">
       <Accordion>
@@ -49,7 +50,8 @@
       <router-link to="/contact-us">
         <buttons
           button-text="have any other question?"
-          class-name="primary-button" />
+          class-name="primary-button"
+        />
       </router-link>
     </div>
   </div>

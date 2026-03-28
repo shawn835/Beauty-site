@@ -1,12 +1,13 @@
 import { defineStore } from "pinia";
-import CryptoJS from "crypto-js";
 import { useToast } from "../composables/useToast";
+import { handleResponse } from "@/components/utility/response";
+import router from "@/router/router";
 const { show } = useToast();
 
-const secret = import.meta.env.VITE_ENCRYPTION_SECRET;
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
+    loading: false,
   }),
   actions: {
     setUser(user) {
@@ -15,71 +16,49 @@ export const useUserStore = defineStore("user", {
 
     clearUser() {
       this.user = null;
-      try {
-        localStorage.removeItem("user");
-      } catch (err) {
-        console.warn("Failed to clear localStorage user:", err);
-      }
     },
+
     async fetchUser() {
+      this.loading = true;
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
           credentials: "include",
         });
-        if (!res.ok) {
-          this.clearUser();
-          return null;
-        }
-        const data = await res.json();
-        this.setUser(data.user);
-        return data.user;
+
+        const data = await handleResponse(res);
+        const { userData: user } = data;
+
+        this.user = user;
+        return user;
       } catch (err) {
-        this.clearUser();
+        this.user = null;
         return null;
+      } finally {
+        this.loading = false;
       }
     },
 
-    async logOutUser(router) {
+    async logOutUser() {
       try {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
-          method: "POST",
+          method: "DELETE",
           credentials: "include",
         });
 
-        const data = await res.json();
+        const data = await handleResponse(res);
 
-        if (res.ok) {
-          this.user = null;
-          router.push("/login");
-          show({
-            message: data.message || "Logout successful",
-            type: "success",
-          });
-          return;
-        }
+        router.push("/login");
 
-        throw new Error(data.message || "Logout failed");
+        show({
+          message: data.message || "Logout successful",
+          type: "success",
+        });
+
+        this.user = null;
       } catch (error) {
         console.error(error.message || "Error occurred when logging out!");
         show({ message: error.message || "Logout failed", type: "error" });
       }
-    },
-  },
-  persist: {
-    storage: {
-      getItem: (key) => {
-        const encrypted = localStorage.getItem(key);
-        if (!encrypted) return null;
-        const bytes = CryptoJS.AES.decrypt(encrypted, secret);
-        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-        return JSON.parse(decrypted);
-      },
-      setItem: (key, value) => {
-        const data = JSON.stringify(value);
-        const encrypted = CryptoJS.AES.encrypt(data, secret).toString();
-
-        localStorage.setItem(key, encrypted);
-      },
     },
   },
 });

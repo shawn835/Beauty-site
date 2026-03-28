@@ -1,7 +1,8 @@
 <template>
   <HeroContent
     :background-video="'/Videos/home-bg-video.mp4'"
-    :style="{ color: 'white' }">
+    :style="{ color: 'white' }"
+  >
     <template #hero-header>
       <h1>Welcome to symos Nail Spa</h1>
     </template>

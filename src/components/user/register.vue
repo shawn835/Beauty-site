@@ -5,7 +5,8 @@
     :fields="registerFields"
     button-text="register"
     :loading="loading"
-    @submit="submitRegister">
+    @submit="submitRegister"
+  >
     <template #extra>
       <p class="extra-text">
         Already registered?
@@ -47,7 +48,7 @@ const registerFields = [
     value: "",
   },
   {
-    id: "phoneNumber",
+    id: "phone",
     label: "your phone number",
     type: "text",
     required: true,

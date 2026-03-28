@@ -5,7 +5,8 @@
     :fields="loginFields"
     button-text="login"
     :loading="loading"
-    @submit="submitLogin">
+    @submit="submitLogin"
+  >
     <template #extra>
       <p class="extra-text">
         don't have an account?

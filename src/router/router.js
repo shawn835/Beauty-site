@@ -133,21 +133,26 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
 
-  if (to.meta.requiresAuth) {
-    if (!userStore.user) {
-      const currentUser = await userStore.fetchUser();
-      if (!currentUser) return next("/login");
-    }
+  if (!userStore.user) {
+    await userStore.fetchUser();
   }
 
+  // Protected routes
+  if (to.meta.requiresAuth && !userStore.user) {
+    return next("/login");
+  }
+
+  // Admin routes
   if (to.meta.requiresAdmin) {
     if (!userStore.user || userStore.user.role !== "admin") {
-      return next("/unauthorized");
+      return next("/login");
     }
   }
 
-  if (to.name === "admin" && userStore.user.role === "admin") {
-    return next("/admin/dashboard");
+  // Logged-in users should not go to login/register
+  const guestPages = ["/login", "/register"]; // adjust as needed
+  if (userStore.user && guestPages.includes(to.path)) {
+    return next("/");
   }
 
   next();

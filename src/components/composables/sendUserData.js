@@ -1,10 +1,9 @@
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import router from "@/router/router";
 import { handleResponse } from "../utility/response";
 
 export function useSendUserData() {
   const loading = ref(false);
-  const router = useRouter();
 
   const handleRegister = async (form) => {
     loading.value = true;
@@ -65,16 +64,17 @@ export function useSendUserData() {
     loading.value = true;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/updateuser`,
+        `${import.meta.env.VITE_API_URL}/api/updateaccount`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(profileData),
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);
+
       return data;
     } catch (err) {
       console.error(err.message);
@@ -91,11 +91,11 @@ export function useSendUserData() {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/updatepassword`,
         {
-          method: "PUT",
+          method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(passwordData),
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);
@@ -113,11 +113,11 @@ export function useSendUserData() {
     loading.value = true;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/deleteuser`,
+        `${import.meta.env.VITE_API_URL}/api/deleteaccount`,
         {
           method: "DELETE",
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);

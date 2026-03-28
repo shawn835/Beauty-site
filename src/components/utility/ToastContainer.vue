@@ -7,7 +7,8 @@
       :title="t.title"
       :type="t.type"
       :duration="t.duration"
-      @close="remove(t.id)" />
+      @close="remove(t.id)"
+    />
   </div>
 </template>
 

@@ -5,15 +5,19 @@
     :fields="formFields"
     button-text="Update Profile"
     :loading="loading"
-    @submit="submitProfile" />
+    @submit="submitProfile"
+  />
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import BaseForm from "./utility/BaseForm.vue";
 import { useUserStore } from "./store/userStore";
 import { useSendUserData } from "./composables/sendUserData";
 import { useToast } from "./composables/useToast";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const { show } = useToast();
 
@@ -22,10 +26,26 @@ const { updateProfile, loading } = useSendUserData();
 
 const submitProfile = async (formData) => {
   try {
-    const { safeUser, message } = await updateProfile(formData);
-    userStore.user = { ...userStore.user, ...safeUser };
+    const data = await updateProfile(formData);
 
-    show({ message: message, type: "success" });
+    const { safeUser, message, pendingEmail } = data;
+
+    // If backend sent an email (means verification started)
+    if (pendingEmail && pendingEmail !== userStore.user.email) {
+      localStorage.setItem("pendingEmail", pendingEmail);
+      show({
+        message: "We sent a verification code to your new email.",
+        type: "info",
+      });
+      router.push("/token/confirmation"); // move user to verification screen
+    }
+    // Normal update (no email verification required)
+    else if (safeUser) {
+      userStore.user = { ...userStore.user, ...safeUser };
+      show({ message: message, type: "success" });
+    } else {
+      show({ message: message || "No changes made.", type: "info" });
+    }
   } catch (err) {
     console.error("Profile update failed:", err);
     show({

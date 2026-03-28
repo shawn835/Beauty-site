@@ -61,7 +61,8 @@
             @click="downloadPDF"
             class-name="primary-button"
             button-text="Download"
-            :style="{ borderRadius: '0', width: '100%' }" />
+            :style="{ borderRadius: '0', width: '100%' }"
+          />
         </div>
       </div>
     </div>

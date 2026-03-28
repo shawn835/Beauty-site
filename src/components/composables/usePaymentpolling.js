@@ -21,8 +21,8 @@ export function usePaymentPolling(router) {
     pollInterval = setInterval(async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/booking/status/${bookingId}`,
-          { credentials: "include" }
+          `${import.meta.env.VITE_API_URL}/api/booking/status?bookingId=${bookingId}`,
+          { credentials: "include" },
         );
 
         if (!res.ok) throw new Error("Failed to fetch order status");

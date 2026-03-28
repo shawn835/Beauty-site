@@ -3,7 +3,8 @@
     <div class="faq-header">
       <Headings
         heading="Communication & Location FAQs"
-        :style="{ color: 'var(--text-heading)' }" />
+        :style="{ color: 'var(--text-heading)' }"
+      />
     </div>
     <div class="query">
       <Accordion>

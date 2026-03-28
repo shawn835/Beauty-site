@@ -17,12 +17,14 @@
         opacity: '1',
         visibility: 'visible',
       }"
-      :style="{ gridTemplateColumns: 'repeat(3, 1fr)', cursor: 'pointer' }">
+      :style="{ gridTemplateColumns: 'repeat(3, 1fr)', cursor: 'pointer' }"
+    >
       <template #images="{ content }">
         <router-link
           :to="`/blogposts/${content.slug}`"
           custom
-          v-slot="{ href, navigate }">
+          v-slot="{ href, navigate }"
+        >
           <a :href="href" @click="navigate">
             <img v-lazy="content.imageDisplay" :alt="content.category" />
           </a>
@@ -35,7 +37,8 @@
             <buttons
               :button-text="content.category"
               class-name="secondary-button"
-              :style="{ borderRadius: '0', padding: '4px 6px' }" />
+              :style="{ borderRadius: '0', padding: '4px 6px' }"
+            />
 
             <h3 class="title">{{ content.title }}</h3>
             <div class="author-date">

@@ -22,7 +22,7 @@ export const useAdmin = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: srv.subservice.status }),
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);
@@ -51,7 +51,7 @@ export const useAdmin = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ bookingStatus: booking.bookingStatus }),
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);

@@ -12,7 +12,8 @@
     <div class="container">
       <Headings
         heading="look for what you like"
-        :style="{ color: 'var(--text-heading)' }" />
+        :style="{ color: 'var(--text-heading)' }"
+      />
 
       <div class="services-grid">
         <div v-for="img in images" :key="img.serviceId" class="service-card">
@@ -35,7 +36,8 @@
             <button
               @click="addToBooking(img)"
               class="primary-button"
-              :aria-label="`Book ${img.subservice.name}`">
+              :aria-label="`Book ${img.subservice.name}`"
+            >
               book this
             </button>
           </div>
@@ -47,7 +49,8 @@
             :page="currentPage"
             :total-pages="totalPages"
             :next-page="nextPage"
-            :prev-page="prevPage" />
+            :prev-page="prevPage"
+          />
         </div>
       </div>
     </div>
@@ -116,7 +119,9 @@ const images = computed(() => data.value?.images || []);
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .service-card:hover {
@@ -132,7 +137,9 @@ const images = computed(() => data.value?.images || []);
 }
 
 .card-image img {
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 .card-image:hover img {
@@ -216,7 +223,9 @@ const images = computed(() => data.value?.images || []);
   font-family: "Lora", serif;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 }
 
 .book-button:hover {

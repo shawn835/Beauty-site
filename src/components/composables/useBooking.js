@@ -26,14 +26,14 @@ export function useBooking() {
       }
 
       form.gallery.forEach((item) =>
-        fd.append("gallery[]", JSON.stringify(item))
+        fd.append("gallery[]", JSON.stringify(item)),
       );
 
       if (Array.isArray(form.custom) && form.custom.length > 0) {
-        form.custom.forEach((file) => fd.append("custom[]", file));
+        form.custom.forEach((file) => fd.append("custom", file));
       }
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/book`, {
         method: "POST",
         body: fd,
         credentials: "include",
@@ -59,7 +59,7 @@ export function useBooking() {
         {
           method: "POST",
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);
@@ -80,17 +80,17 @@ export function useBooking() {
 
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}`,
+        `${import.meta.env.VITE_API_URL}/api/bookings?bookingId=${bookingId}`,
         {
           credentials: "include",
-        }
+        },
       );
 
       const data = await handleResponse(res);
 
       return data.booking;
     } catch (error) {
-      console.error("something went wrong", err);
+      console.error("something went wrong", error);
       loading.value = false;
       throw error;
     } finally {

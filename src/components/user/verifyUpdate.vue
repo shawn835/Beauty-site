@@ -1,7 +1,7 @@
 <template>
   <BaseForm
     title="enter your code"
-    subtitle="register to enjoy full experience"
+    subtitle="please confirm your email"
     :fields="sendCodeField"
     button-text="send code"
     :loading="loading"

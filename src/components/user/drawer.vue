@@ -9,7 +9,8 @@
         v-else-if="item.action === 'logout'"
         class="menu-item"
         @click="handleLogout"
-        :disabled="loading">
+        :disabled="loading"
+      >
         {{ loading ? "Logging out..." : item.label }}
       </button>
     </template>

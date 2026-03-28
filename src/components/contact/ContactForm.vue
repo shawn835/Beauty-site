@@ -6,7 +6,8 @@
     <div>
       <location
         :style="{ fontSize: '20px', fontWeight: '600' }"
-        :icon-style="{ color: 'var(--seconday-icon-color)' }" />
+        :icon-style="{ color: 'var(--seconday-icon-color)' }"
+      />
     </div>
 
     <div>
@@ -16,7 +17,8 @@
         :fields="contactFormFields"
         button-text="submit"
         :loading="loading"
-        @submit="submitContactForm" />
+        @submit="submitContactForm"
+      />
     </div>
   </div>
 </template>

@@ -3,13 +3,13 @@
     <div><UpdateProfile /></div>
     <div><UpdatePassword /></div>
   </div>
-  <DeleteUser />
+  <deleteAccount />
 </template>
 
 <script setup>
 import UpdatePassword from "@/components/UpdatePassword.vue";
 import UpdateProfile from "@/components/UpdateProfile.vue";
-import DeleteUser from "@/components/user/DeleteUser.vue";
+import deleteAccount from "@/components/user/deleteAccount.vue";
 </script>
 
 <style scoped>
