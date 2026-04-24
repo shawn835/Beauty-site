@@ -3,51 +3,65 @@ import { useToast } from "./useToast";
 const { show } = useToast();
 export function usePaymentPolling(router) {
   const isProcessing = ref(false);
+
   let pollInterval = null;
   let timeoutHandle = null;
 
-  const startPolling = (bookingId) => {
+  const startPolling = (bookingCode) => {
     if (pollInterval) return;
 
     isProcessing.value = true;
 
-    // Safety timeout (60s)
+    // soft timeout (UX only — NOT failure)
     timeoutHandle = setTimeout(() => {
-      stopPolling();
-      show({ message: "Payment timeout. Please try again.", type: "error" });
+      show({
+        message:
+          "We are still confirming your payment. If successful, it will reflect shortly.",
+        type: "info",
+      });
     }, 60000);
 
-    // Poll every 3s
     pollInterval = setInterval(async () => {
       try {
         const res = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/booking/status?bookingId=${bookingId}`,
+          `${import.meta.env.VITE_API_URL}/api/booking/status?bookingCode=${bookingCode}`,
           { credentials: "include" },
         );
 
-        if (!res.ok) throw new Error("Failed to fetch order status");
+        if (!res.ok) throw new Error("Failed to fetch status");
 
-        const data = await res.json();
+        const { status, message } = await res.json();
 
-        console.log(data.status);
+        console.log("poll status:", status);
 
-        if (data.status === "confirmed") {
-          stopPolling();
-          show({
-            message: data.message || "Payment successful. Booking confirmed!",
-            type: "success",
-          });
-          router.push(`/orders/track-order/${bookingId}`);
-        } else if (data.status === "payment_failed") {
-          stopPolling();
-          show({
-            message: data.message || "Payment failed. Please try again.",
-            type: "error",
-          });
+        if (status === "pending_payment" || status === "processing") {
+          return; // keep polling silently
         }
+
+        stopPolling();
+
+        const msg = message || "";
+
+        if (status === "confirmed") {
+          show({ message: msg || "Payment successful!", type: "success" });
+          router.push(`/orders/track-order/${bookingCode}`);
+          return;
+        }
+
+        if (status === "completed") {
+          show({ message: msg || "Service completed.", type: "success" });
+          router.push(`/orders/track-order/${bookingCode}`);
+          return;
+        }
+
+        if (status === "payment_failed") {
+          show({ message: msg || "Payment not completed.", type: "error" });
+          return;
+        }
+
+        console.warn("Unknown status:", status);
       } catch (error) {
-        console.error("Error polling payment status:", error);
-        // silently retry — user still sees spinner
+        console.error("Polling error:", error);
       }
     }, 3000);
   };
@@ -55,15 +69,13 @@ export function usePaymentPolling(router) {
   const stopPolling = () => {
     if (pollInterval) clearInterval(pollInterval);
     if (timeoutHandle) clearTimeout(timeoutHandle);
+
     pollInterval = null;
     timeoutHandle = null;
     isProcessing.value = false;
   };
 
-  // Cleanup if component unmounts
-  onUnmounted(() => {
-    stopPolling();
-  });
+  onUnmounted(() => stopPolling());
 
   return {
     isProcessing,

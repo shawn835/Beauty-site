@@ -6,7 +6,7 @@ export const useBookingStore = defineStore("booking", () => {
   const serviceIds = ref([]);
 
   const addService = (service) => {
-    if (!selectedServices.value.find((s) => s.name === service.name)) {
+    if (!selectedServices.value.some((s) => s.subId === service.subId)) {
       selectedServices.value.push(service);
       addServiceId(service.serviceId);
     }
@@ -18,15 +18,21 @@ export const useBookingStore = defineStore("booking", () => {
     }
   };
 
-  // emove subservice and clean serviceId if no subs left
-  const removeService = (name, serviceId) => {
+  const isServiceSelected = (serviceId) => {
+    return serviceIds.value.includes(serviceId);
+  };
+
+  const isSubServiceSelected = (subId) => {
+    return selectedServices.value.some((s) => s.subId === subId);
+  };
+
+  const removeService = (subId, serviceId) => {
     selectedServices.value = selectedServices.value.filter(
-      (s) => s.name !== name
+      (s) => s.subId !== subId,
     );
 
-    // check if any subservice still uses this serviceId
     const stillExists = selectedServices.value.some(
-      (s) => s.serviceId === serviceId
+      (s) => s.serviceId === serviceId,
     );
 
     if (!stillExists) {
@@ -41,11 +47,11 @@ export const useBookingStore = defineStore("booking", () => {
 
   //totals
   const totalPrice = computed(() =>
-    selectedServices.value.reduce((sum, s) => sum + (s.price || 0), 0)
+    selectedServices.value.reduce((sum, s) => sum + (s.price || 0), 0),
   );
 
   const totalDuration = computed(() =>
-    selectedServices.value.reduce((sum, s) => sum + (s.duration || 0), 0)
+    selectedServices.value.reduce((sum, s) => sum + (s.duration || 0), 0),
   );
 
   return {
@@ -55,6 +61,8 @@ export const useBookingStore = defineStore("booking", () => {
     addService,
     removeService,
     clearServices,
+    isServiceSelected,
+    isSubServiceSelected,
     totalDuration,
     totalPrice,
   };

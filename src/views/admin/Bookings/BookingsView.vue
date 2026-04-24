@@ -1,54 +1,46 @@
 <template>
   <div class="admin-bookings-container">
-    <h1 class="page-title">Admin Booking Management</h1>
-    <p class="page-subtitle">Manage and oversee all booking activities</p>
+    <!-- <h1 class="page-title">Admin Booking Management</h1>
+    <p class="page-subtitle">Manage and oversee all booking activities</p> -->
 
-    <FilterPanel
-      :filters="filters"
-      @applyFilters="applyFilters"
-      @search="onSearch" />
+    <BookingBar
+      v-model="filters"
+      :technicians="appStore.technicians"
+      :services="appStore.services"
+      @apply="applyFilters"
+    />
 
-    <BookingsTable
-      :bookings="bookings"
-      @openDetails="openDetails"
-      @openCustomerInfo="openCustomerInfo"
-      @reschedule="rescheduleBooking"
-      @cancel="cancelBooking"
-      @complete="markCompleted"
-      @updatePayment="updatePayment" />
+    <!-- Your appointments table below -->
 
-    <BookingModal
-      v-if="selectedBooking"
-      :booking="selectedBooking"
-      :modalType="modalType"
-      v-model:rescheduleDate="rescheduleDate"
-      v-model:rescheduleTime="rescheduleTime"
-      v-model:paymentStatus="paymentStatus"
-      v-model:refundOption="refundOption"
-      :paymentStatuses="paymentStatuses"
-      @close="closeModal"
-      @confirmReschedule="confirmReschedule"
-      @confirmCancel="confirmCancel"
-      @confirmPaymentUpdate="confirmPaymentUpdate" />
+    <bookingTable :bookings="bookings" />
   </div>
 </template>
 
 <script setup>
-import { ref, computed, reactive, watch } from "vue";
+import { ref, computed, reactive, watch, onMounted } from "vue";
 import { formatDate } from "@/utils";
-import FilterPanel from "./FilterPanel.vue";
-import BookingsTable from "./BookingsTable.vue";
-import BookingModal from "./BookingModal.vue";
+import BookingBar from "./BookingBar.vue";
+import bookingTable from "./bookingTable.vue";
 import { useApi } from "@/components/composables/useFetch";
+import { useAppStore } from "@/components/store/appStore";
+
+const appStore = useAppStore();
 
 const filters = reactive({
-  dateFrom: "",
-  dateTo: "",
-  bookingStatus: "",
-  technician: "",
-  serviceType: "",
   search: "",
+  startDate: "",
+  endDate: "",
+  technician: "",
+  service: "",
+  status: "",
+  paymentStatus: "",
 });
+
+// const applyFilters = (newFilters) => {
+//   // Fetch data with these filters
+//   console.log("Applying filters:", newFilters);
+//   // Call your API here
+// };
 
 const url = ref(`${import.meta.env.VITE_API_URL}/api/admin/allbookings`);
 
@@ -125,7 +117,7 @@ const confirmReschedule = () => {
   alert(
     `Booking rescheduled to ${formatDate(rescheduleDate.value)} at ${
       rescheduleTime.value
-    }`
+    }`,
   );
   closeModal();
 };

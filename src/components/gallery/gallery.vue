@@ -16,29 +16,45 @@
       />
 
       <div class="services-grid">
-        <div v-for="img in images" :key="img.serviceId" class="service-card">
-          <!-- Image + overlay -->
+        <div
+          v-for="img in images"
+          :key="img.sub_service_id"
+          class="service-card"
+        >
           <div class="card-image">
-            <img :src="img.subservice.image" :alt="img.subservice.name" />
+            <div
+              v-for="(image, i) in img.images"
+              :key="i"
+              class="gallery-image"
+            >
+              <img :src="image" loading="lazy" :alt="img.sub_service_name" />
+            </div>
+
             <div class="image-overlay">
-              <span class="overlay-text">{{ img.serviceName }}</span>
+              <span class="overlay-text">{{ img.service_name }}</span>
             </div>
           </div>
 
           <!-- Card content -->
           <div class="card-content">
-            <h3 class="card-title">{{ img.subservice.name }}</h3>
+            <h3 class="card-title">{{ img.sub_service_name }}</h3>
             <p class="card-duration">
-              Duration: {{ formatDuration(img.subservice.duration) }}
+              Duration: {{ formatDuration(img.duration) }}
             </p>
-            <p class="card-price">KSh {{ img.subservice.price }}</p>
-            <p class="card-description">{{ img.subservice.description }}</p>
+            <p class="card-price">KSh {{ img.price }}</p>
+            <p class="card-description">symos nails</p>
+            <!-- <p class="card-description">{{ img.subservice.description }}</p> -->
             <button
               @click="addToBooking(img)"
               class="primary-button"
-              :aria-label="`Book ${img.subservice.name}`"
+              :aria-label="`Book ${img.sub_service_name}`"
+              :disabled="bookingStore.isSubServiceSelected(img.sub_service_id)"
             >
-              book this
+              {{
+                bookingStore.isSubServiceSelected(img.sub_service_id)
+                  ? "Added"
+                  : "Book this"
+              }}
             </button>
           </div>
         </div>
@@ -66,7 +82,6 @@ import { formatDuration } from "@/utils";
 import { useBookingStore } from "../store/useBookingStore";
 import { useToast } from "../composables/useToast";
 import Paginator from "../utility/Paginator.vue";
-
 const {
   data,
   page: currentPage,
@@ -80,25 +95,27 @@ const {
 const { show } = useToast();
 const bookingStore = useBookingStore();
 
-const addToBooking = (item) => {
-  const sub = item.subservice;
-
+const addToBooking = (sub) => {
   //subservices details
   bookingStore.addService({
-    serviceId: item.serviceId,
-    name: sub.name,
+    name: sub.sub_service_name,
+    image: sub.image,
+    subId: sub.sub_service_id,
+    serviceId: sub.service_id,
     price: sub.price,
     duration: sub.duration,
-    image: sub.image,
   });
 
-  show({ message: `${sub.name} added to your preview`, type: "success" });
+  show({
+    message: `${sub.sub_service_name} added to your preview`,
+    type: "success",
+  });
 };
 
 onMounted(async () => {
   await fetchData();
 });
-const images = computed(() => data.value?.images || []);
+const images = computed(() => data.value?.subServices || []);
 </script>
 
 <style scoped>

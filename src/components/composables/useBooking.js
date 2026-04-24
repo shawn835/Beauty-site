@@ -1,102 +1,93 @@
 import { ref } from "vue";
+import { useToast } from "./useToast";
 import { handleResponse } from "../utility/response";
 
+const BASE = import.meta.env.VITE_API_URL;
 export function useBooking() {
   const loading = ref(false);
+  const { show } = useToast();
 
-  // post booking
-  const handleBooking = async (form) => {
+  const submitBooking = async (form, reset, startPolling, files) => {
     loading.value = true;
-
     try {
       const fd = new FormData();
-
-      // simple fields
       fd.append("date", form.date);
       fd.append("time", form.time);
-      fd.append("technician", form.staff);
+      fd.append("technician", form.technician);
       fd.append("notes", form.notes);
-      // Services array
 
-      if (form.gallery.length === 0) {
-        //to avoid services duplication
-        if (Array.isArray(form.services) && form.services.length > 0) {
-          form.services.forEach((s) => fd.append("services[]", s));
-        }
+      files.value.forEach((file) => {
+        fd.append("custom", file);
+      });
+
+      if (form.services?.length) {
+        form.services?.forEach((s) => fd.append("services[]", s));
       }
 
-      form.gallery.forEach((item) =>
-        fd.append("gallery[]", JSON.stringify(item)),
-      );
-
-      if (Array.isArray(form.custom) && form.custom.length > 0) {
-        form.custom.forEach((file) => fd.append("custom", file));
+      if (form.subServiceIds?.length) {
+        form.subServiceIds.forEach((id) => fd.append("subServiceIds[]", id));
       }
 
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/book`, {
+      const res = await fetch(`${BASE}/api/book`, {
         method: "POST",
         body: fd,
         credentials: "include",
       });
 
       const data = await handleResponse(res);
+
+      show({ message: data.message, type: "success" });
+
+      if (data.requiresPayment) startPolling(data.bookingCode);
+      reset();
       return data;
     } catch (err) {
-      console.log(err.stack);
-      loading.value = false;
-      throw err;
+      show({ message: err.message || "Something went wrong!", type: "error" });
+      console.error(err);
     } finally {
       loading.value = false;
     }
   };
 
-  // cancel booking
-  const cancelBooking = async (bookingId) => {
+  //get booking details
+  const fetchBookingById = async (bookingCode) => {
     loading.value = true;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/bookings/${bookingId}/cancel`,
-        {
-          method: "POST",
-          credentials: "include",
-        },
-      );
-
-      const data = await handleResponse(res);
-
-      return data;
-    } catch (error) {
-      console.log(error.stack);
-      loading.value = false;
-      throw error;
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  // fetch booking by id
-  const fetchBookingById = async (bookingId) => {
-    loading.value = true;
-
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/bookings?bookingId=${bookingId}`,
+        `${BASE}/api/bookings?bookingCode=${bookingCode}`,
         {
           credentials: "include",
         },
       );
 
       const data = await handleResponse(res);
-
       return data.booking;
     } catch (error) {
-      console.error("something went wrong", error);
+      console.error("error fetching booking:", error);
+    } finally {
       loading.value = false;
+    }
+  };
+
+  //cancel booking
+  const cancelBooking = async (bookingCode) => {
+    loading.value = true;
+    try {
+      const res = await fetch(`${BASE}/api/bookings`, {
+        credentials: "include",
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookingCode }),
+      });
+      const data = await handleResponse(res);
+      return data;
+    } catch (error) {
+      console.error("error canceling booking:", error);
       throw error;
     } finally {
       loading.value = false;
     }
   };
 
-  return { handleBooking, cancelBooking, fetchBookingById, loading };
+  return { loading, submitBooking, fetchBookingById, cancelBooking };
 }

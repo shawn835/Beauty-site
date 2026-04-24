@@ -2,27 +2,6 @@ import { ref } from "vue";
 
 export const toast = ref({ visible: false, message: "" });
 
-export function handleFileUpload(event, previews, form) {
-  // Clear existing previews and custom files
-  previews.value.forEach((p) => URL.revokeObjectURL(p.url));
-  previews.value = [];
-  form.custom = [];
-
-  const files = Array.from(event.target.files);
-
-  files.forEach((file) => {
-    // Store the actual file for submission
-    form.custom.push(file);
-
-    // Generate preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      previews.value.push(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
 //duration helper
 export function formatDuration(minutes) {
   if (!minutes || minutes <= 0) return "N/A";

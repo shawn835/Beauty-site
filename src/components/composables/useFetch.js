@@ -1,8 +1,9 @@
+import { handleResponse } from "../utility/response";
 import { ref, unref, watch } from "vue";
 
 export function useApi(
   baseUrl,
-  { perPage = null, options = {}, withCredentials = false } = {}
+  { perPage = null, options = {}, withCredentials = false } = {},
 ) {
   const data = ref(null);
   const error = ref(null);
@@ -32,20 +33,19 @@ export function useApi(
       };
 
       const res = await fetch(url, finalOptions);
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.message || `Failed with ${res.status}`);
+      const json = await handleResponse(res);
 
       data.value = json;
+      console.log(data.value);
 
       // update pagination
-      if (perPage && json.pagination) {
-        totalPages.value = json.pagination.totalPages || 1;
-        totalCount.value = json.pagination.totalCount || 0;
-        page.value = json.pagination.page || 1;
+      // update pagination metadata ONLY
+      if (perPage && json) {
+        totalPages.value = json.totalPages || 1;
+        totalCount.value = json.totalCount || 0;
       }
     } catch (err) {
-      console.error("useApi error:", err);
+      console.error("useApi error:", err.stack);
       error.value = err.message;
       data.value = null;
     } finally {
@@ -75,7 +75,7 @@ export function useApi(
         page.value = 1;
         fetchData();
       },
-      { immediate: true }
+      { immediate: true },
     );
   }
 

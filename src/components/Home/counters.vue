@@ -4,7 +4,8 @@
       class="counter"
       v-for="(counter, index) in counters"
       :data-target="counter.target"
-      :key="index">
+      :key="index"
+    >
       <div class="class-label">{{ counter.label }}</div>
       <div class="counter-number">{{ counterValues[index] }}+</div>
     </div>
@@ -13,9 +14,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useTechnicians } from "../composables/useTechnician";
-
-const { technicians, fetchData } = useTechnicians();
+import { useAppStore } from "../store/appStore";
+const appStore = useAppStore();
+const technicians = computed(() => appStore.technicians);
 
 // reactive counters
 const techs = ref(0);
@@ -55,7 +56,6 @@ const resetCounters = () => {
 };
 
 onMounted(async () => {
-  await fetchData();
   techs.value = technicians.value.length;
 
   const section = document.querySelector(".counter-container");
@@ -70,7 +70,7 @@ onMounted(async () => {
         }
       });
     },
-    { threshold: 0.3 } // trigger when 30% is visible
+    { threshold: 0.3 }, // trigger when 30% is visible
   );
 
   if (section) observer.observe(section);
@@ -100,7 +100,9 @@ onUnmounted(() => {
   padding: 20px;
   border-radius: 10px;
   width: 250px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
