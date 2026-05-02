@@ -47,7 +47,10 @@ export const useBookingStore = defineStore("booking", () => {
 
   //totals
   const totalPrice = computed(() =>
-    selectedServices.value.reduce((sum, s) => sum + (s.price || 0), 0),
+    selectedServices.value.reduce(
+      (sum, s) => sum + parseFloat(s.price || 0),
+      0,
+    ),
   );
 
   const totalDuration = computed(() =>

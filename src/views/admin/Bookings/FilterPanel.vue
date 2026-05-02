@@ -49,15 +49,15 @@
         <div class="filter-group">
           <label>Technician</label>
           <select
-            v-model="localFilters.technician"
+            v-model="localFilters.technicianId"
             class="filter-input"
             v-if="technicians && technicians.length > 0"
           >
             <option value="">All Technicians</option>
             <option
               v-for="tech in technicians"
-              :key="tech._id"
-              :value="tech.name"
+              :key="tech.technician_id"
+              :value="tech.technician_id"
             >
               {{ tech.name }}
             </option>
@@ -67,9 +67,10 @@
         <!-- Service -->
         <div class="filter-group">
           <label>Service</label>
-          <select v-model="localFilters.service" class="filter-input">
+          <select v-model="localFilters.serviceId" class="filter-input">
             <option value="">All Services</option>
-            <option v-for="srv in services" :key="srv._id" :value="srv._id">
+
+            <option v-for="srv in services" :key="srv.id" :value="srv.id">
               {{ srv.name }}
             </option>
           </select>
@@ -146,8 +147,8 @@ const resetFilters = () => {
     search: "",
     startDate: "",
     endDate: "",
-    technician: "",
-    service: "",
+    technicianId: "",
+    serviceId: "",
     status: "",
     paymentStatus: "",
   };

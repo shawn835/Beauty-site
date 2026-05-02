@@ -3,7 +3,9 @@
   <div class="actions">
     <button type="submit" class="primary-button" :disabled="loading">
       <span v-if="loading">Processing Booking...</span>
-      <span v-else>Confirm & Pay with M-Pesa (KES {{ totalPrice }})</span>
+     <span>
+  Pay with M-Pesa (KES {{ totalPrice.toFixed(2) }})
+</span>
     </button>
   </div>
 

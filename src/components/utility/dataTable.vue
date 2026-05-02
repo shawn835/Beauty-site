@@ -1,254 +1,191 @@
-<!-- DataTable.vue -->
 <template>
   <div class="table-container">
-    <!-- Table Header / Title -->
-    <div class="table-header" v-if="title">
-      <h2>{{ title }}</h2>
-      <slot name="header-actions"></slot>
+    <!-- Table Header / Toolbar -->
+    <div class="table-toolbar">
+      <slot name="toolbar">
+        <h2 class="table-title">{{ title }}</h2>
+      </slot>
     </div>
 
     <div class="table-wrapper">
-      <table class="admin-table">
+      <table class="data-table">
         <thead>
           <tr>
-            <!-- Dynamic Headers -->
             <th
-              v-for="(header, index) in headers"
-              :key="index"
-              :class="{ 'actions-col': index === headers.length - 1 }"
+              v-for="col in columns"
+              :key="col.key"
+              :style="{ width: col.width }"
             >
-              {{ header }}
+              {{ col.label }}
             </th>
           </tr>
         </thead>
         <tbody>
-          <!-- Empty State -->
-          <tr v-if="items.length === 0">
-            <td :colspan="headers.length" class="empty-state">
-              <p>No records found</p>
+          <tr
+            v-for="(row, index) in data"
+            :key="index"
+            class="table-row"
+            @click="goToBooking(row.bookingCode)"
+          >
+            <td v-for="col in columns" :key="col.key">
+              <slot :name="`cell-${col.key}`" :row="row" :value="row[col.key]">
+                <!-- Default rendering -->
+                {{ row[col.key] }}
+              </slot>
             </td>
           </tr>
 
-          <!-- Data Rows -->
-          <tr
-            v-for="(item, rowIndex) in items"
-            :key="rowIndex"
-            class="data-row"
-          >
-            <!-- Dynamic Cells -->
-            <td v-for="(header, colIndex) in headers" :key="colIndex">
-              <!-- Last column = Actions -->
-              <div v-if="colIndex === headers.length - 1" class="actions-cell">
-                <slot name="actions" :item="item" :index="rowIndex"></slot>
-              </div>
-
-              <!-- Regular data cells -->
-              <template v-else>
-                <slot
-                  :name="`column-${header.toLowerCase().replace(/\s+/g, '-')}`"
-                  :item="item"
-                  :value="item[header.toLowerCase()]"
-                >
-                  {{ getNestedValue(item, header) }}
-                </slot>
-              </template>
+          <!-- Empty State -->
+          <tr v-if="data.length === 0" class="empty-row">
+            <td :colspan="columns.length" class="empty-state">
+              No bookings found
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Pagination Slot -->
-    <div class="table-footer" v-if="showPagination">
-      <slot name="pagination"></slot>
+    <!-- Pagination controls -->
+    <div class="pagination-controls" v-if="totalPages < 1">
+      <Paginator
+        :page="currentPage"
+        :total-pages="totalPages"
+        :next-page="nextPage"
+        :prev-page="prevPage"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import Paginator from "./Paginator.vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
+
+const goToBooking = (bookingCode) => {
+  router.push(`/admin/bookings/${bookingCode}`);
+};
 const props = defineProps({
   title: {
     type: String,
-    default: "",
+    default: "Bookings",
   },
-  headers: {
+  columns: {
     type: Array,
     required: true,
   },
-  items: {
+  data: {
     type: Array,
-    required: true,
     default: () => [],
   },
-  showPagination: {
-    type: Boolean,
-    default: true,
+
+  currentPage: {
+    type: Number,
+  },
+  totalPages: {
+    type: Number,
+  },
+
+  nextPage: {
+    type: Function,
+  },
+
+  prevPage: {
+    type: Function,
   },
 });
-
-const emit = defineEmits(["row-click"]);
-
-// Helper to handle nested values if needed (e.g. item.client.name)
-const getNestedValue = (obj, key) => {
-  if (!key) return "";
-  const keys = key.toLowerCase().split(".");
-  let value = obj;
-  for (const k of keys) {
-    value = value?.[k];
-    if (value === undefined) return "";
-  }
-  return value;
-};
 </script>
 
 <style scoped>
 .table-container {
+  width: 100%;
   background: var(--bg-light);
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  margin-bottom: 2rem;
 }
 
-.table-header {
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.table-toolbar {
+  padding: 20px 24px;
   border-bottom: 1px solid #eee;
-  background: var(--bg-dark);
-  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.table-header h2 {
+.table-title {
   margin: 0;
   font-size: 1.4rem;
+  color: var(--text-heading);
   font-weight: 600;
 }
 
 .table-wrapper {
-  overflow-x: auto;
+  overflow-x: auto; /* Horizontal scroll on mobile */
   -webkit-overflow-scrolling: touch;
 }
 
-.admin-table {
+.data-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px; /* Forces horizontal scroll on small screens */
+  min-width: 900px; /* Forces horizontal scroll when needed */
 }
 
-.admin-table thead {
+.data-table thead {
   background: var(--bg-dark);
-  color: var(--nav-links);
 }
 
-.admin-table th {
-  padding: 1.1rem 1.2rem;
+.data-table th {
+  padding: 18px 16px;
   text-align: left;
   font-weight: 600;
+  color: var(--text-light);
   font-size: 0.95rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   white-space: nowrap;
+  border-bottom: 1px solid rgba(245, 214, 152, 0.2);
 }
 
-.admin-table th.actions-col {
-  text-align: center;
-  width: 140px;
-}
-
-.admin-table td {
-  padding: 1.1rem 1.2rem;
-  border-bottom: 1px solid #f0f0f0;
-  vertical-align: middle;
+.data-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f0e6e0;
   color: var(--text-dark);
+  font-size: 0.97rem;
 }
 
-.data-row {
+.table-row {
   transition: background 0.2s ease;
+  cursor: pointer;
 }
 
-.data-row:hover {
-  background: #f9f6f2;
+.table-row:hover {
+  background: #fffaf5;
 }
 
-.actions-cell {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  flex-wrap: wrap;
+.table-row:last-child td {
+  border-bottom: none;
 }
 
+/* Empty State */
 .empty-state {
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 60px 20px !important;
   color: var(--dark-gray);
   font-size: 1.1rem;
 }
 
-.empty-state p {
-  margin: 0;
-}
-
-/* Action Buttons inside table */
-.actions-cell button,
-.actions-cell .action-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.view-btn {
-  background: #3498db;
-  color: white;
-}
-
-.edit-btn {
-  background: #f39c12;
-  color: white;
-}
-
-.delete-btn {
-  background: #e74c3c;
-  color: white;
-}
-
-.action-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-/* Responsive Improvements */
+/* Responsive */
 @media (max-width: 768px) {
-  .table-header {
-    padding: 1.2rem 1rem;
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+  .table-wrapper {
+    max-height: 70vh;
   }
 
-  .admin-table th,
-  .admin-table td {
-    padding: 0.9rem 0.8rem;
-    font-size: 0.9rem;
-  }
-
-  .actions-cell {
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .actions-cell button {
-    width: 100%;
-    justify-content: center;
+  .data-table th,
+  .data-table td {
+    padding: 14px 10px;
+    font-size: 0.92rem;
   }
 }
 </style>

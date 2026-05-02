@@ -5,37 +5,17 @@
       <div class="sidebar-header">
         <i class="fas fa-spa toggler-icon" @click="toggleSidebar"></i>
       </div>
+
       <nav class="sidebar-nav">
         <ul>
           <li
-            :class="{ 'nav-item': true, active: activeRoute === 'dashboard' }"
-            @click="goTo('admin-dashboard')">
-            <i class="fas fa-home"></i>
-            <span v-if="isSidebarOpen">Dashboard</span>
-          </li>
-          <li
-            :class="{ 'nav-item': true, active: activeRoute === 'bookings' }"
-            @click="goTo('admin-bookings')">
-            <i class="fas fa-calendar-check"></i>
-            <span v-if="isSidebarOpen">Bookings</span>
-          </li>
-          <li
-            :class="{ 'nav-item': true, active: activeRoute === 'services' }"
-            @click="goTo('admin-services')">
-            <i class="fas fa-paint-brush"></i>
-            <span v-if="isSidebarOpen">Services</span>
-          </li>
-          <li
-            :class="{ 'nav-item': true, active: activeRoute === 'users' }"
-            @click="goTo('admin-users')">
-            <i class="fas fa-users"></i>
-            <span v-if="isSidebarOpen">Users</span>
-          </li>
-          <li
-            :class="{ 'nav-item': true, active: activeRoute === 'payments' }"
-            @click="goTo('admin-payments')">
-            <i class="fas fa-credit-card"></i>
-            <span v-if="isSidebarOpen">Payments</span>
+            v-for="item in navItems"
+            :key="item.route"
+            :class="['nav-item', { active: activeRoute === item.route }]"
+            @click="goTo(item.route)"
+          >
+            <i :class="item.icon"></i>
+            <span v-if="isSidebarOpen">{{ item.label }}</span>
           </li>
         </ul>
       </nav>
@@ -52,22 +32,54 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const route = useRoute();
 
 const isSidebarOpen = ref(true);
-const activeRoute = ref("dashboard"); // default
 
 const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
 
-const goTo = (name) => {
-  router.push({ name });
-};
+const navItems = [
+  {
+    label: "Dashboard",
+    route: "admin-dashboard",
+    active: "dashboard",
+    icon: "fas fa-home",
+  },
+  {
+    label: "Bookings",
+    route: "admin-bookings",
+    active: "bookings",
+    icon: "fas fa-calendar-check",
+  },
+  {
+    label: "Services",
+    route: "admin-services",
+    active: "services",
+    icon: "fas fa-paint-brush",
+  },
+  {
+    label: "Users",
+    route: "admin-users",
+    active: "users",
+    icon: "fas fa-users",
+  },
+  {
+    label: "Payments",
+    route: "admin-payments",
+    active: "payments",
+    icon: "fas fa-credit-card",
+  },
+];
+
+const activeRoute = computed(() => route.name);
+
+const goTo = (name) => router.push({ name });
 
 // Watch for route change to highlight active tab
 watch(
@@ -75,7 +87,7 @@ watch(
   (newName) => {
     activeRoute.value = newName?.replace("admin-", "") || "dashboard";
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 
@@ -153,8 +165,8 @@ watch(
 }
 
 .main-content {
-  flex: 1;
   padding: 20px;
+  width: 100%;
 }
 
 .dashboard-content {

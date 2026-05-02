@@ -10,7 +10,8 @@
         :key="tab"
         :class="{ active: activeTab === tab }"
         @click="activeTab = tab"
-        class="tab-btn">
+        class="tab-btn"
+      >
         {{ tab }}
       </button>
     </div>
@@ -21,20 +22,18 @@
         v-for="booking in bookings"
         :key="booking.id"
         class="booking-card"
-        @click="goToDetails(booking.bookingId)">
+        @click="goToDetails(booking.bookingCode)"
+      >
         <div class="card-header">
-          <h3 class="card-title">
-            <!-- {{ booking.services.map((s) => s.name).join(", ") }} -->
-          </h3>
-
           <span class="card-date">
-            {{ formatDate(booking.date) }} at {{ booking.time }}</span
+            {{ formatDate(booking.startTime) }} at
+            {{ formatTimeRange(booking.startTime, booking.endTime) }}</span
           >
         </div>
         <div class="card-details">
-          <p><strong>Technician:</strong> {{ booking.technician }}</p>
-          <p v-if="booking?.payment?.amount !== undefined">
-            <strong>Price:</strong> KES {{ booking.payment.amount }}
+          <p><strong>Technician:</strong> {{ booking.technicianName }}</p>
+          <p v-if="booking?.amount !== undefined">
+            <strong>Price:</strong> KES {{ booking.amount }}
           </p>
 
           <p>
@@ -56,7 +55,8 @@
       :page="page"
       :total-pages="totalPages"
       :next-page="nextPage"
-      :prev-page="prevPage" />
+      :prev-page="prevPage"
+    />
   </div>
 </template>
 
@@ -65,7 +65,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
 import Paginator from "@/components/utility/Paginator.vue";
-import { formatDate } from "@/utils";
+import { formatDate, formatTimeRange } from "@/utils";
 
 // Tabs and state
 const tabs = ["All", "Upcoming", "Complete", "Cancelled"];
@@ -73,7 +73,8 @@ const activeTab = ref("All");
 const router = useRouter();
 
 const url = computed(
-  () => `${import.meta.env.VITE_API_URL}/api/mybookings?tab=${activeTab.value}`
+  () =>
+    `${import.meta.env.VITE_API_URL}/api/user/bookings?status=${activeTab.value}`,
 );
 
 const { data, loading, page, totalPages, nextPage, prevPage } = useApi(url, {
@@ -82,8 +83,8 @@ const { data, loading, page, totalPages, nextPage, prevPage } = useApi(url, {
 });
 const bookings = computed(() => data.value?.bookings || []);
 // Navigate to details
-const goToDetails = (bookingId) => {
-  router.push(`/mybookings/${bookingId}`);
+const goToDetails = (bookingCode) => {
+  router.push(`/bookings/${bookingCode}`);
 };
 </script>
 
@@ -126,7 +127,9 @@ const goToDetails = (bookingId) => {
   font-size: 1rem;
   color: var(--light-dark);
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 .tab-btn.active {
@@ -150,7 +153,9 @@ const goToDetails = (bookingId) => {
   border-radius: 10px;
   padding: 20px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
   border: 1px solid #eee;
 }
 

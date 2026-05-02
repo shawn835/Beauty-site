@@ -34,6 +34,33 @@
   --hover-bg: #2e3538;
   --footer-bg: #2e3538;
   --gap: 2rem;
+
+  /* Booking Status */
+  --status-pending: #f57c00; /* Warm Orange - Good visibility */
+  --status-confirmed: #1976d2; /* Trustworthy Blue */
+  --status-in-progress: #7b1fa2; /* Elegant Purple */
+  --status-completed: #388e3c; /* Fresh Green */
+  --status-cancelled: #d32f2f; /* Strong Red */
+  --status-no-show: #6d4c41; /* Deep Brown */
+
+  /* Payment Status */
+  --status-paid: #388e3c; /* Success Green */
+  --status-success: #388e3c; /* Same as paid (for general success) */
+  --status-pending-payment: #f57c00; /* Orange for pending payment */
+  --status-failed: #d32f2f; /* Clear Red for failed */
+  --status-refunded: #6d4c41; /* Brown for refunded */
+
+  /* Backgrounds for badges (soft versions) */
+  --bg-pending: #fff3e0;
+  --bg-confirmed: #e3f2fd;
+  --bg-in-progress: #f3e5f5;
+  --bg-completed: #e8f5e9;
+  --bg-cancelled: #ffebee;
+  --bg-no-show: #efe6e1;
+
+  --bg-paid: #e8f5e9;
+  --bg-failed: #ffebee;
+  --bg-refunded: #efe6e1;
 }
 
 body {
@@ -51,10 +78,10 @@ body {
   margin: 20px 0;
 }
 
-.container {
+/* .container {
   max-width: 1200px;
   margin: auto;
-}
+} */
 
 i {
   color: var(--primary-icon-color);
@@ -159,6 +186,58 @@ button:hover {
 
 .extra-link:hover {
   text-decoration: underline;
+}
+
+.status-badge {
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+/* Booking Status */
+.pending {
+  background: var(--bg-pending);
+  color: var(--status-pending);
+}
+.confirmed {
+  background: var(--bg-confirmed);
+  color: var(--status-confirmed);
+}
+.in-progress {
+  background: var(--bg-in-progress);
+  color: var(--status-in-progress);
+}
+.completed {
+  background: var(--bg-completed);
+  color: var(--status-completed);
+}
+.cancelled {
+  background: var(--bg-cancelled);
+  color: var(--status-cancelled);
+}
+.no-show {
+  background: var(--bg-no-show);
+  color: var(--status-no-show);
+}
+
+/* Payment Status */
+.paid {
+  background: var(--bg-paid);
+  color: var(--status-paid);
+}
+.failed {
+  background: var(--bg-failed);
+  color: var(--status-failed);
+}
+.refunded {
+  background: var(--bg-refunded);
+  color: var(--status-refunded);
+}
+.pending-payment {
+  background: var(--bg-pending);
+  color: var(--status-pending-payment);
 }
 
 @media (max-width: 992px) {

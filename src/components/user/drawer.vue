@@ -28,7 +28,7 @@ const router = useRouter();
 
 const userMenu = [
   { label: "profile", route: "/profile" },
-  { label: "bookings", route: "/my/bookings" },
+  { label: "bookings", route: "/bookings" },
   { label: "favourites", route: "/my/favourites" },
   { label: "logout", action: "logout" },
 ];

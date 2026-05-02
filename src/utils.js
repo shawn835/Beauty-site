@@ -44,3 +44,32 @@ export const formatDate = (dateInput, { withTime = false } = {}) => {
     day: "numeric",
   });
 };
+
+export const formatTimeRange = (start, end) => {
+  if (!start || !end) return "-";
+
+  const format = (dateString) =>
+    new Date(dateString).toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+
+  return `${format(start)} - ${format(end)}`;
+};
+
+// ...
+export const getStatusClass = (status) => {
+  const s = status?.toLowerCase() || "";
+  if (s.includes("pending")) return "pending";
+  if (s.includes("confirmed")) return "confirmed";
+  if (s.includes("progress")) return "in-progress";
+  if (s.includes("completed")) return "completed";
+  if (s.includes("cancelled")) return "cancelled";
+  if (s.includes("no-show")) return "no-show";
+  if (s.includes("paid") || s.includes("success")) return "paid";
+  if (s.includes("failed")) return "failed";
+  if (s.includes("pending")) return "pending-payment";
+  if (s.includes("refunded")) return "refunded";
+  return "";
+};

@@ -10,6 +10,11 @@ const router = createRouter({
       component: () => import("@/views/HomeView.vue"),
     },
     {
+      path: "/test",
+      name: "test",
+      component: () => import("@/views/admin/test.vue"),
+    },
+    {
       path: "/services",
       name: "services",
       component: () => import("@/views/ServicesView.vue"),
@@ -42,14 +47,14 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/my/bookings",
-      name: "mybookingslist",
+      path: "/bookings",
+      name: "bookings-view",
       component: () => import("@/views/myBookingsView.vue"),
       meta: { requiresAuth: true },
     },
     {
-      path: "/mybookings/:bookingId",
-      name: "mybookings",
+      path: "/bookings/:bookingCode",
+      name: "booking-view",
       component: () => import("@/views/BookingDetailsView.vue"),
       meta: { requiresAuth: true },
     },
@@ -105,6 +110,14 @@ const router = createRouter({
           path: "bookings",
           name: "admin-bookings",
           component: () => import("@/views/admin/Bookings/BookingsView.vue"),
+        },
+
+        {
+          path: "bookings/:bookingCode",
+          name: "admin-booking-details",
+          component: () =>
+            import("@/views/admin/Bookings/AdminBookingDetails.vue"),
+          props: true,
         },
         {
           path: "services",
