@@ -1,11 +1,7 @@
 <template>
-  <AboutHero />
-  <counters />
-  <aboutFAQs />
+  <Hero />
 </template>
 
 <script setup>
-import AboutHero from "@/components/About/AboutHero.vue";
-import counters from "@/components/Home/counters.vue";
-import aboutFAQs from "@/components/About/aboutFAQs.vue";
+import Hero from "@/components/About/Hero.vue";
 </script>

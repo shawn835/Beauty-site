@@ -32,7 +32,8 @@
       <button
         class="primary-button"
         @click="goTo('admin')"
-        v-if="userStore.user?.role === 'admin'">
+        v-if="userStore.user?.role === 'admin'"
+      >
         admin
       </button>
     </div>
@@ -58,7 +59,8 @@
       <button
         v-if="userStore.user"
         class="primary-button"
-        @click="goTo('book-appointment')">
+        @click="goTo('book-appointment')"
+      >
         Book Appointment
       </button>
       <button v-else class="primary-button" @click="goTo('register')">
@@ -68,7 +70,8 @@
       <button
         class="primary-button"
         @click="goTo('admin')"
-        v-if="userStore.user?.role === 'admin'">
+        v-if="userStore.user?.role === 'admin'"
+      >
         admin
       </button>
     </div>
@@ -98,7 +101,6 @@ const navLinks = [
   { text: "Home", path: "/" },
   { text: "About", path: "/about-us" },
   { text: "Services", path: "/services" },
-  { text: "Gallery", path: "/photos" },
   // { text: "Blog", path: "/blogposts" },
   { text: "Contact", path: "/contact-us" },
 ];

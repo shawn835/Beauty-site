@@ -9,7 +9,7 @@
 import navbar from "./components/Home/navbar.vue";
 import { RouterView } from "vue-router";
 import { onMounted } from "vue";
-import footerSection from "./components/global/footerSection.vue";
+import footerSection from "./components/global/Footer.vue";
 import ToastContainer from "./components/utility/ToastContainer.vue";
 import { useUserStore } from "./components/store/userStore";
 

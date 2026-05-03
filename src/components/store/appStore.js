@@ -17,7 +17,7 @@ export const useAppStore = defineStore("app", () => {
   const technicians = computed(() => servicesList.value?.technicians || []);
 
   const servicesUrl = computed(
-    () => `${import.meta.env.VITE_API_URL}/api/services`,
+    () => `${import.meta.env.VITE_API_URL}/api/services/names`,
   );
   const { data: servicesData } = useApi(servicesUrl, {
     withCredentials: false,

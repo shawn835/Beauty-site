@@ -1,13 +1,17 @@
 <template>
-  <HomeHeroSection />
-  <ScrollBelt />
-  <counters />
-  <HomePage />
+  <hero />
+  <servivesPreview />
+  <PromotionsSection />
+  <WhyChooseUs />
+  <Team />
+  <Testimonials />
 </template>
 
 <script setup>
-import HomeHeroSection from "@/components/Home/HomeHeroSection.vue";
-import counters from "@/components/Home/counters.vue";
-import ScrollBelt from "@/components/Home/ScrollBelt.vue";
-import HomePage from "@/components/Home/HomePage.vue";
+import hero from "@/components/Home/hero.vue";
+import PromotionsSection from "@/components/Home/PromotionsSection.vue";
+import WhyChooseUs from "@/components/Home/WhyChooseUs.vue";
+import Team from "@/components/Home/Team.vue";
+import Testimonials from "@/components/Home/Testimonials.vue";
+import servivesPreview from "@/components/Home/servivesPreview.vue";
 </script>
