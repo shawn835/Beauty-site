@@ -45,8 +45,8 @@
           <h3>Your Services</h3>
           <div class="services-list">
             <div
-              v-if="services.length"
-              v-for="sub in subServiceservices"
+              v-if="subServices.length"
+              v-for="sub in subServices"
               :key="sub.id"
               class="service-item"
             >
@@ -99,25 +99,23 @@
           </div>
 
           <!-- Inspiration Images -->
-          <div class="image-section" v-if="subServices?.images?.length">
+          <div class="image-section">
             <h4 class="section-title">Selected Inspiration</h4>
-            <div class="inspiration-gallery">
-              <div
-                v-for="(img, i) in subServices.images"
-                :key="i"
-                class="inspo-item"
-              >
-                <img :src="img.imageUrl" alt="Inspiration" />
-                <div class="inspo-info">
-                  <small>no name</small>
+
+            <div v-for="sub in details.subServices" :key="sub.id">
+              <h5>{{ sub.name }}</h5>
+
+              <div class="inspiration-gallery">
+                <div v-for="img in sub.images" :key="img.id" class="inspo-item">
+                  <img :src="img.imageUrl" alt="Inspiration" />
                 </div>
               </div>
             </div>
           </div>
 
-          <p v-else class="no-inspo">
+          <!-- <p v-else class="no-inspo">
             No inspiration images selected for this booking.
-          </p>
+          </p> -->
         </div>
       </div>
 
@@ -169,28 +167,41 @@
         <div class="card actions-card">
           <h3>Actions</h3>
           <div class="user-actions">
+            <!-- Reschedule -->
             <button
+              v-if="!['cancelled', 'completed'].includes(booking.status)"
               class="btn btn-reschedule"
               @click="rescheduleBooking"
-              :disabled="booking.status === 'Cancelled'"
             >
               Reschedule
             </button>
 
+            <!-- Cancel -->
             <button
+              v-if="!['cancelled', 'completed'].includes(booking.status)"
               class="btn btn-cancel"
-              @click="cancelBooking"
-              :disabled="
-                booking.status === 'Cancelled' || booking.status === 'Confirmed'
-              "
+              @click="showCancelModal = true"
             >
               Cancel Booking
             </button>
 
+            <ConfirmModal
+              :isOpen="showCancelModal"
+              title="Cancel Booking?"
+              message="Are you sure you want to cancel this booking? This action
+            cannot be undone."
+              warningText="A cancellation fee may apply if done
+            less than 4 hours before appointment."
+              type="danger"
+              :loading="isCancelling"
+              @confirm="confirmCancel(booking.id)"
+              @cancel="showCancelModal = false"
+            />
+
+            <!-- Rebook always visible -->
             <button class="btn btn-rebook" @click="rebookService">
               Rebook Same Services
             </button>
-
             <button class="btn btn-contact" @click="contactSalon">
               Contact Salon
             </button>
@@ -202,29 +213,58 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
+import { useBooking } from "@/components/composables/useBooking";
+import { useToast } from "@/components/composables/useToast";
 import {
   formatDate,
   formatDuration,
   formatTimeRange,
   getStatusClass,
-} from "@/utils";
+} from "@/Utility/utils";
+
+import ConfirmModal from "@/components/ConfirmModal.vue";
 const route = useRoute();
-const router = useRouter();
-
+const { loading, cancelBooking } = useBooking();
 const emit = defineEmits(["back"]);
-
 const bookingCode = computed(() => route.params.bookingCode);
+const { show } = useToast();
 
 const url = computed(
-  () => `${import.meta.env.VITE_API_URL}/api/bookings/${bookingCode.value}`,
+  () =>
+    `${import.meta.env.VITE_API_URL}/api/user/bookings/${bookingCode.value}`,
 );
 
 const { data } = useApi(url, {
   withCredentials: true,
 });
+
+/******cancel booking********/
+const showCancelModal = ref(false);
+const isCancelling = ref(false);
+
+const confirmCancel = async (bookingId) => {
+  try {
+    isCancelling.value = true;
+
+    const data = await cancelBooking(bookingId);
+    show({
+      message: data.message || `booking ${bookingCode} cancelled successfully`,
+      type: "success",
+    });
+    showCancelModal.value = false;
+  } catch (error) {
+    show({
+      message: error.message || "booking cancel failed",
+      type: "error",
+    });
+    console.error(error);
+  } finally {
+    isCancelling.value = false;
+  }
+};
 
 const safeData = computed(() => data.value || {});
 const booking = computed(() => safeData.value.booking || {});
@@ -236,6 +276,7 @@ const stats = computed(() => finance.value.stats || {});
 const services = computed(() => details.value.services || []);
 const subServices = computed(() => details.value.subServices || []);
 const customImages = computed(() => details.value.customImages || []);
+const subService = computed(() => data.value?.subServices?.[0]);
 // const activityLogs = computed(() => safeData.value.activity || []);
 
 const activityLog = [
@@ -248,12 +289,6 @@ const activityLog = [
 // Actions
 const rescheduleBooking = () => {
   alert("Reschedule modal would open here");
-};
-
-const cancelBooking = () => {
-  if (confirm("Are you sure you want to cancel this booking?")) {
-    alert("Booking cancelled (demo)");
-  }
 };
 
 const rebookService = () => {

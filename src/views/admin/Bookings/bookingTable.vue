@@ -32,7 +32,7 @@
 </template>
 <script setup>
 import DataTable from "@/components/utility/dataTable.vue";
-import { formatDate, formatTimeRange, getStatusClass } from "@/utils";
+import { formatDate, formatTimeRange, getStatusClass } from "@/Utility/utils";
 
 defineProps({
   bookings: {

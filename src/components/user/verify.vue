@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import BaseForm from "../utility/BaseForm.vue";
+import BaseForm from "../BaseForm.vue";
 import { useVerifyEmail } from "../composables/useVerifyEmail";
 import { onMounted } from "vue";
 import { useToast } from "../composables/useToast";

@@ -32,6 +32,7 @@
         @remove="removeGalleryItem"
       /> -->
 
+      <BookingNotes v-model:notes="form.notes" />
       <BookingActions
         :loading="loading"
         :is-processing="isProcessing"
@@ -53,6 +54,7 @@ import { usePaymentPolling } from "../../composables/usePaymentpolling";
 import { useBookingStore } from "../../store/useBookingStore";
 import { useRouter } from "vue-router";
 import { useAppStore } from "@/components/store/appStore";
+import BookingNotes from "./BookingNotes.vue";
 const bookingStore = useBookingStore();
 
 const initialForm = {

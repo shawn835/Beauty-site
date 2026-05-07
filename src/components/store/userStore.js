@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { useToast } from "../composables/useToast";
-import { handleResponse } from "@/components/utility/response";
+import { handleResponse } from "@/Utility/response";
 import router from "@/router/router";
 const { show } = useToast();
 

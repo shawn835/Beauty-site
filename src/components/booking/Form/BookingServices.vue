@@ -13,6 +13,7 @@
           {{ service.name }}
         </option>
       </select>
+
       <!-- <small class="helper-text">
         Hold Ctrl (or Cmd) to select multiple services
       </small> -->

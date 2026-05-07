@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import router from "@/router/router";
-import { handleResponse } from "../utility/response";
+import { handleResponse } from "@/Utility/response";
 
 export function useSendUserData() {
   const loading = ref(false);

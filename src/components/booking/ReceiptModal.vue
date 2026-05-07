@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { formatDate } from "@/utils";
+import { formatDate } from "@/Utility/utils";
 defineProps({
   show: Boolean,
   booking: Object,

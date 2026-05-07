@@ -1,7 +1,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { handleResponse } from "../utility/response";
-
+import { handleResponse } from "@/Utility/response";
 export const useVerifyEmail = () => {
   const email = ref(localStorage.getItem("pendingEmail") || "");
   const loading = ref(false);

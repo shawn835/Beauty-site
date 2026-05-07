@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { useToast } from "./useToast";
-import { handleResponse } from "../utility/response";
+import { handleResponse } from "@/Utility/response";
 
 const BASE = import.meta.env.VITE_API_URL;
 export function useBooking() {
@@ -70,14 +70,14 @@ export function useBooking() {
   };
 
   //cancel booking
-  const cancelBooking = async (bookingCode) => {
+  const cancelBooking = async (bookingId) => {
     loading.value = true;
     try {
       const res = await fetch(`${BASE}/api/bookings`, {
         credentials: "include",
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingCode }),
+        body: JSON.stringify({ bookingId }),
       });
       const data = await handleResponse(res);
       return data;

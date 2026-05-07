@@ -1,11 +1,9 @@
 <template>
-  <bookingHero />
+  <Hero />
   <bookingForm />
-  <!-- <bookingsFAQs /> -->
 </template>
 
 <script setup>
-import bookingHero from "@/components/booking/bookingHero.vue";
+import Hero from "@/components/booking/Hero.vue";
 import bookingForm from "@/components/booking/Form/bookingForm.vue";
-import bookingsFAQs from "@/components/booking/bookingsFAQs.vue";
 </script>

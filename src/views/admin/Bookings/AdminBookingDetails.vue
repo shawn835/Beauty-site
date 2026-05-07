@@ -262,7 +262,7 @@ import {
   formatDuration,
   getStatusClass,
   formatTimeRange,
-} from "@/utils";
+} from "@/Utility/utils";
 
 const route = useRoute();
 

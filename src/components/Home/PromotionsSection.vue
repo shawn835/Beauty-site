@@ -14,7 +14,10 @@
           </p>
 
           <div class="urgency">
-            <span>⏰ This week only • Ends Sunday</span>
+            <span>
+              <FontAwesomeIcon icon="clock" /> This week only • Ends
+              Sunday</span
+            >
           </div>
 
           <button class="btn-claim" @click="claimOffer">
@@ -40,7 +43,13 @@
       <div class="secondary-promo">
         <div class="promo-card">
           <div class="card-visual">
-            <span class="emoji">💅🦶✨</span>
+            <span class="emoji"
+              ><FontAwesomeIcon
+                icon="hand-sparkles"
+                class="hand-sparkles" /><FontAwesomeIcon
+                icon="shoe-prints"
+                class="shoe-prints" /><FontAwesomeIcon icon="star" class="star"
+            /></span>
           </div>
           <div class="card-content">
             <h3>Manicure + Pedicure Combo</h3>
@@ -58,6 +67,8 @@
 </template>
 
 <script setup>
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
 const claimOffer = () => {
   alert("Redirecting to booking with 20% first visit discount applied...");
 };

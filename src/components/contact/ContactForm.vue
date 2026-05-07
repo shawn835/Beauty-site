@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import BaseForm from "../utility/BaseForm.vue";
+import BaseForm from "../BaseForm.vue";
 import Headings from "../utility/Headings.vue";
 import location from "../utility/location.vue";
 import { useToast } from "../composables/useToast";

@@ -11,7 +11,7 @@
 
 <script setup>
 import { computed } from "vue";
-import BaseForm from "./utility/BaseForm.vue";
+import BaseForm from "./BaseForm.vue";
 import { useUserStore } from "./store/userStore";
 import { useSendUserData } from "./composables/sendUserData";
 import { useToast } from "./composables/useToast";

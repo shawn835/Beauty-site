@@ -9,9 +9,8 @@
     <div class="service-filters">
       <div class="filters-container">
         <button
-          :class="{ active: activeFilter === null }"
+          :class="['filter-btn', { active: activeFilter === null }]"
           @click="emit('change-filter', null)"
-          class="filter-btn"
         >
           All Services
         </button>
@@ -19,9 +18,8 @@
         <button
           v-for="s in filters"
           :key="s.id"
-          :class="{ active: activeFilter === s.id }"
-          @click="emit('change-filter', s.id)"
-          class="filter-btn"
+          :class="['filter-btn', { active: activeFilter === Number(s.id) }]"
+          @click="emit('change-filter', Number(s.id))"
         >
           {{ s.name }}
         </button>
@@ -31,20 +29,17 @@
     <div class="services-grid">
       <div
         v-for="service in services"
-        :key="service.subserviceId"
+        :key="service.subServiceId"
         class="service-card"
       >
         <div class="card-image">
-          <div v-for="img in service.images">
-            <img :src="img" :alt="service.subserviceName" loading="lazy" />
-            <div class="price-tag">
-              From <strong>KSh {{ service.price }}</strong>
-            </div>
+          <img :src="service.image" :alt="service.subServiceName" />
+          <div class="price-tag">
+            From <strong>KSh {{ service.price }}</strong>
           </div>
         </div>
 
         <div class="card-body">
-          <div class="icon">{{ service.icon }}</div>
           <h3>{{ service.subServiceName }}</h3>
 
           <p class="description">
@@ -54,13 +49,20 @@
             }}
           </p>
 
-          <!-- New: Duration -->
           <div class="duration" v-if="service.duration">
             ⏱ <strong>{{ formatDuration(service.duration) }}</strong>
           </div>
 
-          <button class="book-btn" @click="handleBookService(service)">
-            Book Now
+          <button
+            class="book-btn"
+            @click="handleBookService(service)"
+            :disabled="bookingStore.isSubServiceSelected(service.subServiceId)"
+          >
+            {{
+              bookingStore.isSubServiceSelected(service.subServiceId)
+                ? "Added"
+                : "Book this"
+            }}
           </button>
         </div>
       </div>
@@ -74,10 +76,10 @@
   </section>
 </template>
 <script setup>
-import { ref } from "vue";
-import { formatDuration } from "@/utils";
 import { defineProps, defineEmits } from "vue";
-const activeFilter = ref(null);
+import { useBookingStore } from "../store/useBookingStore";
+import { formatDuration } from "@/Utility/utils";
+const bookingStore = useBookingStore();
 
 const props = defineProps({
   title: {
@@ -93,7 +95,6 @@ const props = defineProps({
     type: Array,
     required: true,
   },
-
   filters: {
     type: Array,
     required: true,
@@ -110,10 +111,13 @@ const props = defineProps({
     type: String,
     default: "View All Services →",
   },
-  activeFilter: [Number, null],
+  activeFilter: {
+    type: [Number, null],
+    default: null,
+  },
 });
 
-const emit = defineEmits(["book-service", "view-all"], "change-filter");
+const emit = defineEmits(["book-service", "view-all", "change-filter"]);
 
 const handleBookService = (service) => {
   emit("book-service", service);

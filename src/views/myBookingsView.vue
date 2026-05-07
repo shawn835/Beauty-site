@@ -65,7 +65,7 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
 import Paginator from "@/components/utility/Paginator.vue";
-import { formatDate, formatTimeRange } from "@/utils";
+import { formatDate, formatTimeRange } from "@/Utility/utils";
 
 // Tabs and state
 const tabs = ["All", "Upcoming", "Complete", "Cancelled"];

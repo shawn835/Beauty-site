@@ -38,15 +38,17 @@
     <!-- Trust Bar -->
     <div class="trust-bar">
       <div class="trust-item">
-        <span>🧴</span>
+        <span
+          ><FontAwesomeIcon icon="bottle-droplet" class="bottle-droplet"
+        /></span>
         <span>Premium Products</span>
       </div>
       <div class="trust-item">
-        <span>🧼</span>
+        <span><FontAwesomeIcon icon="soap" class="soap" /></span>
         <span>Fully Sterilized Tools</span>
       </div>
       <div class="trust-item">
-        <span>🚗</span>
+        <span><FontAwesomeIcon icon="car-side" class="car-side" /></span>
         <span>Home Service Available</span>
       </div>
     </div>
@@ -54,6 +56,8 @@
 </template>
 
 <script setup>
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
 const scrollToServices = () => {
   document.getElementById("all-services")?.scrollIntoView({
     behavior: "smooth",

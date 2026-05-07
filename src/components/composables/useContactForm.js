@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { handleResponse } from "../utility/response";
+import { handleResponse } from "@/Utility/response";
 
 export function useContactForm() {
   const loading = ref(false);

@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import BaseForm from "../utility/BaseForm.vue";
+import BaseForm from "../BaseForm.vue";
 import { useSendUserData } from "../composables/sendUserData";
 import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";

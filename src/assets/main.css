@@ -140,33 +140,6 @@ button:hover {
   opacity: 0.9;
 }
 
-.primary-button {
-  background-color: var(--bg-pink);
-  color: var(--text-secondary);
-  border-radius: 25px;
-}
-
-.secondary-button {
-  background-color: #fca3c3;
-  color: var(--secondary-button-color);
-  border-radius: 30px;
-}
-
-.primary-button:hover {
-  background-color: var(--secondary-button-background);
-  color: var(--secondary-button-color);
-}
-.secondary-button:hover {
-  color: var(--primary-button-color);
-  background-color: var(--primary-button-background);
-}
-
-.primary-button:disabled {
-  background-color: var(--bg-grey);
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
 .form-extra {
   margin-top: 1rem;
   text-align: center;
@@ -238,6 +211,119 @@ button:hover {
 .pending-payment {
   background: var(--bg-pending);
   color: var(--status-pending-payment);
+}
+
+button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* ====================== FONT AWESOME ICON STYLING ====================== */
+
+/* Specific Icon Styling */
+.bottle-droplet {
+  color: #a855f7;
+}
+.sparkles {
+  color: #fbbf24;
+}
+.hand-sparkles {
+  color: var(--bg-pink);
+}
+.shoe-prints {
+  color: #10b981;
+}
+.palette {
+  color: #8b5cf6;
+}
+.gem {
+  color: #ec4899;
+}
+.house {
+  color: #3b82f6;
+}
+.soap {
+  color: #22d3ee;
+}
+.mitten {
+  color: var(--bg-pink);
+}
+.user-doctor {
+  color: #14b8a6;
+}
+.car-side {
+  color: #f97316;
+}
+.fire {
+  color: #f43f5e;
+}
+.flask {
+  color: #6366f1;
+}
+.hospital {
+  color: #0ea5e9;
+}
+.comments {
+  color: var(--bg-pink);
+}
+.hands {
+  color: #eab308;
+}
+.door-open {
+  color: #22c55e;
+}
+.spa {
+  color: #c026d3;
+}
+.chair {
+  color: #ec4899;
+}
+
+.clock {
+  color: #22d3ee;
+}
+
+.location,
+.map-marker-alt {
+  color: #f97316;
+}
+
+.envelope,
+.envelope-open {
+  color: #a855f7;
+}
+
+.camera {
+  color: #ec4899;
+}
+
+.star {
+  color: #fbbf24;
+}
+
+.check,
+.check-circle,
+.circle-check {
+  color: #10b981;
+}
+
+.heart,
+.heart-pulse {
+  color: #ef4444;
+}
+
+.user,
+.user-tie,
+.circle-user {
+  color: var(--bg-pink);
+}
+
+/* Usage in Cards */
+.value-icon .fa-icon,
+.hygiene-card .fa-icon,
+.experience-icon .fa-icon {
+  font-size: 3.2rem;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 992px) {
