@@ -1,5 +1,5 @@
 <template>
-  <hero />
+  <Hero />
   <servivesPreview />
   <PromotionsSection />
   <WhyChooseUs />
@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import hero from "@/components/Home/hero.vue";
+import Hero from "@/components/Home/Hero.vue";
 import PromotionsSection from "@/components/Home/PromotionsSection.vue";
 import WhyChooseUs from "@/components/Home/WhyChooseUs.vue";
 import Team from "@/components/Home/Team.vue";

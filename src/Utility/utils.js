@@ -73,3 +73,17 @@ export const getStatusClass = (status) => {
   if (s.includes("refunded")) return "refunded";
   return "";
 };
+
+export function mapBookingToFormData(payload) {
+  const fd = new FormData();
+
+  Object.entries(payload).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => fd.append(key, v));
+    } else {
+      fd.append(key, value);
+    }
+  });
+
+  return fd;
+}

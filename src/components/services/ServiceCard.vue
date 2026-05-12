@@ -8,21 +8,21 @@
     <!-- Filters -->
     <div class="service-filters">
       <div class="filters-container">
-        <button
-          :class="['filter-btn', { active: activeFilter === null }]"
+        <BaseButton
+          label="All Services"
+          :variant="activeFilter === null ? 'primary' : 'ghost'"
+          size="small"
           @click="emit('change-filter', null)"
-        >
-          All Services
-        </button>
+        />
 
-        <button
+        <BaseButton
           v-for="s in filters"
           :key="s.id"
-          :class="['filter-btn', { active: activeFilter === Number(s.id) }]"
+          :label="s.name"
+          :variant="activeFilter === Number(s.id) ? 'primary' : 'ghost'"
+          size="small"
           @click="emit('change-filter', Number(s.id))"
-        >
-          {{ s.name }}
-        </button>
+        />
       </div>
     </div>
 
@@ -52,26 +52,24 @@
           <div class="duration" v-if="service.duration">
             ⏱ <strong>{{ formatDuration(service.duration) }}</strong>
           </div>
-
-          <button
-            class="book-btn"
-            @click="handleBookService(service)"
-            :disabled="bookingStore.isSubServiceSelected(service.subServiceId)"
-          >
-            {{
+          <BaseButton
+            :label="
               bookingStore.isSubServiceSelected(service.subServiceId)
-                ? "Added"
-                : "Book this"
-            }}
-          </button>
+                ? 'Remove'
+                : 'Book this'
+            "
+            @click="handleBookService(service)"
+          />
         </div>
       </div>
     </div>
 
     <div class="view-all" v-if="showViewAll">
-      <button class="btn-view-all" @click="handleViewAll">
-        {{ viewAllText }}
-      </button>
+      <BaseButton
+        :label="viewAllText"
+        variant="primary"
+        @click="handleViewAll"
+      />
     </div>
   </section>
 </template>
@@ -79,7 +77,23 @@
 import { defineProps, defineEmits } from "vue";
 import { useBookingStore } from "../store/useBookingStore";
 import { formatDuration } from "@/Utility/utils";
+import BaseButton from "../BaseButton.vue";
 const bookingStore = useBookingStore();
+import { useToast } from "../composables/useToast";
+
+const { show } = useToast();
+const handleBookService = (service) => {
+  const wasSelected = bookingStore.isSubServiceSelected(service.subServiceId);
+
+  bookingStore.toggleService(service);
+
+  show({
+    message: wasSelected
+      ? `${service.subServiceName} removed from your preview`
+      : `${service.subServiceName} added to your preview`,
+    type: wasSelected ? "info" : "success",
+  });
+};
 
 const props = defineProps({
   title: {
@@ -117,11 +131,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["book-service", "view-all", "change-filter"]);
-
-const handleBookService = (service) => {
-  emit("book-service", service);
-};
+const emit = defineEmits(["view-all", "change-filter"]);
 
 const handleViewAll = () => {
   emit("view-all");
@@ -231,45 +241,6 @@ const handleViewAll = () => {
   font-size: 0.98rem;
   margin-bottom: 20px;
   font-weight: 500;
-}
-
-.book-btn {
-  background: transparent;
-  color: var(--bg-pink);
-  border: 2px solid var(--bg-pink);
-  padding: 12px 32px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.book-btn:hover {
-  background: var(--bg-pink);
-  color: white;
-  transform: translateY(-2px);
-}
-
-.view-all {
-  text-align: center;
-  margin-top: 60px;
-}
-
-.btn-view-all {
-  background: transparent;
-  color: var(--text-light);
-  border: 2px solid var(--text-gray);
-  padding: 14px 40px;
-  border-radius: 50px;
-  font-size: 1.05rem;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-view-all:hover {
-  border-color: var(--bg-pink);
-  color: var(--bg-pink);
 }
 
 service-filters {

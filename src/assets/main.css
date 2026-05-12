@@ -78,15 +78,6 @@ body {
   margin: 20px 0;
 }
 
-/* .container {
-  max-width: 1200px;
-  margin: auto;
-} */
-
-i {
-  color: var(--primary-icon-color);
-}
-
 a {
   font-weight: 600;
   color: var(--bg-dark);
@@ -97,12 +88,6 @@ img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.image {
-  position: relative;
-  width: 100%;
-  height: 370px;
 }
 
 .close {
@@ -138,6 +123,11 @@ button {
 
 button:hover {
   opacity: 0.9;
+}
+
+button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .form-extra {
@@ -318,12 +308,24 @@ button:disabled {
   color: var(--bg-pink);
 }
 
-/* Usage in Cards */
-.value-icon .fa-icon,
-.hygiene-card .fa-icon,
-.experience-icon .fa-icon {
-  font-size: 3.2rem;
-  margin-bottom: 20px;
+.lock,
+.lock-keyhole {
+  color: #22d3ee; /* Cyan - Security/Trust */
+}
+
+.calendar,
+.calendar-days {
+  color: #a855f7;
+}
+
+.bolt,
+.bolt-lightning {
+  color: #fbbf24;
+}
+
+.phone,
+.phone-volume {
+  color: #10b981;
 }
 
 @media (max-width: 992px) {

@@ -14,7 +14,6 @@
       :showViewAll="false"
       :filters="appStore.services"
       @change-filter="activeFilter = $event"
-      @book-service="addToBooking"
     />
 
     <!-- Pagination -->
@@ -32,8 +31,6 @@
 <script setup>
 import { onMounted, computed, ref } from "vue";
 import { useApi } from "../composables/useFetch";
-import { useBookingStore } from "../store/useBookingStore";
-import { useToast } from "../composables/useToast";
 import Paginator from "../Paginator.vue";
 import { useAppStore } from "../store/appStore";
 import ServiceCard from "./ServiceCard.vue";
@@ -58,26 +55,6 @@ onMounted(async () => {
   await fetchData();
 });
 const services = computed(() => data.value?.services || []);
-
-const { show } = useToast();
-const bookingStore = useBookingStore();
-
-const addToBooking = (sub) => {
-  //subservices details
-  bookingStore.addService({
-    name: sub.subServiceName,
-    // image: sub.image,
-    subId: sub.subServiceId,
-    serviceId: sub.serviceId,
-    price: sub.price,
-    duration: sub.duration,
-  });
-
-  show({
-    message: `${sub.subServiceName} added to your preview`,
-    type: "success",
-  });
-};
 
 const categoryName = computed(() => {
   if (!activeFilter.value) return "";

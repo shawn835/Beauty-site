@@ -91,6 +91,20 @@ const router = createRouter({
     },
 
     {
+      path: "/profile",
+      name: "profile",
+      component: () => import("@/views/ProfileView.vue"),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: "account",
+          name: "account-settings",
+          component: () => import("@/components/user/Account.vue"),
+        },
+      ],
+    },
+
+    {
       path: "/admin",
       name: "admin",
       component: () => import("@/views/admin/AdminLayout.vue"),
@@ -114,11 +128,11 @@ const router = createRouter({
             import("@/views/admin/Bookings/AdminBookingDetails.vue"),
           props: true,
         },
-        {
-          path: "services",
-          name: "admin-services",
-          component: () => import("@/views/admin/Services/ServicesView.vue"),
-        },
+        // {
+        //   path: "services",
+        //   name: "admin-services",
+        //   component: () => import("@/views/admin/Services/ServicesView.vue"),
+        // },
         {
           path: "users",
           name: "admin-users",

@@ -94,7 +94,7 @@
 
       <div v-if="userStore.user">
         <h3 class="mobile-account-heading">Account</h3>
-        <drawer />
+       
       </div>
     </div>
   </header>
@@ -103,7 +103,6 @@
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
-import drawer from "../user/drawer.vue";
 import hamburger from "../global/hamburger.vue";
 import logged from "../user/logged.vue";
 

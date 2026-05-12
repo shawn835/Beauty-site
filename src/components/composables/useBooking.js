@@ -1,32 +1,16 @@
 import { ref } from "vue";
-import { useToast } from "./useToast";
 import { handleResponse } from "@/Utility/response";
+import { mapBookingToFormData } from "@/Utility/utils";
 
 const BASE = import.meta.env.VITE_API_URL;
 export function useBooking() {
   const loading = ref(false);
-  const { show } = useToast();
 
-  const submitBooking = async (form, reset, startPolling, files) => {
+  const createBooking = async (payload) => {
     loading.value = true;
     try {
-      const fd = new FormData();
-      fd.append("date", form.date);
-      fd.append("time", form.time);
-      fd.append("technician", form.technician);
-      fd.append("notes", form.notes);
-
-      files.value.forEach((file) => {
-        fd.append("custom", file);
-      });
-
-      if (form.services?.length) {
-        form.services?.forEach((s) => fd.append("services[]", s));
-      }
-
-      if (form.subServiceIds?.length) {
-        form.subServiceIds.forEach((id) => fd.append("subServiceIds[]", id));
-      }
+      console.log("payload", payload);
+      const fd = mapBookingToFormData(payload);
 
       const res = await fetch(`${BASE}/api/book`, {
         method: "POST",
@@ -35,15 +19,10 @@ export function useBooking() {
       });
 
       const data = await handleResponse(res);
-
-      show({ message: data.message, type: "success" });
-
-      if (data.requiresPayment) startPolling(data.bookingCode);
-      reset();
       return data;
     } catch (err) {
-      show({ message: err.message || "Something went wrong!", type: "error" });
       console.error(err);
+      throw err;
     } finally {
       loading.value = false;
     }
@@ -89,5 +68,5 @@ export function useBooking() {
     }
   };
 
-  return { loading, submitBooking, fetchBookingById, cancelBooking };
+  return { loading, createBooking, fetchBookingById, cancelBooking };
 }

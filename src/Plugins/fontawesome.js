@@ -27,6 +27,10 @@ import {
   faDoorOpen,
   faSpa,
   faChair,
+  faBolt,
+  faEnvelope,
+  faLock,
+  faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -55,6 +59,10 @@ library.add(
   faDoorOpen,
   faSpa,
   faChair,
+  faBolt,
+  faEnvelope,
+  faLock,
+  faCalendar,
 );
 
 export default FontAwesomeIcon;

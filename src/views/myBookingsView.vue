@@ -64,7 +64,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
-import Paginator from "@/components/utility/Paginator.vue";
+import Paginator from "@/components/Paginator.vue";
 import { formatDate, formatTimeRange } from "@/Utility/utils";
 
 // Tabs and state

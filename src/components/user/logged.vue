@@ -4,21 +4,19 @@
       welcome
       <div>
         <span class="icon">
-          <i class="fa-solid fa-user"></i>
+          <font-awesome-icon icon="user" class="user" />
         </span>
         <span class="user-name">{{ userStore.user.name }}</span>
       </div>
     </div>
-
-    <!-- Desktop drawer -->
-    <drawer v-if="menuOpen" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-import drawer from "./drawer.vue";
+import { ref } from "vue";
+
 import { useUserStore } from "../store/userStore";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const userStore = useUserStore();
 

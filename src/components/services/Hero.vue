@@ -26,12 +26,21 @@
       </p>
 
       <div class="hero-buttons">
-        <button class="btn-primary" @click="scrollToServices">
-          Explore All Services
-        </button>
-        <button class="btn-secondary" @click="goToBooking">
-          Book Appointment
-        </button>
+        <BaseButton
+          label="Explore All Services"
+          variant="primary"
+          size="large"
+          iconRight="fa-solid fa-arrow-right"
+          @click="scrollToServices"
+        />
+
+        <BaseButton
+          label="Book Appointment"
+          variant="secondary"
+          size="large"
+          iconLeft="fa-solid fa-calendar-check"
+          @click="goToBooking"
+        />
       </div>
     </div>
 
@@ -57,7 +66,7 @@
 
 <script setup>
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-
+import BaseButton from "../BaseButton.vue";
 const scrollToServices = () => {
   document.getElementById("all-services")?.scrollIntoView({
     behavior: "smooth",
@@ -145,46 +154,6 @@ const goToBooking = () => {
   margin: 0 auto 40px;
   line-height: 1.6;
   opacity: 0.95;
-}
-
-.hero-buttons {
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.btn-primary,
-.btn-secondary {
-  padding: 16px 36px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.4s ease;
-}
-
-.btn-primary {
-  background: var(--bg-pink);
-  color: white;
-  border: none;
-  box-shadow: 0 8px 25px rgba(216, 27, 96, 0.35);
-}
-
-.btn-primary:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(216, 27, 96, 0.5);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: white;
-  border: 2px solid white;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-4px);
 }
 
 /* Trust Bar */

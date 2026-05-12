@@ -177,13 +177,12 @@
             </button>
 
             <!-- Cancel -->
-            <button
+            <BaseButton
               v-if="!['cancelled', 'completed'].includes(booking.status)"
-              class="btn btn-cancel"
+              label="Cancel Booking"
+              variant="danger"
               @click="showCancelModal = true"
-            >
-              Cancel Booking
-            </button>
+            />
 
             <ConfirmModal
               :isOpen="showCancelModal"
@@ -218,6 +217,7 @@ import { useRoute } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
 import { useBooking } from "@/components/composables/useBooking";
 import { useToast } from "@/components/composables/useToast";
+import BaseButton from "@/components/BaseButton.vue";
 import {
   formatDate,
   formatDuration,

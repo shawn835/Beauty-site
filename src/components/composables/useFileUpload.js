@@ -1,7 +1,7 @@
 import { ref } from "vue";
 
 export function useFileUpload() {
-  const previews = ref([]); // object URLs
+  const previews = ref([]);
   const files = ref([]);
 
   const handleFileUpload = (event) => {

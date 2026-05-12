@@ -1,47 +1,53 @@
 <template>
-  <div class="form-container">
-    <!-- Heading -->
-    <h1 class="title">{{ title }}</h1>
-    <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
-
-    <!-- Form -->
-    <form @submit.prevent="onSubmit" class="base-form">
-      <!-- Render inputs dynamically -->
-      <div v-for="field in fields" :key="field.id" class="form-group">
-        <label :for="field.id">
-          {{ field.label }}<span v-if="field.required">*</span>
-        </label>
-
-        <!-- Check for textarea -->
-        <textarea
-          v-if="field.type === 'textarea'"
-          :id="field.id"
-          v-model="form[field.id]"
-          :placeholder="field.placeholder || ''"
-          :required="field.required"
-          class="form-textarea"></textarea>
-
-        <!-- Default to input -->
-        <input
-          v-else
-          :id="field.id"
-          v-model="form[field.id]"
-          :type="field.type || 'text'"
-          :placeholder="field.placeholder || ''"
-          :required="field.required" />
+  <div class="form-wrapper">
+    <div class="form-container">
+      <!-- Heading -->
+      <div class="form-header">
+        <h1 class="title">{{ title }}</h1>
+        <p v-if="subtitle" class="subtitle">{{ subtitle }}</p>
       </div>
 
-      <!-- Submit button -->
-      <button type="submit" class="submit-btn" :disabled="loading">
-        <span v-if="!loading">{{ buttonText }}</span>
-        <span v-else-if="buttonText === 'login'">redirecting...</span>
-        <span v-else class="spinner"></span>
-      </button>
-    </form>
+      <!-- Form -->
+      <form @submit.prevent="onSubmit" class="base-form">
+        <div v-for="field in fields" :key="field.id" class="form-group">
+          <label :for="field.id">
+            {{ field.label }}
+            <span v-if="field.required" class="required">*</span>
+          </label>
 
-    <!-- Extra slot (for links, info, etc.) -->
-    <div class="form-extra">
-      <slot name="extra"></slot>
+          <!-- Textarea -->
+          <textarea
+            v-if="field.type === 'textarea'"
+            :id="field.id"
+            v-model="form[field.id]"
+            :placeholder="field.placeholder || ''"
+            :required="field.required"
+            class="form-textarea"
+          ></textarea>
+
+          <!-- Regular Input -->
+          <input
+            v-else
+            :id="field.id"
+            v-model="form[field.id]"
+            :type="field.type || 'text'"
+            :placeholder="field.placeholder || ''"
+            :required="field.required"
+            class="form-input"
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn" :disabled="loading">
+          <span v-if="loading" class="spinner"></span>
+          <span v-else>{{ buttonText }}</span>
+        </button>
+      </form>
+
+      <!-- Extra Content Slot -->
+      <div class="form-extra">
+        <slot name="extra"></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -78,7 +84,7 @@ watch(
       form[f.id] = f.value ?? "";
     }
   },
-  { deep: true, immediate: true }
+  { deep: true, immediate: true },
 );
 
 function onSubmit() {
@@ -86,122 +92,144 @@ function onSubmit() {
 }
 </script>
 <style scoped>
-.form-container {
-  max-width: 500px;
-  margin: 50px auto;
-  padding: 30px;
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe4e1 100%);
-  border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  font-family: "Lora", serif;
-  text-align: center;
-}
-
-.title {
-  font-family: "Playfair Display", serif;
-  font-size: 2.5rem;
-  color: #d81b60;
-  margin-bottom: 10px;
-  font-weight: 700;
-}
-
-.subtitle {
-  font-size: 1.1rem;
-  color: #555;
-  margin-bottom: 30px;
-}
-
-.update-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.form-group {
-  text-align: left;
-}
-
-label {
-  font-size: 0.95rem;
-  color: #333;
-  margin-bottom: 5px;
-  font-weight: 500;
-  display: block;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: "Lora", serif;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input:focus {
-  outline: none;
-  border-color: #d81b60;
-  box-shadow: 0 0 5px rgba(216, 27, 96, 0.3);
-}
-
-.submit-btn {
-  padding: 12px;
-  background-color: #d81b60;
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+.form-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
+  min-height: 100vh;
+  background: var(--bg-dark);
+  padding: 20px;
+}
+
+.form-container {
+  background: #3a4246;
+  max-width: 480px;
   width: 100%;
-  margin-top: 0.5rem;
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+.form-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.title {
+  font-size: 2.1rem;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--text-gray);
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+/* Form Group */
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ddd;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
+.required {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
+/* Input Fields */
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 14px 18px;
+  background: #2e3538;
+  border: 2px solid #555;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--bg-pink);
+  box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.15);
+}
+
+.form-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 12px;
+  background: var(--bg-pink);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background-color: #ad1457;
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(216, 27, 96, 0.4);
 }
 
 .submit-btn:disabled {
-  background-color: #ccc;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
+/* Spinner */
 .spinner {
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #fff;
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
+  to {
     transform: rotate(360deg);
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* Extra Content */
+.form-extra {
+  margin-top: 28px;
+  text-align: center;
+  font-size: 0.95rem;
 }
 
-@media (max-width: 600px) {
+/* Responsive */
+@media (max-width: 540px) {
   .form-container {
-    margin: 30px 10px;
-    padding: 20px;
+    padding: 32px 24px;
+  }
+
+  .title {
+    font-size: 1.9rem;
   }
 }
 </style>

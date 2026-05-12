@@ -1,6 +1,6 @@
 <!-- In your Appointments page -->
 <template>
-  <DataTable
+  <dataTable
     title="All Bookings"
     :columns="columns"
     :data="bookings"
@@ -28,10 +28,10 @@
     <template #cell-time="{ row }">
       {{ formatTimeRange(row.startTime, row.endTime) }}
     </template>
-  </DataTable>
+  </dataTable>
 </template>
 <script setup>
-import DataTable from "@/components/utility/dataTable.vue";
+import dataTable from "@/components/dataTable.vue";
 import { formatDate, formatTimeRange, getStatusClass } from "@/Utility/utils";
 
 defineProps({
