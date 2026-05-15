@@ -31,6 +31,10 @@ import {
   faEnvelope,
   faLock,
   faCalendar,
+  faCreditCard,
+  faArrowRight,
+  faArrowLeft,
+  faLocationPin,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -63,6 +67,10 @@ library.add(
   faEnvelope,
   faLock,
   faCalendar,
+  faCreditCard,
+  faArrowRight,
+  faArrowLeft,
+  faLocationPin,
 );
 
 export default FontAwesomeIcon;

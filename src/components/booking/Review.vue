@@ -126,10 +126,11 @@
       <!-- Actions -->
       <div class="review-actions">
         <BaseButton
-          label="← Back to Details"
+          label="back to Details"
           fullWidth
           variant="outline"
           @click="goBack"
+          icon-left="arrow-left"
         />
 
         <BaseButton
@@ -138,7 +139,7 @@
           fullWidth
           :disabled="!canProceed"
           size="medium"
-          icon-right="fa-solid fa-arrow-right"
+          icon-right="arrow-right"
         />
       </div>
     </div>

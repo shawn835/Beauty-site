@@ -14,13 +14,15 @@
     <span v-if="loading" class="spinner"></span>
 
     <!-- Icon (Left) -->
-    <i v-if="iconLeft" :class="iconLeft" class="btn-icon left"></i>
+    <FontAwesomeIcon v-if="iconLeft" :class="iconLeft" :icon="iconLeft" />
+    <!-- <i :class="iconLeft" class="btn-icon left"></i> -->
 
     <!-- Text -->
     <span class="btn-text">{{ label }}</span>
 
     <!-- Icon (Right) -->
-    <i v-if="iconRight" :class="iconRight" class="btn-icon right"></i>
+    <!-- <i v-if="iconRight" :class="iconRight" class="btn-icon right"></i> -->
+    <FontAwesomeIcon v-if="iconRight" :class="iconRight" :icon="iconRight" />
   </button>
 </template>
 <script setup>

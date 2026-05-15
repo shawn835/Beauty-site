@@ -4,17 +4,28 @@
     <div class="mini-bar" :class="{ hidden: isScrolled }">
       <div class="mini-container">
         <div class="mini-left">
-          <span>📍 Nairobi, Kenya</span>
+          <span><font-awesome-icon icon="location-pin" /> Nairobi, Kenya</span>
           <span class="mini-divider">•</span>
-          <span>🕒 Mon - Sat: 6AM - 9PM</span>
+          <span>
+            <font-awesome-icon icon="clock" class="clock" />
+            Mon - Sat: 6AM - 9PM
+          </span>
         </div>
+
         <div class="mini-right">
-          <a href="tel:+254712345678" class="mini-contact">
-            📞 +254 712 345 678
-          </a>
+          <BaseButton
+            label="+254724300399"
+            variant="outline"
+            icon-left="phone"
+            size="small"
+            @click="callCustomer('0724300399')"
+          />
+
           <span class="mini-divider">•</span>
+
           <a href="mailto:hello@symosnailspa.com" class="mini-contact">
-            ✉️ hello@symosnailspa.com
+            <font-awesome-icon icon="envelope" class="envelope" />
+            hello@symosnailspa.com
           </a>
         </div>
       </div>
@@ -22,127 +33,66 @@
 
     <!-- Main Navbar -->
     <nav class="navbar" :class="{ scrolled: isScrolled }">
+      <router-link to="/" class="logo">
+        symos<span class="logo-pink">spa</span>
+      </router-link>
+
       <div class="nav-container">
         <!-- Logo -->
-        <router-link to="/" class="logo">
-          symos<span class="logo-pink">spa</span>
-        </router-link>
 
         <!-- Desktop Navigation -->
-        <nav class="desktop-nav">
-          <ul class="navbar-list">
-            <li v-for="item in navLinks" :key="item.text">
-              <router-link :to="item.path" exact-active-class="isActive">
-                {{ item.text }}
-              </router-link>
-            </li>
-          </ul>
-        </nav>
+        <DesktopNav :navLinks="navLinks" />
 
-        <!-- Desktop Buttons & User -->
-        <div class="nav-right">
-          <button
-            v-if="userStore.user"
-            class="primary-button"
-            @click="goBooking"
-          >
-            Book Appointment
-          </button>
-          <button v-else class="primary-button" @click="goRegister">
-            Register
-          </button>
+        <!-- Actions -->
+        <NavbarActions />
+      </div>
 
-          <button
-            class="primary-button admin-btn"
-            @click="goTo('admin')"
-            v-if="userStore.user?.role === 'admin'"
-          >
-            Admin
-          </button>
-
-          <div class="desktop-user-profile">
-            <logged />
-          </div>
-
-          <!-- Hamburger -->
-          <hamburger :isOpen="menuOpen" @toggle="menuOpen = !menuOpen" />
-        </div>
+      <!-- Hamburger -->
+      <div class="mobile-only">
+        <hamburger :isOpen="menuOpen" />
       </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div v-if="menuOpen" class="overlay" @click="menuOpen = false"></div>
-
-    <div v-if="menuOpen" class="mobile-menu" :class="{ show: menuOpen }">
-      <!-- Your existing mobile menu content -->
-      <ul>
-        <li v-for="item in navLinks" :key="item.text">
-          <router-link :to="item.path" @click="menuOpen = false">
-            {{ item.text }}
-          </router-link>
-        </li>
-      </ul>
-
-      <div class="buttons mobile-buttons">
-        <button v-if="userStore.user" class="primary-button" @click="goBooking">
-          Book Appointment
-        </button>
-        <button v-else class="primary-button" @click="goRegister">
-          Register
-        </button>
-      </div>
-
-      <div v-if="userStore.user">
-        <h3 class="mobile-account-heading">Account</h3>
-       
-      </div>
-    </div>
+    <!-- Mobile Overlay + Menu -->
+    <MobileNav
+      :open="menuOpen"
+      :navLinks="navLinks"
+      @close="menuOpen = false"
+    />
   </header>
 </template>
-<script setup>
-import { ref, watch, onMounted, onUnmounted } from "vue";
-import { useRouter } from "vue-router";
-import { useUserStore } from "../store/userStore";
-import hamburger from "../global/hamburger.vue";
-import logged from "../user/logged.vue";
 
-const router = useRouter();
-const userStore = useUserStore();
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
+
+import DesktopNav from "./DesktopNav.vue";
+import NavbarActions from "./NavbarActions.vue";
+import MobileNav from "./MobileNav.vue";
+import hamburger from "./hamburger.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import BaseButton from "../BaseButton.vue";
+import { callCustomer } from "@/Utility/utils";
+
 const menuOpen = ref(false);
 const isScrolled = ref(false);
 
 const navLinks = [
   { text: "Home", path: "/" },
-  { text: "About", path: "/about-us" },
   { text: "Services", path: "/services" },
-  // { text: "Blog", path: "/blogposts" },
-  { text: "Contact", path: "/contact-us" },
+  { text: "About", path: "/about" },
+  { text: "Contact", path: "/contact" },
 ];
 
-function goRegister() {
-  router.push("/register");
-}
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 20;
+};
 
-function goTo(route) {
-  router.push(`/${route}`);
-}
-
-function goBooking() {
-  router.push("/book-appointment");
-}
-// Scroll Effect
 onMounted(() => {
-  window.addEventListener("scroll", () => {
-    isScrolled.value = window.scrollY > 100;
-  });
+  window.addEventListener("scroll", handleScroll);
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", () => {});
-});
-
-watch(menuOpen, (val) => {
-  document.body.style.overflow = val ? "hidden" : "";
+  window.removeEventListener("scroll", handleScroll);
 });
 </script>
 
@@ -155,18 +105,19 @@ watch(menuOpen, (val) => {
   z-index: 1000;
 }
 
+/* ====================== MINI BAR ====================== */
 .mini-bar {
   background: #1f2528;
   color: #ddd;
   font-size: 0.92rem;
   padding: 9px 0;
   border-bottom: 1px solid #333;
-  transition: all 0.4s ease;
+  transition: all 0.35s ease;
 }
 
 .mini-bar.hidden {
   opacity: 0;
-  transform: translateY(-100%);
+  transform: translateY(-12px);
   pointer-events: none;
 }
 
@@ -189,36 +140,14 @@ watch(menuOpen, (val) => {
 .mini-contact {
   color: #ddd;
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.25s ease;
 }
 
 .mini-contact:hover {
   color: var(--bg-pink);
 }
 
-/* ====================== MAIN NAVBAR ====================== */
-.navbar {
-  background: rgba(46, 53, 56, 0.97);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid #444;
-  transition: all 0.4s ease;
-}
-
-.navbar.scrolled {
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
-  transform: translateY(-4px);
-}
-
-.nav-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 78px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
+/* ====================== LOGO ====================== */
 .logo {
   font-size: 1.75rem;
   font-weight: 700;
@@ -230,67 +159,38 @@ watch(menuOpen, (val) => {
   color: var(--bg-pink);
 }
 
-.navbar-list {
+/* navbar */
+.navbar {
+  background: rgba(46, 53, 56, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #444;
+  transition: all 0.35s ease;
+  padding: 1rem 0;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  background: rgba(46, 53, 56, 0.98);
+}
+
+.nav-container {
   display: flex;
-  gap: 32px;
-  list-style: none;
-}
-
-.navbar-list a {
-  color: var(--text-light);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-.navbar-list a:hover,
-.navbar-list a.isActive {
-  color: var(--bg-pink);
-}
-
-.nav-right {
-  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
 }
 
-.primary-button {
-  background: var(--bg-pink);
-  color: white;
-  border: none;
-  padding: 12px 26px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
+.mobile-only {
+  display: none;
 }
+/* media */
 
-.admin-btn {
-  background: transparent;
-  border: 2px solid var(--bg-pink);
-  color: var(--bg-pink);
-}
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
 
-/* Mobile */
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 999;
-}
-
-.mobile-menu {
-  position: fixed;
-  top: 78px;
-  left: 0;
-  right: 0;
-  background: var(--bg-dark);
-  z-index: 1000;
-  padding: 20px;
-  transform: translateY(-100%);
-  transition: transform 0.4s ease;
-}
-
-.mobile-menu.show {
-  transform: translateY(0);
+  .nav-container {
+    display: none;
+  }
 }
 </style>

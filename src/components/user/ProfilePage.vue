@@ -18,35 +18,16 @@
           </div>
         </div>
 
-        <nav class="menu-list">
-          <router-link
-            v-for="item in menuItems"
-            :key="item.path"
-            :to="item.path"
-            class="menu-item"
-            :class="{ active: isActive(item.path) }"
-          >
-            <i :class="item.icon"></i>
-            <span>{{ item.label }}</span>
-          </router-link>
-        </nav>
-
-        <!-- Danger Zone -->
-        <div class="danger-zone">
-          <BaseButton
-            iconLeft="fa-solid fa-right-from-bracket"
-            label="logout"
-            variant="warning"
-            size="medium"
-          />
-
-          <BaseButton
-            iconLeft="fa-solid fa-trash-can"
-            label="delete account"
-            variant="danger"
-            size="medium"
-          />
-        </div>
+        <router-link
+          v-for="item in menuItems"
+          :key="item.name"
+          :to="{ name: item.name }"
+          class="menu-item"
+          :class="{ active: isActive(item.name) }"
+        >
+          <i :class="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </router-link>
       </aside>
 
       <!-- Main Content -->
@@ -57,7 +38,7 @@
   </div>
 </template>
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import BaseButton from "../BaseButton.vue";
@@ -66,38 +47,22 @@ const userStore = useUserStore();
 const route = useRoute();
 
 const user = computed(() => userStore.user);
-
 const menuItems = [
-  {
-    label: "Account Details",
-    path: "profile/account",
-    icon: "fa-solid fa-user",
-  },
+  { label: "Account Details", name: "user-account", icon: "fa-solid fa-user" },
   {
     label: "Security",
-    path: "/profile/security",
+    name: "user-security",
     icon: "fa-solid fa-shield-halved",
   },
   {
-    label: "My Bookings",
-    path: "/profile/bookings",
+    label: "Bookings",
+    name: "user-bookings",
     icon: "fa-solid fa-calendar-check",
   },
-  {
-    label: "Favourites",
-    path: "/profile/favourites",
-    icon: "fa-solid fa-heart",
-  },
+  { label: "Favourites", name: "user-favourites", icon: "fa-solid fa-heart" },
 ];
 
-const isActive = (path) => route.path === path;
-
-const handleLogout = () => {
-  /* ... */
-};
-const handleDeleteAccount = () => {
-  /* ... */
-};
+const isActive = (name) => route.name === name;
 </script>
 <style scoped>
 .profile-page {

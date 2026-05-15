@@ -20,13 +20,13 @@
 
 <script setup>
 import BaseForm from "../BaseForm.vue";
-import { useSendUserData } from "../composables/sendUserData";
+import { useUserApi } from "../composables/userApi";
 import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";
 
 const { show } = useToast();
 const userStore = useUserStore();
-const { handleLogin, loading } = useSendUserData();
+const { handleLogin, loading } = useUserApi();
 
 const loginFields = [
   {

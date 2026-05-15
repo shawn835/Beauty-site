@@ -2,7 +2,7 @@ import { computed } from "vue";
 
 export function usePaymentCalculation(selectedServices, paymentOption) {
   const totalPrice = computed(() =>
-    selectedServices.value.reduce((sum, s) => sum + s.price, 0),
+    selectedServices.value.reduce((sum, s) => sum + Number(s.price || 0), 0),
   );
 
   const depositAmount = computed(() => {
@@ -24,7 +24,7 @@ export function usePaymentCalculation(selectedServices, paymentOption) {
   );
 
   const totalDuration = computed(() =>
-    selectedServices.value.reduce((sum, s) => sum + s.duration, 0),
+    selectedServices.value.reduce((sum, s) => sum + Number(s.duration || 0), 0),
   );
 
   const paymentLabel = computed(() =>

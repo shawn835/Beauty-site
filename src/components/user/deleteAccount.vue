@@ -6,7 +6,7 @@
 </template>
 
 <script setup>
-import { useSendUserData } from "../composables/sendUserData";
+import { useSendUserData } from "../composables/userApi";
 import { useToast } from "../composables/useToast";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";

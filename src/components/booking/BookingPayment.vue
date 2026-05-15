@@ -47,26 +47,29 @@
         <div class="breakdown">
           <div class="breakdown-row">
             <span>Booking Total</span>
-            <span>KSh {{ bookingStore.totalPrice.toLocaleString() }}</span>
+            <strong>KSh {{ bookingStore.totalPrice.toLocaleString() }}</strong>
           </div>
 
-          <div class="breakdown-row deposit">
-            <span>Deposit Required (30%)</span>
-            <strong
-              >KSh {{ bookingStore.depositAmount.toLocaleString() }}</strong
-            >
-          </div>
+          <template v-if="bookingStore.paymentOption === 'deposit'">
+            <div class="breakdown-row deposit">
+              <span>Deposit Required (30%)</span>
+              <strong
+                >KSh {{ bookingStore.depositAmount.toLocaleString() }}</strong
+              >
+            </div>
 
-          <div class="breakdown-row balance">
-            <span>Balance Due on Arrival</span>
-            <span
-              >KSh
-              {{
-                (
-                  bookingStore.totalPrice - bookingStore.depositAmount
-                ).toLocaleString()
-              }}</span
-            >
+            <div class="breakdown-row balance">
+              <span>Balance Due on Arrival</span>
+              <strong
+                >KSh
+                {{ bookingStore.remainingBalance.toLocaleString() }}</strong
+              >
+            </div>
+          </template>
+
+          <div v-else class="breakdown-row deposit">
+            <span>Amount Payable Now</span>
+            <strong>KSh {{ bookingStore.totalPrice.toLocaleString() }}</strong>
           </div>
         </div>
       </div>
@@ -168,15 +171,15 @@
           label="Back"
           variant="outline"
           fullWidth
-          iconLeft="fa-solid fa-arrow-left"
-          @click="$emit('back')"
+          iconLeft="arrow-left"
+          @click="goBack"
         />
 
         <BaseButton
           :label="`Pay KSh ${bookingStore.amountToPay.toLocaleString()}`"
           variant="success"
           fullWidth
-          iconRight="fa-solid fa-credit-card"
+          iconRight="credit-card"
           :disabled="!agreed || isSubmitting || isProcessing"
           @click="submitBooking"
         />
@@ -266,6 +269,12 @@ const submitBooking = async () => {
     isSubmitting.value = false;
   }
 };
+
+const emit = defineEmits(["back"]);
+
+function goBack() {
+  emit("back");
+}
 </script>
 <style scoped>
 .payment-page {
@@ -305,6 +314,20 @@ const submitBooking = async () => {
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #3a4246;
+}
+
+.breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: large;
 }
 
 .duration {

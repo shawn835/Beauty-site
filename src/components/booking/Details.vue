@@ -106,6 +106,7 @@
             class="preview-item"
           >
             <img :src="img" alt="preview" />
+
             <button class="remove-btn" @click="bookingStore?.removeFile(i)">
               ✕
             </button>
@@ -154,7 +155,7 @@
         variant="primary"
         size="large"
         fullWidth
-        iconRight="fa-solid fa-arrow-right"
+        iconRight="arrow-right"
         :disabled="!bookingStore.isDetailsComplete"
         @click="proceedToReview"
       />

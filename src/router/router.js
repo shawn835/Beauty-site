@@ -42,12 +42,6 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/bookings",
-      name: "bookings-view",
-      component: () => import("@/views/myBookingsView.vue"),
-      meta: { requiresAuth: true },
-    },
-    {
       path: "/bookings/:bookingCode",
       name: "booking-view",
       component: () => import("@/views/BookingDetailsView.vue"),
@@ -67,7 +61,7 @@ const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: () => import("@/components/user/loginPage.vue"),
+      component: () => import("@/components/user/login.vue"),
     },
     {
       path: "/token/confirmation",
@@ -91,15 +85,35 @@ const router = createRouter({
     },
 
     {
-      path: "/profile",
+      path: "/profile/user",
       name: "profile",
       component: () => import("@/views/ProfileView.vue"),
       meta: { requiresAuth: true },
       children: [
         {
+          path: "",
+          redirect: { name: "user-account" },
+        },
+
+        {
           path: "account",
-          name: "account-settings",
+          name: "user-account",
           component: () => import("@/components/user/Account.vue"),
+        },
+        {
+          path: "bookings",
+          name: "user-bookings",
+          component: () => import("@/components/user/Bookings.vue"),
+        },
+        {
+          path: "security",
+          name: "user-security",
+          component: () => import("@/components/user/Security.vue"),
+        },
+        {
+          path: "favourites",
+          name: "user-favourites",
+          component: () => import("@/components/user/Favourites.vue"),
         },
       ],
     },

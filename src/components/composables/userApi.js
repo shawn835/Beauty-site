@@ -2,7 +2,7 @@ import { ref } from "vue";
 import router from "@/router/router";
 import { handleResponse } from "@/Utility/response";
 
-export function useSendUserData() {
+export function useUserApi() {
   const loading = ref(false);
 
   const handleRegister = async (form) => {
@@ -64,7 +64,7 @@ export function useSendUserData() {
     loading.value = true;
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/updateaccount`,
+        `${import.meta.env.VITE_API_URL}/api/update/account`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -129,6 +129,26 @@ export function useSendUserData() {
     }
   };
 
+  //logout
+  const logOutUser = async () => {
+    loading.value = true;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await handleResponse(res);
+
+      router.push("/login");
+    } catch (err) {
+      console.error(error.message || "Error occurred when logging out!");
+      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     handleRegister,
     handleLogin,
@@ -136,5 +156,6 @@ export function useSendUserData() {
     updateProfile,
     updatePassword,
     handleDeleteAccount,
+    logOutUser,
   };
 }

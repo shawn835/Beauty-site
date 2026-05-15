@@ -74,49 +74,15 @@
 
           <div class="total-row">
             <strong>Total Amount</strong>
-            <strong class="total-price">KES {{ booking.price }}</strong>
+            <strong class="total-price">KES {{ payment.totalAmount }}</strong>
           </div>
         </div>
 
         <!-- Reference Images -->
-        <!-- Reference Images -->
-        <div class="card">
-          <h3>Style References</h3>
-
-          <!-- Submitted Custom Images -->
-          <div class="image-section">
-            <h4 class="section-title">Your Submitted Photos</h4>
-            <div class="image-gallery">
-              <div
-                v-for="(img, i) in customImages"
-                :key="i"
-                class="gallery-item"
-              >
-                <img :src="img.imageUrl" alt="Your custom style" />
-                <div class="image-label">Your Photo</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Inspiration Images -->
-          <div class="image-section">
-            <h4 class="section-title">Selected Inspiration</h4>
-
-            <div v-for="sub in details.subServices" :key="sub.id">
-              <h5>{{ sub.name }}</h5>
-
-              <div class="inspiration-gallery">
-                <div v-for="img in sub.images" :key="img.id" class="inspo-item">
-                  <img :src="img.imageUrl" alt="Inspiration" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- <p v-else class="no-inspo">
-            No inspiration images selected for this booking.
-          </p> -->
-        </div>
+        <ReferenceImages
+          :customImages="customImages"
+          :inspirationImages="details.subServices"
+        />
       </div>
 
       <!-- Right Column -->
@@ -127,15 +93,17 @@
           <div class="payment-summary">
             <div class="amount-row">
               <span>Total</span>
-              <strong>KES {{ payment.amount }}</strong>
+              <strong>KES {{ payment.totalAmount }}</strong>
             </div>
             <div class="amount-row">
               <span>Paid</span>
-              <strong>KES {{ payment.amount }}</strong>
+              <strong>KES {{ payment.amountPaid }}</strong>
             </div>
             <div class="amount-row balance-row">
               <span>Balance</span>
-              <strong :class="{ unpaid: booking.price > 0 }"> KES 0 </strong>
+              <strong :class="{ unpaid: booking.price > 0 }">
+                {{ payment.remainingBalance }}
+              </strong>
             </div>
           </div>
 
@@ -218,6 +186,7 @@ import { useApi } from "@/components/composables/useFetch";
 import { useBooking } from "@/components/composables/useBooking";
 import { useToast } from "@/components/composables/useToast";
 import BaseButton from "@/components/BaseButton.vue";
+import ReferenceImages from "@/components/ReferenceImages.vue";
 import {
   formatDate,
   formatDuration,
@@ -429,96 +398,6 @@ h3 {
 
 .total-price {
   color: var(--bg-pink);
-}
-
-.image-section {
-  margin-bottom: 28px;
-}
-
-.section-title {
-  color: var(--text-gray);
-  font-size: 1rem;
-  margin: 0 0 12px 0;
-  font-weight: 500;
-}
-
-.image-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.gallery-item {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  aspect-ratio: 4 / 3;
-  transition: transform 0.4s ease;
-}
-
-.gallery-item:hover img {
-  transform: scale(1.05);
-}
-
-.image-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
-  color: white;
-  text-align: center;
-  padding: 12px 8px 8px;
-  font-size: 0.85rem;
-}
-
-/* Inspiration Gallery */
-.inspiration-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 14px;
-}
-
-.inspo-item {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-}
-
-.inspo-item img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-}
-
-.inspo-info {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 8px 10px;
-  text-align: center;
-}
-
-.inspo-info small {
-  color: var(--bg-pink);
-  font-weight: 500;
-}
-
-.no-inspo {
-  color: var(--text-gray);
-  font-style: italic;
-  text-align: center;
-  padding: 20px;
 }
 
 .payment-summary .amount-row {

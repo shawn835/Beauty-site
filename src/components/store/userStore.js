@@ -1,8 +1,5 @@
 import { defineStore } from "pinia";
-import { useToast } from "../composables/useToast";
 import { handleResponse } from "@/Utility/response";
-import router from "@/router/router";
-const { show } = useToast();
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -35,29 +32,6 @@ export const useUserStore = defineStore("user", {
         return null;
       } finally {
         this.loading = false;
-      }
-    },
-
-    async logOutUser() {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
-          method: "DELETE",
-          credentials: "include",
-        });
-
-        const data = await handleResponse(res);
-
-        router.push("/login");
-
-        show({
-          message: data.message || "Logout successful",
-          type: "success",
-        });
-
-        this.user = null;
-      } catch (error) {
-        console.error(error.message || "Error occurred when logging out!");
-        show({ message: error.message || "Logout failed", type: "error" });
       }
     },
   },

@@ -33,15 +33,23 @@
             :type="field.type || 'text'"
             :placeholder="field.placeholder || ''"
             :required="field.required"
+            :disabled="field.disabled"
             class="form-input"
           />
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="submit-btn" :disabled="loading">
-          <span v-if="loading" class="spinner"></span>
-          <span v-else>{{ buttonText }}</span>
-        </button>
+        <div v-if="showButton || $slots.actions" class="form-actions">
+          <slot name="actions" />
+
+          <BaseButton
+            v-if="showButton"
+            :label="buttonText"
+            variant="primary"
+            size="medium"
+            :loading="loading"
+          />
+        </div>
       </form>
 
       <!-- Extra Content Slot -->
@@ -54,6 +62,7 @@
 
 <script setup>
 import { reactive, watch } from "vue";
+import BaseButton from "./BaseButton.vue";
 
 const props = defineProps({
   title: { type: String, required: true },
@@ -61,8 +70,8 @@ const props = defineProps({
   fields: { type: Array, required: true },
   buttonText: { type: String, default: "Submit" },
   loading: { type: Boolean, default: false },
+  showButton: { type: Boolean, default: true },
 });
-
 const emit = defineEmits(["submit"]);
 
 // reactive form object
@@ -170,56 +179,19 @@ function onSubmit() {
   resize: vertical;
 }
 
-/* Submit Button */
-.submit-btn {
-  width: 100%;
-  padding: 16px;
-  margin-top: 12px;
-  background: var(--bg-pink);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.submit-btn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(216, 27, 96, 0.4);
-}
-
-.submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-/* Spinner */
-.spinner {
-  width: 22px;
-  height: 22px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Extra Content */
 .form-extra {
   margin-top: 28px;
   text-align: center;
   font-size: 0.95rem;
+}
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-actions > * {
+  flex: 1;
 }
 
 /* Responsive */

@@ -16,12 +16,12 @@
   </BaseForm>
 </template>
 <script setup>
-import { useSendUserData } from "@/components/composables/sendUserData";
+import { useUserApi } from "@/components/composables/userApi";
 import BaseForm from "../BaseForm.vue";
 import { useToast } from "../composables/useToast";
 const { show } = useToast();
 
-const { handleRegister, loading } = useSendUserData();
+const { handleRegister, loading } = useUserApi();
 const submitRegister = async (registerData) => {
   try {
     const { message } = await handleRegister(registerData);

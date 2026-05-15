@@ -87,3 +87,31 @@ export function mapBookingToFormData(payload) {
 
   return fd;
 }
+
+const formatKenyanNumber = (phone) => {
+  const cleaned = phone.replace(/\D/g, "");
+
+  if (cleaned.startsWith("0")) {
+    return "254" + cleaned.slice(1);
+  }
+
+  return cleaned;
+};
+
+export const callCustomer = (phone) => {
+  if (!phone) return;
+
+  window.location.href = `tel:${phone}`;
+};
+
+export const messageCustomer = (phone) => {
+  if (!phone) return;
+
+  const phoneNumber = formatKenyanNumber(phone);
+
+  const message = encodeURIComponent(
+    "Hello, this is regarding your booking. How can we assist you?",
+  );
+
+  window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
+};

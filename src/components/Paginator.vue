@@ -1,4 +1,25 @@
+<template>
+  <div class="paginator">
+    <BaseButton
+      :disabled="page === 1"
+      @click="prevPage"
+      label="prev"
+      variant="primary"
+    />
+
+    <span class="page-info"> Page {{ page }} of {{ totalPages }} </span>
+
+    <BaseButton
+      :disabled="page === totalPages"
+      @click="nextPage"
+      label="next"
+      variant="primary"
+    />
+  </div>
+</template>
+
 <script setup>
+import BaseButton from "./BaseButton.vue";
 const props = defineProps({
   page: {
     type: Number,
@@ -18,23 +39,6 @@ const props = defineProps({
   },
 });
 </script>
-
-<template>
-  <div class="paginator">
-    <button class="primary-button" :disabled="page === 1" @click="prevPage">
-      Prev
-    </button>
-
-    <span class="page-info"> Page {{ page }} of {{ totalPages }} </span>
-
-    <button
-      class="primary-button"
-      :disabled="page === totalPages"
-      @click="nextPage">
-      Next
-    </button>
-  </div>
-</template>
 
 <style scoped>
 .paginator {

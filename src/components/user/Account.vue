@@ -13,11 +13,18 @@
       :fields="fields"
       :buttonText="isEditing ? 'Save Changes' : ''"
       :loading="loading"
+      :showButton="isEditing"
       @submit="handleSubmit"
     >
       <!-- Extra slot for Cancel button when editing -->
-      <template #extra v-if="isEditing">
-        <button class="cancel-btn" @click="cancelEditing">Cancel</button>
+
+      <template #actions v-if="isEditing">
+        <BaseButton
+          label="Cancel"
+          variant="warning"
+          size="medium"
+          @click="cancelEditing"
+        />
       </template>
     </BaseForm>
   </div>
@@ -26,12 +33,16 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import BaseForm from "../BaseForm.vue";
+import BaseButton from "../BaseButton.vue";
+import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";
+import { useUserApi } from "../composables/userApi";
 
 const userStore = useUserStore();
+const { show } = useToast();
+const { updateProfile, loading } = useUserApi();
 
 const isEditing = ref(false);
-const loading = ref(false);
 
 const formData = ref({
   name: "",
@@ -46,6 +57,7 @@ const fields = computed(() => [
     type: "text",
     required: true,
     disabled: !isEditing.value,
+    value: userStore.user.name || "",
   },
   {
     id: "email",
@@ -53,6 +65,7 @@ const fields = computed(() => [
     type: "email",
     required: true,
     disabled: !isEditing.value,
+    value: userStore.user.email || "",
   },
   {
     id: "phone",
@@ -60,6 +73,7 @@ const fields = computed(() => [
     type: "tel",
     required: true,
     disabled: !isEditing.value,
+    value: userStore.user.phone || "",
   },
 ]);
 
@@ -90,22 +104,34 @@ const cancelEditing = () => {
   }
 };
 
-const handleSubmit = async () => {
-  loading.value = true;
-
+const handleSubmit = async (formData) => {
   try {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const data = await updateProfile(formData);
 
-    // Update user store
-    userStore.updateUser(formData.value);
+    const { safeUser, message, pendingEmail } = data;
 
-    isEditing.value = false;
-    alert("Profile updated successfully!");
-  } catch (error) {
-    alert("Failed to update profile");
-  } finally {
-    loading.value = false;
+    // If backend sent an email (means verification started)
+    if (pendingEmail && pendingEmail !== userStore.user.email) {
+      localStorage.setItem("pendingEmail", pendingEmail);
+      show({
+        message: "We sent a verification code to your new email.",
+        type: "info",
+      });
+      router.push("/token/confirmation"); // move user to verification screen
+    }
+    // Normal update (no email verification required)
+    else if (safeUser) {
+      userStore.user = { ...userStore.user, ...safeUser };
+      show({ message: message, type: "success" });
+    } else {
+      show({ message: message || "No changes made.", type: "info" });
+    }
+  } catch (err) {
+    show({
+      message: err.message || "Failed to update profile.",
+      type: "error",
+      duration: 5000,
+    });
   }
 };
 </script>

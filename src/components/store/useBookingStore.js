@@ -1,6 +1,6 @@
 // stores/booking.js
 import { defineStore } from "pinia";
-import { computed, reactive, ref } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useFileUpload } from "../composables/useFileUpload";
 import { usePaymentCalculation } from "../composables/usePaymentCalculation";
 import { useUserStore } from "./userStore";
@@ -11,9 +11,9 @@ export const useBookingStore = defineStore("booking", () => {
     useFileUpload();
 
   //refs
-  const paymentOption = ref("deposit");
   const selectedServices = ref([]);
   const selectedTechnician = ref(null);
+  const paymentOption = ref("deposit");
 
   // payment composable
   const {
@@ -46,6 +46,7 @@ export const useBookingStore = defineStore("booking", () => {
 
   //bbooking payload
   const bookingPayload = computed(() => ({
+    serviceIds: serviceIds.value,
     subServiceIds: subServiceIds.value,
     technicianId: selectedTechnician.value?.technicianId || null,
     phoneNumber: form.phoneNumber.trim(),

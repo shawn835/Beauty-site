@@ -10,13 +10,18 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn btn-primary" @click="editStatus">Edit Status</button>
-        <button class="btn btn-outline" @click="reassignTechnician">
-          Reassign Technician
-        </button>
-        <button class="btn btn-success" @click="printBooking">
-          Print Slip
-        </button>
+        <BaseButton label="edit status" @click="editStatus" variant="primary" />
+        <BaseButton
+          @click="reassignTechnician"
+          variant="secondary"
+          label="reassign technician"
+        />
+
+        <BaseButton
+          @click="printBooking"
+          label="print slip"
+          variant="success"
+        />
       </div>
     </div>
 
@@ -49,21 +54,27 @@
             </div>
             <div class="info-item">
               <strong>Duration:</strong>
-              <span>{{ formatDuration(booking.duration) }}</span>
+              <span>{{ formatDuration(booking.duration || "60") }}</span>
             </div>
             <div class="info-item">
               <strong>Assigned Technician:</strong>
-              <span>{{ booking.technician || "Not Assigned" }}</span>
+              <span>{{ booking.technicianName || "Not Assigned" }}</span>
             </div>
           </div>
 
           <div class="contact-actions">
-            <button class="btn btn-sm" @click="callCustomer">
-              📞 Call Customer
-            </button>
-            <button class="btn btn-sm whatsapp" @click="messageCustomer">
-              💬 WhatsApp
-            </button>
+            <BaseButton
+              @click="callCustomer(booking.customerPhone)"
+              label="call customer"
+              icon-left="phone"
+              variant="outline"
+            />
+            <BaseButton
+              icon-left="comments"
+              variant="primary"
+              label="whatsapp"
+              @click="messageCustomer(booking.customerPhone)"
+            />
           </div>
         </div>
 
@@ -84,7 +95,7 @@
                 <span class="price"> KES 0 </span>
 
                 <span class="duration">
-                  {{ formatDuration(booking.duration) }}
+                  {{ formatDuration("60") }}
                 </span>
               </div>
             </div>
@@ -105,49 +116,14 @@
 
           <div class="subtotal">
             <strong>Subtotal:</strong>
-            <span>KES {{ booking.price }}</span>
+            <span>KES {{ booking.totalPrice }}</span>
           </div>
         </div>
-        <!-- Reference Images -->
-        <div class="card">
-          <h3>Reference Images</h3>
 
-          <div class="images-section">
-            <h4>Submitted Custom Images</h4>
-            <div class="image-gallery">
-              <div
-                v-for="img in customImages"
-                :key="img.id"
-                class="gallery-item"
-              >
-                <img :src="img.imageUrl" alt="Custom image" />
-                <div class="image-overlay">
-                  <button @click="viewImage(img)">🔍</button>
-                  <button @click="downloadImage(img)">↓</button>
-                </div>
-              </div>
-            </div>
-
-            <h4>Inspiration from Services</h4>
-            <div
-              v-for="sub in subServices"
-              :key="sub.id"
-              class="sub-service-block"
-            >
-              <h4>{{ sub.name }}</h4>
-
-              <div class="inspiration-gallery">
-                <div
-                  v-for="img in sub.images || []"
-                  :key="img.id"
-                  class="inspo-item"
-                >
-                  <img :src="img.imageUrl" alt="Inspiration" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ReferenceImages
+          :customImages="customImages"
+          :inspirationImages="details.subServices"
+        />
       </div>
 
       <!-- Right Column -->
@@ -159,18 +135,18 @@
           <div class="payment-info">
             <div class="amount-row">
               <span>Expected Amount</span>
-              <strong>KES {{ payment.amount || 0 }}</strong>
+              <strong>KES {{ payment.totalAmount }}</strong>
             </div>
 
             <div class="amount-row">
               <span>Paid Amount</span>
-              <strong>KES {{ payment.amount || 0 }}</strong>
+              <strong>KES {{ payment.amountPaid || 0 }}</strong>
             </div>
 
             <div class="amount-row balance">
               <span>Balance</span>
               <strong :class="{ 'text-danger': payment.balance > 0 }">
-                KES {{ payment.balance || 0 }}
+                KES {{ payment.remainingBalance || 0 }}
               </strong>
             </div>
           </div>
@@ -209,15 +185,26 @@
           </div> -->
 
           <div class="payment-actions">
-            <button class="btn btn-success" @click="verifyPayment">
-              Verify Payment
-            </button>
-            <button class="btn btn-outline" @click="markCashPaid">
-              Mark Cash Paid
-            </button>
-            <button class="btn btn-warning" @click="resendSTK">
-              Resend STK Push
-            </button>
+            <BaseButton
+              label="  Verify Payment"
+              size="small"
+              variant="success"
+              @click="verifyPayment"
+            />
+
+            <BaseButton
+              label="mark cash paid"
+              size="small"
+              variant="outline"
+              @click="markCashPaid"
+            />
+
+            <BaseButton
+              label="resend STK push"
+              size="small"
+              variant="warning"
+              @click="resendSTK"
+            />
           </div>
         </div>
         <!-- Customer History -->
@@ -256,13 +243,18 @@
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import ReferenceImages from "@/components/ReferenceImages.vue";
 import { useApi } from "@/components/composables/useFetch";
+
 import {
   formatDate,
   formatDuration,
   getStatusClass,
   formatTimeRange,
+  callCustomer,
+  messageCustomer,
 } from "@/Utility/utils";
+import BaseButton from "@/components/BaseButton.vue";
 
 const route = useRoute();
 
@@ -341,58 +333,6 @@ const customerHistory = computed(() => {
   margin: 0;
   font-size: 1.8rem;
   color: var(--text-light);
-}
-
-.status-badge {
-  padding: 6px 14px;
-  border-radius: 30px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.status-badge.pending {
-  background: #f59e0b;
-  color: black;
-}
-.status-badge.confirmed {
-  background: #10b981;
-  color: white;
-}
-.status-badge.cancelled {
-  background: #ef4444;
-  color: white;
-}
-
-.btn {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-primary {
-  background: var(--bg-pink);
-  color: white;
-}
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--text-gray);
-  color: var(--text-light);
-}
-.btn-success {
-  background: #10b981;
-  color: white;
-}
-.btn-warning {
-  background: #f59e0b;
-  color: black;
-}
-.btn-sm {
-  padding: 8px 14px;
-  font-size: 0.9rem;
 }
 
 .header-actions {
@@ -493,47 +433,18 @@ h3 {
   justify-content: space-between;
 }
 
-.image-gallery,
-.inspiration-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px;
-  margin: 16px 0;
-}
-
-.gallery-item {
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.gallery-item img {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-}
-
-.image-overlay {
-  position: absolute;
-  inset: 0;
-  background: var(--overlay-color);
-  opacity: 0;
-  transition: opacity 0.3s;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  align-items: center;
-}
-
-.gallery-item:hover .image-overlay {
-  opacity: 1;
-}
-
 .payment-card .amount-row {
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
   border-bottom: 1px solid #555;
+}
+
+.payment-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 10px;
 }
 
 .balance strong {

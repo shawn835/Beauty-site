@@ -61,8 +61,8 @@ defineProps({
 const columns = [
   { key: "bookingCode", label: "booking code", width: "120px" },
   { key: "customerName", label: "Customer" },
-  { key: "phone", label: "Phone" },
-  { key: "technician", label: "Technician" },
+  { key: "customerPhone", label: "Phone" },
+  { key: "technicianName", label: "Technician" },
   { key: "date", label: "Date" },
   { key: "time", label: "Time" },
   { key: "status", label: "Status" },
