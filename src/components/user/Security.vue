@@ -7,6 +7,7 @@
       <h2>Change Password</h2>
 
       <BaseForm
+        title="update your password"
         subtitle="Keep your account secure by using a strong password"
         :fields="passwordFields"
         buttonText="Update Password"

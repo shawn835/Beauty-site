@@ -7,15 +7,17 @@
 
     <!-- Tabs -->
     <div class="tabs-container">
-      <button
+      <BaseButton
         v-for="tab in tabs"
         :key="tab"
-        :class="{ active: activeTab === tab }"
         @click="activeTab = tab"
-        class="tab-btn"
-      >
-        {{ tab }}
-      </button>
+        :label="tab"
+        :variant="activeTab === tab ? 'primary' : 'outline'"
+        size="small"
+      />
+    </div>
+    <div v-if="loading">
+      <Spinner size="large" message="loading bookings..." />
     </div>
 
     <!-- Bookings Grid -->
@@ -48,8 +50,12 @@
           </p>
         </div>
 
-        <BaseButton label="View Details →" variant="primary" full-width />
-        <button class="view-details-btn"></button>
+        <BaseButton
+          label="View Details "
+          variant="primary"
+          full-width
+          icon-right="arrow-right"
+        />
       </div>
 
       <!-- Empty State -->
@@ -79,6 +85,7 @@ import Paginator from "@/components/Paginator.vue";
 import { formatDate, formatTimeRange } from "@/Utility/utils";
 import BaseButton from "../BaseButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Spinner from "../Spinner.vue";
 
 // Tabs and state
 const tabs = ["All", "Upcoming", "Complete", "Cancelled"];
@@ -132,23 +139,6 @@ const goToDetails = (bookingCode) => {
   gap: 8px;
   margin-bottom: 40px;
   flex-wrap: wrap;
-}
-
-.tab-btn {
-  padding: 12px 28px;
-  background: #2e3538;
-  border: none;
-  border-radius: 50px;
-  color: var(--text-light);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.tab-btn.active {
-  background: var(--bg-pink);
-  color: white;
-  box-shadow: 0 6px 20px rgba(216, 27, 96, 0.3);
 }
 
 /* Booking Cards */

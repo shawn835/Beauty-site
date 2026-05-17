@@ -10,7 +10,7 @@
       <aside class="profile-sidebar">
         <div class="avatar-section">
           <div class="avatar">
-            <i class="fa-solid fa-circle-user"></i>
+            <font-awesome-icon icon="user" class="user" />
           </div>
           <div class="user-details">
             <h2>{{ user?.name || "Guest" }}</h2>
@@ -25,7 +25,7 @@
           class="menu-item"
           :class="{ active: isActive(item.name) }"
         >
-          <i :class="item.icon"></i>
+          <font-awesome-icon :icon="item.icon" />
           <span>{{ item.label }}</span>
         </router-link>
       </aside>
@@ -38,10 +38,10 @@
   </div>
 </template>
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useRoute } from "vue-router";
 import { useUserStore } from "../store/userStore";
-import BaseButton from "../BaseButton.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -52,14 +52,14 @@ const menuItems = [
   {
     label: "Security",
     name: "user-security",
-    icon: "fa-solid fa-shield-halved",
+    icon: "lock",
   },
   {
     label: "Bookings",
     name: "user-bookings",
-    icon: "fa-solid fa-calendar-check",
+    icon: "calendar",
   },
-  { label: "Favourites", name: "user-favourites", icon: "fa-solid fa-heart" },
+  { label: "Favourites", name: "user-favourites", icon: "heart" },
 ];
 
 const isActive = (name) => route.name === name;

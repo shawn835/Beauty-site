@@ -3,7 +3,7 @@
     <!-- Primary action -->
     <BaseButton
       v-if="userStore.user"
-      @click="goBooking"
+      @click="handleBooking"
       label="secure a spot"
       size="medium"
     />
@@ -35,8 +35,8 @@ import BaseButton from "../BaseButton.vue";
 const router = useRouter();
 const userStore = useUserStore();
 
-const goBooking = () => {
-  router.push("/booking");
+const handleBooking = () => {
+  router.push("/book/appointment");
 };
 
 const goRegister = () => {

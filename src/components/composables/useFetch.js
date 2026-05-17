@@ -36,7 +36,7 @@ export function useApi(
       const json = await handleResponse(res);
 
       data.value = json;
-      console.log(data.value);
+      // console.log(data.value);
 
       // update pagination
       // update pagination metadata ONLY

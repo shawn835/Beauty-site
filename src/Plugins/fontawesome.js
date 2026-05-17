@@ -2,6 +2,8 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import {
+  faHome,
+  faPaintBrush,
   faWandMagic,
   faStar,
   faBottleDroplet,
@@ -35,9 +37,14 @@ import {
   faArrowRight,
   faArrowLeft,
   faLocationPin,
+  faHeart,
+  faPen,
+  faToggleOn,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
+  faPaintBrush,
+  faHome,
   faWandMagic,
   faStar,
   faBottleDroplet,
@@ -71,6 +78,9 @@ library.add(
   faArrowRight,
   faArrowLeft,
   faLocationPin,
+  faHeart,
+  faPen,
+  faToggleOn,
 );
 
 export default FontAwesomeIcon;

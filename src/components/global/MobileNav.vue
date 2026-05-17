@@ -4,45 +4,48 @@
 
   <!-- Drawer -->
   <aside class="mobile-drawer" :class="{ open }">
-    <!-- Navigation links -->
-    <ul class="mobile-nav">
-      <li v-for="item in navLinks" :key="item.text">
-        <router-link
-          :to="item.path"
-          @click="$emit('close')"
-          class="mobile-link"
-        >
-          {{ item.text }}
-        </router-link>
-      </li>
-    </ul>
+    <div class="drawer-header">
+      <div class="logo">symos<span class="logo-pink">spa</span></div>
+    </div>
+
+    <!-- Navigation Links -->
+    <nav class="mobile-nav">
+      <ul>
+        <li v-for="item in navLinks" :key="item.text">
+          <router-link
+            :to="item.path"
+            @click="$emit('close')"
+            class="mobile-link"
+          >
+            {{ item.text }}
+          </router-link>
+        </li>
+      </ul>
+    </nav>
 
     <!-- Actions -->
     <div class="mobile-actions">
-      <button
+      <BaseButton
         v-if="userStore.user"
-        class="primary-button"
         @click="handleBooking"
-      >
-        Book Appointment
-      </button>
+        label="book now"
+      />
 
-      <button v-else class="primary-button" @click="handleRegister">
-        Register
-      </button>
+      <BaseButton v-else @click="handleRegister" label="Register" />
 
-      <button
+      <BaseButton
         v-if="userStore.user?.role === 'admin'"
-        class="primary-button admin-btn"
         @click="goToAdmin"
+        label="Admin Panel"
+        variant="outline"
       >
-        Admin
-      </button>
+        Admin Panel
+      </BaseButton>
     </div>
 
-    <!-- Account section -->
+    <!-- Account Section -->
     <div v-if="userStore.user" class="mobile-account">
-      <h3 class="mobile-account-title">Account</h3>
+      <h3 class="account-title">Account</h3>
       <logged />
     </div>
   </aside>
@@ -52,6 +55,7 @@
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import logged from "../user/logged.vue";
+import BaseButton from "../BaseButton.vue";
 
 const props = defineProps({
   open: {
@@ -70,7 +74,7 @@ const router = useRouter();
 const userStore = useUserStore();
 
 const handleBooking = () => {
-  router.push("/booking");
+  router.push("/book/appointment");
   emit("close");
 };
 
@@ -86,86 +90,108 @@ const goToAdmin = () => {
 </script>
 
 <style scoped>
-/* ================= OVERLAY ================= */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.75);
   z-index: 999;
+  backdrop-filter: blur(4px);
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-/* ================= DRAWER ================= */
+/* Drawer */
 .mobile-drawer {
   position: fixed;
-  top: 78px;
-  left: 0;
-  right: 0;
-  background: var(--bg-dark);
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 360px;
+  height: 100vh;
+  background: #2e3538;
+  box-shadow: -8px 0 25px rgba(0, 0, 0, 0.4);
   z-index: 1000;
-  padding: 20px;
-
-  opacity: 0;
-  transform: translateY(-12px);
-  pointer-events: none;
-
-  transition: all 0.3s ease;
+  transition: right 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow-y: auto;
+  padding-bottom: 80px;
 }
 
 .mobile-drawer.open {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  right: 0;
 }
 
-/* ================= NAV LINKS ================= */
-.mobile-nav {
+/* Header */
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #444;
+}
+
+.logo {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: white;
+}
+
+.logo-pink {
+  color: var(--bg-pink);
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #ddd;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Navigation */
+.mobile-nav ul {
   list-style: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
-
-.mobile-nav li {
-  margin-bottom: 14px;
+  padding: 20px 0;
 }
 
 .mobile-link {
-  color: var(--text-light);
+  display: block;
+  padding: 16px 28px;
+  color: #ddd;
   text-decoration: none;
-  font-weight: 500;
+  font-size: 1.1rem;
+  transition: all 0.3s;
 }
 
-/* ================= ACTIONS ================= */
+.mobile-link:hover,
+.mobile-link.router-link-active {
+  background: #3a4246;
+  color: var(--bg-pink);
+  padding-left: 34px;
+}
+
+/* Actions */
 .mobile-actions {
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* ================= ACCOUNT ================= */
+/* Account */
 .mobile-account {
+  padding: 20px 24px;
+  border-top: 1px solid #444;
   margin-top: 20px;
 }
 
-.mobile-account-title {
-  color: var(--text-light);
-  margin-bottom: 10px;
-}
-
-/* ================= BUTTONS (optional reuse safety) ================= */
-.primary-button {
-  background: var(--bg-pink);
-  color: white;
-  border: none;
-  padding: 12px 26px;
-  border-radius: 50px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.admin-btn {
-  background: transparent;
-  border: 2px solid var(--bg-pink);
+.account-title {
   color: var(--bg-pink);
+  margin-bottom: 12px;
+  font-size: 1.1rem;
 }
 </style>

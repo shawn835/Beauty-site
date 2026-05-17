@@ -20,37 +20,27 @@ const router = createRouter({
       component: () => import("@/views/ServicesView.vue"),
     },
     {
-      path: "/about-us",
+      path: "/about",
       name: "about us",
       component: () => import("@/views/AboutView.vue"),
     },
     {
-      path: "/contact-us",
+      path: "/contact",
       name: "contact us",
       component: () => import("@/views/ContactView.vue"),
     },
     {
-      path: "/book-appointment",
+      path: "/book/appointment",
       name: "booking",
       component: () => import("@/views/BookingView.vue"),
       meta: { requiresAuth: true },
     },
-    {
-      path: "/profile",
-      name: "profile",
-      component: () => import("@/views/ProfileView.vue"),
-      meta: { requiresAuth: true },
-    },
+
     {
       path: "/bookings/:bookingCode",
       name: "booking-view",
       component: () => import("@/views/BookingDetailsView.vue"),
       meta: { requiresAuth: true },
-    },
-    {
-      path: "/blogposts",
-      name: "blogs",
-      component: () => import("@/views/BlogView.vue"),
     },
     {
       path: "/register",

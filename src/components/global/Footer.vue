@@ -18,14 +18,18 @@
         </div>
 
         <!-- Column 2: Quick Links -->
-        <div class="footer-col">
+        <div class="footer-col quick-links">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="/services">Our Services</a></li>
-            <li><a href="/book-appointment">Book Appointment</a></li>
-            <li><a href="/gallery">Gallery</a></li>
-            <li><a href="/my-bookings">My Bookings</a></li>
-            <li><a href="/about">About Us</a></li>
+            <li><router-link to="/services">Our Services</router-link></li>
+            <li>
+              <router-link to="/book/appointment">Book Appointment</router-link>
+            </li>
+            <!-- <li><router-link to="/gallery">Gallery</router-link></li> -->
+            <li>
+              <router-link to="/profile/user/bookings">My Bookings</router-link>
+            </li>
+            <li><router-link to="/about">About Us</router-link></li>
           </ul>
         </div>
 
@@ -44,27 +48,43 @@
         <div class="footer-col">
           <h4>Contact Us</h4>
           <div class="contact-info">
-            <p>📍 Nairobi, Kenya</p>
-            <p>📞 <a href="tel:+254712345678">+254 712 345 678</a></p>
-            <p>💌 hello@symosspa.com</p>
+            <p>
+              <Font-awesome-icon icon="location-pin" class="location" />nakuru,
+              Kenya
+            </p>
+            <p>
+              <Font-awesome-icon icon="phone" class="phone" />
+              <a href="tel:+254724300399">+254 724 300 399</a>
+            </p>
+            <p>
+              <Font-awesome-icon icon="envelope" class="envelope" />
+              nahashonm851@gmail.com
+            </p>
           </div>
 
-          <button class="footer-cta" @click="goToBooking">
-            Book Appointment
-          </button>
+          <BaseButton
+            class="footer-cta"
+            @click="goToBooking"
+            label="Book Now"
+          />
         </div>
       </div>
 
       <!-- Bottom Bar -->
       <div class="footer-bottom">
         <p>&copy; 2026 Symos Spa. All Rights Reserved.</p>
-        <p>Made with ❤️ for beautiful nails</p>
+        <p>
+          Made with <Font-awesome-icon icon="heart" class="heart" /> for
+          beautiful nails
+        </p>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup>
+import BaseButton from "../BaseButton.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const schedule = [
   { day: "Monday", hours: "6:00 AM - 9:00 PM" },
   { day: "Tuesday", hours: "6:00 AM - 9:00 PM" },
@@ -201,6 +221,10 @@ const goToBooking = () => {
 @media (max-width: 768px) {
   .footer-grid {
     gap: 40px;
+  }
+
+  .quick-links {
+    display: none;
   }
 
   .footer-bottom {

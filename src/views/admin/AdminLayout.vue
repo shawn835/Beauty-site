@@ -3,7 +3,7 @@
     <!-- Sidebar -->
     <aside :class="{ sidebar: true, 'sidebar-collapsed': !isSidebarOpen }">
       <div class="sidebar-header">
-        <i class="fas fa-spa toggler-icon" @click="toggleSidebar"></i>
+        <Font-awesome-icon icon="spa" class="spa" @click="toggleSidebar" />
       </div>
 
       <nav class="sidebar-nav">
@@ -14,7 +14,7 @@
             :class="['nav-item', { active: activeRoute === item.route }]"
             @click="goTo(item.route)"
           >
-            <i :class="item.icon"></i>
+            <Font-awesome-icon :icon="item.icon" :class="item.icon" />
             <span v-if="isSidebarOpen">{{ item.label }}</span>
           </li>
         </ul>
@@ -34,6 +34,7 @@
 <script setup>
 import { ref, watch, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const router = useRouter();
 const route = useRoute();
@@ -49,31 +50,31 @@ const navItems = [
     label: "Dashboard",
     route: "admin-dashboard",
     active: "dashboard",
-    icon: "fas fa-home",
+    icon: "home",
   },
   {
     label: "Bookings",
     route: "admin-bookings",
     active: "bookings",
-    icon: "fas fa-calendar-check",
+    icon: "calendar",
   },
   {
     label: "Services",
     route: "admin-services",
     active: "services",
-    icon: "fas fa-paint-brush",
+    icon: "paint-brush",
   },
   {
     label: "Users",
     route: "admin-users",
     active: "users",
-    icon: "fas fa-users",
+    icon: "user",
   },
   {
     label: "Payments",
     route: "admin-payments",
     active: "payments",
-    icon: "fas fa-credit-card",
+    icon: "credit-card",
   },
 ];
 
@@ -116,15 +117,10 @@ watch(
   text-align: center;
 }
 
-.toggler-icon {
+.spa {
   font-size: 24px;
   cursor: pointer;
-  color: #e6b8b8; /* Soft pink accent */
   transition: color 0.3s ease;
-}
-
-.toggler-icon:hover {
-  color: #d89b9b;
 }
 
 .sidebar-nav ul {

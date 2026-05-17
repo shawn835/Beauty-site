@@ -1,59 +1,39 @@
 <template>
   <header class="header">
-    <!-- Mini Bar -->
-    <div class="mini-bar" :class="{ hidden: isScrolled }">
-      <div class="mini-container">
-        <div class="mini-left">
-          <span><font-awesome-icon icon="location-pin" /> Nairobi, Kenya</span>
-          <span class="mini-divider">•</span>
-          <span>
-            <font-awesome-icon icon="clock" class="clock" />
-            Mon - Sat: 6AM - 9PM
-          </span>
-        </div>
-
-        <div class="mini-right">
-          <BaseButton
-            label="+254724300399"
-            variant="outline"
-            icon-left="phone"
-            size="small"
-            @click="callCustomer('0724300399')"
-          />
-
-          <span class="mini-divider">•</span>
-
-          <a href="mailto:hello@symosnailspa.com" class="mini-contact">
-            <font-awesome-icon icon="envelope" class="envelope" />
-            hello@symosnailspa.com
-          </a>
-        </div>
-      </div>
-    </div>
+    <!-- MiniBar (now animated) -->
+    <MiniBar :progress="progress" />
 
     <!-- Main Navbar -->
-    <nav class="navbar" :class="{ scrolled: isScrolled }">
-      <router-link to="/" class="logo">
-        symos<span class="logo-pink">spa</span>
-      </router-link>
-
+    <nav
+      class="navbar"
+      :style="{
+        transform: `translateY(${-progress * 42}px)`,
+      }"
+    >
       <div class="nav-container">
         <!-- Logo -->
+        <div class="logo">
+          <router-link to="/">
+            symos<span class="logo-pink">spa</span>
+          </router-link>
+        </div>
 
         <!-- Desktop Navigation -->
         <DesktopNav :navLinks="navLinks" />
 
-        <!-- Actions -->
-        <NavbarActions />
-      </div>
-
-      <!-- Hamburger -->
-      <div class="mobile-only">
-        <hamburger :isOpen="menuOpen" />
+        <!-- Desktop Actions -->
+        <div class="nav-right">
+          <NavbarActions />
+        </div>
       </div>
     </nav>
 
-    <!-- Mobile Overlay + Menu -->
+    <!-- Floating Mobile Hamburger -->
+    <div class="hamburger-wrapper mobile-only">
+      <Hamburger :isOpen="menuOpen" @toggle="menuOpen = !menuOpen" />
+    </div>
+
+    <!-- Mobile Navigation -->
     <MobileNav
       :open="menuOpen"
       :navLinks="navLinks"
@@ -63,18 +43,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
-
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import MiniBar from "./MiniBar.vue";
 import DesktopNav from "./DesktopNav.vue";
 import NavbarActions from "./NavbarActions.vue";
 import MobileNav from "./MobileNav.vue";
-import hamburger from "./hamburger.vue";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import BaseButton from "../BaseButton.vue";
-import { callCustomer } from "@/Utility/utils";
-
+import Hamburger from "./Hamburger.vue";
 const menuOpen = ref(false);
-const isScrolled = ref(false);
 
 const navLinks = [
   { text: "Home", path: "/" },
@@ -83,12 +58,39 @@ const navLinks = [
   { text: "Contact", path: "/contact" },
 ];
 
+watch(menuOpen, (isOpen) => {
+  if (isOpen) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "";
+  }
+});
+
+// raw scroll
+const scrollY = ref(0);
+
+// smooth motion (critical for premium feel)
+const smooth = ref(0);
+
 const handleScroll = () => {
-  isScrolled.value = window.scrollY > 20;
+  scrollY.value = window.scrollY;
 };
 
+// animation loop (inertia)
+const animate = () => {
+  smooth.value += (scrollY.value - smooth.value) * 0.12;
+  requestAnimationFrame(animate);
+};
+
+// normalized progress (0 → 1)
+const progress = computed(() => {
+  const p = smooth.value / 180;
+  return Math.min(Math.max(p, 0), 1);
+});
+
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  animate();
 });
 
 onUnmounted(() => {
@@ -97,6 +99,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* ================= HEADER ================= */
 .header {
   position: fixed;
   top: 0;
@@ -105,67 +108,28 @@ onUnmounted(() => {
   z-index: 1000;
 }
 
-/* ====================== MINI BAR ====================== */
-.mini-bar {
-  background: #1f2528;
-  color: #ddd;
-  font-size: 0.92rem;
-  padding: 9px 0;
-  border-bottom: 1px solid #333;
-  transition: all 0.35s ease;
-}
+/* ================= LOGO ================= */
 
-.mini-bar.hidden {
-  opacity: 0;
-  transform: translateY(-12px);
-  pointer-events: none;
-}
-
-.mini-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.mini-divider {
-  opacity: 0.4;
-  margin: 0 8px;
-}
-
-.mini-contact {
-  color: #ddd;
-  text-decoration: none;
-  transition: color 0.25s ease;
-}
-
-.mini-contact:hover {
-  color: var(--bg-pink);
-}
-
-/* ====================== LOGO ====================== */
-.logo {
-  font-size: 1.75rem;
-  font-weight: 700;
+.logo a {
   color: white;
   text-decoration: none;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
 .logo-pink {
   color: var(--bg-pink);
 }
 
-/* navbar */
+/* ================= NAVBAR ================= */
 .navbar {
   background: rgba(46, 53, 56, 0.97);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #444;
-  transition: all 0.35s ease;
+
   padding: 1rem 0;
+
+  will-change: transform;
 }
 
 .navbar.scrolled {
@@ -173,24 +137,60 @@ onUnmounted(() => {
   background: rgba(46, 53, 56, 0.98);
 }
 
+/* ================= CONTAINER ================= */
 .nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+/* ================= RIGHT SIDE ================= */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ================= MOBILE ONLY ================= */
 .mobile-only {
   display: none;
 }
-/* media */
+
+/* hamburger button */
+.hamburger-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 1100;
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 768px) {
   .mobile-only {
     display: flex;
   }
 
-  .nav-container {
+  .desktop-nav,
+  .nav-actions {
     display: none;
+  }
+
+  .hamburger-wrapper {
+    position: fixed;
+    top: 28px;
+    right: 24px;
+    z-index: 1200;
   }
 }
 </style>

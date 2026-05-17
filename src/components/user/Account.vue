@@ -2,9 +2,14 @@
   <div class="account-details">
     <div class="page-header">
       <h1>Account Details</h1>
-      <button v-if="!isEditing" class="edit-btn" @click="enableEditing">
-        <i class="fa-solid fa-pen"></i> Edit Profile
-      </button>
+      <BaseButton
+        v-if="!isEditing"
+        class="edit-btn"
+        @click="enableEditing"
+        label="Edit Profile"
+        variant="outline"
+        icon-left=""
+      />
     </div>
 
     <BaseForm
