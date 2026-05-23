@@ -6,6 +6,7 @@
   box-sizing: border-box;
   text-transform: capitalize;
   text-decoration: none;
+  overflow-x: hidden;
 }
 :root {
   --bg-dark: #2e3538;

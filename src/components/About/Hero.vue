@@ -50,6 +50,7 @@
   align-items: center;
   color: white;
   overflow: hidden;
+  margin-top: 2.8rem;
 }
 
 .hero-bg {

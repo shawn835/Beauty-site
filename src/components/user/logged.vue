@@ -7,7 +7,7 @@
           <span class="icon">
             <font-awesome-icon icon="user" class="user" />
           </span>
-          <span class="user-name">{{ userStore.user.name }}</span>
+          <span class="user-name">{{ firstName }}</span>
         </router-link>
       </div>
     </div>
@@ -15,10 +15,19 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useUserStore } from "../store/userStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const userStore = useUserStore();
+
+//take only the first name
+const firstName = computed(() => {
+  if (userStore.user && userStore.user.name) {
+    return userStore.user.name.split(" ")[0];
+  }
+  return "";
+});
 </script>
 
 <style scoped>

@@ -35,7 +35,7 @@
             </div>
             <div class="info-item">
               <label>Technician</label>
-              <p>{{ booking.technician || "To be assigned" }}</p>
+              <p>{{ booking.technicianName || "To be assigned" }}</p>
             </div>
           </div>
         </div>
@@ -51,7 +51,9 @@
               class="service-item"
             >
               <div class="service-main">
-                <span class="check">✓</span>
+                <span class="check"
+                  ><font-awesome-icon icon="check" class="check"
+                /></span>
                 <div>
                   <strong>{{ sub.name }}</strong>
                   <small>{{ formatDuration(sub.duration) }}</small>

@@ -68,6 +68,8 @@ const isActive = (name) => route.name === name;
 .profile-page {
   background: var(--bg-dark);
   min-height: 100vh;
+  margin-top: 1.5rem;
+  width: 100vw;
 }
 
 .profile-banner {
@@ -85,12 +87,12 @@ const isActive = (name) => route.name === name;
 
 /* Container */
 .profile-container {
-  /* max-width: 1200px; */
   margin: -60px auto 0;
   padding: 30px 20px;
   display: grid;
   grid-template-columns: 320px 1fr;
   gap: 30px;
+  width: 100%;
 }
 
 /* Sidebar */
@@ -168,108 +170,25 @@ const isActive = (name) => route.name === name;
 
 /* Main Content */
 .profile-content {
+  margin-top: 1rem;
   background: #2e3538;
   border-radius: 24px;
   padding: 40px;
-  min-height: 75vh;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
 }
 
 /* Responsive */
 @media (max-width: 992px) {
   .profile-container {
     grid-template-columns: 1fr;
+    margin: 0 auto;
+    padding: 20px;
   }
 
-  .profile-sidebar {
-    position: relative;
-    top: 0;
+  .profile-sidebar,
+  .profile-banner {
+    display: none;
   }
 }
 </style>
-
-<!-- <template>
-  <BaseForm
-    title="Update Profile"
-    subtitle="Keep your details up to date"
-    :fields="formFields"
-    button-text="Update Profile"
-    :loading="loading"
-    @submit="submitProfile"
-  />
-</template>
-
-<script setup>
-import { computed } from "vue";
-import BaseForm from "./BaseForm.vue";
-import { useUserStore } from "../store/userStore";
-import { useSendUserData } from "../composables/sendUserData";
-import { useToast } from "../composables/useToast";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
-
-const { show } = useToast();
-
-const userStore = useUserStore();
-const { updateProfile, loading } = useSendUserData();
-
-const submitProfile = async (formData) => {
-  try {
-    const data = await updateProfile(formData);
-
-    const { safeUser, message, pendingEmail } = data;
-
-    // If backend sent an email (means verification started)
-    if (pendingEmail && pendingEmail !== userStore.user.email) {
-      localStorage.setItem("pendingEmail", pendingEmail);
-      show({
-        message: "We sent a verification code to your new email.",
-        type: "info",
-      });
-      router.push("/token/confirmation"); // move user to verification screen
-    }
-    // Normal update (no email verification required)
-    else if (safeUser) {
-      userStore.user = { ...userStore.user, ...safeUser };
-      show({ message: message, type: "success" });
-    } else {
-      show({ message: message || "No changes made.", type: "info" });
-    }
-  } catch (err) {
-    console.error("Profile update failed:", err);
-    show({
-      message: err.message || "Failed to update profile.",
-      type: "error",
-      duration: 5000,
-    });
-  }
-};
-
-const formFields = computed(() => [
-  {
-    id: "name",
-    label: "First Name",
-    type: "text",
-    required: true,
-    placeholder: "Enter first name",
-    value: userStore.user.name || "",
-  },
-  {
-    id: "email",
-    label: "Email",
-    type: "email",
-    required: true,
-    placeholder: "Enter email",
-    value: userStore.user.email || "",
-  },
-  {
-    id: "phone",
-    label: "Phone Number",
-    type: "tel",
-    required: true,
-    placeholder: "Enter phone number",
-    value: userStore.user.phone || "",
-  },
-]);
-</script> -->

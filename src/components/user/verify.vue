@@ -2,12 +2,14 @@
   <BaseForm
     title="enter your code"
     subtitle="register to enjoy full experience"
-    :fields="sendCodeField"
     button-text="send code"
     :loading="loading"
+    :fields="sendCodeField"
+    :meta="fieldsMeta"
+    :form="form"
     @submit="submitCode"
   >
-    <template #extra>
+    <template #form-extra>
       <p class="extra-text">
         <span v-if="timer > 0">
           You can resend code in <strong>{{ timer }}</strong> second<span
@@ -27,25 +29,21 @@
 </template>
 
 <script setup>
+import { reactive, computed } from "vue";
 import BaseForm from "../BaseForm.vue";
 import { useVerifyEmail } from "../composables/useVerifyEmail";
 import { onMounted } from "vue";
 import { useToast } from "../composables/useToast";
+import { fieldsMeta } from "@/Utility/meta";
 
 const { handleVerifyToken, startTimer, loading, resendCode, timer } =
   useVerifyEmail();
 const { show } = useToast();
-
-const sendCodeField = [
-  {
-    id: "code",
-    label: "enter code",
-    type: "text",
-    required: true,
-    placeholder: "Enter code",
-    value: "",
-  },
-];
+const form = reactive({});
+const sendCodeField = computed(() => ["code"]);
+sendCodeField.value.forEach((field) => {
+  form[field] = "";
+});
 
 const submitCode = async (tokenData) => {
   try {

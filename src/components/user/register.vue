@@ -2,12 +2,14 @@
   <BaseForm
     title="register"
     subtitle="register to enjoy full experience"
-    :fields="registerFields"
+    :fields="formFields"
+    :meta="fieldsMeta"
+    :form="form"
     button-text="register"
     :loading="loading"
     @submit="submitRegister"
   >
-    <template #extra>
+    <template #form-extra>
       <p class="extra-text">
         Already registered?
         <RouterLink to="/login" class="extra-link">Login here</RouterLink>
@@ -16,12 +18,20 @@
   </BaseForm>
 </template>
 <script setup>
+import { reactive, computed } from "vue";
 import { useUserApi } from "@/components/composables/userApi";
 import BaseForm from "../BaseForm.vue";
 import { useToast } from "../composables/useToast";
+import { fieldsMeta } from "@/Utility/meta";
 const { show } = useToast();
-
 const { handleRegister, loading } = useUserApi();
+
+const formFields = computed(() => ["name", "phone", "email", "password"]);
+const form = reactive({});
+formFields.value.forEach((field) => {
+  form[field] = "";
+});
+
 const submitRegister = async (registerData) => {
   try {
     const { message } = await handleRegister(registerData);
@@ -37,39 +47,4 @@ const submitRegister = async (registerData) => {
     });
   }
 };
-
-const registerFields = [
-  {
-    id: "name",
-    label: "enter your name",
-    type: "text",
-    required: true,
-    placeholder: "Enter your name ",
-    value: "",
-  },
-  {
-    id: "phone",
-    label: "your phone number",
-    type: "text",
-    required: true,
-    placeholder: "Enter your phone number ",
-    value: "",
-  },
-  {
-    id: "email",
-    label: "enter your email",
-    type: "email",
-    required: true,
-    placeholder: "Enter your email ",
-    value: "",
-  },
-  {
-    id: "password",
-    label: "enter password",
-    type: "password",
-    required: true,
-    placeholder: "Enter password ",
-    value: "",
-  },
-];
 </script>

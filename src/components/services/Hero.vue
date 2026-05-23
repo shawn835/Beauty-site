@@ -25,23 +25,12 @@
         nail art and relaxing spa treatments.
       </p>
 
-      <div class="hero-buttons">
-        <BaseButton
-          label="Explore All Services"
-          variant="primary"
-          size="large"
-          iconRight="fa-solid fa-arrow-right"
-          @click="scrollToServices"
-        />
-
-        <BaseButton
-          label="Book Appointment"
-          variant="secondary"
-          size="large"
-          iconLeft="fa-solid fa-calendar-check"
-          @click="goToBooking"
-        />
-      </div>
+      <BaseButton
+        label="Book Appointment"
+        size="large"
+        iconLeft="fa-solid fa-calendar-check"
+        @click="goToBooking"
+      />
     </div>
 
     <!-- Trust Bar -->
@@ -81,7 +70,7 @@ const goToBooking = () => {
 <style scoped>
 .services-hero {
   position: relative;
-  height: 85vh;
+  height: 100vh;
   min-height: 620px;
   display: flex;
   flex-direction: column;

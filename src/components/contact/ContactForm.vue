@@ -14,9 +14,11 @@
       <BaseForm
         title="Get In Touch"
         subtitle="Our team typically responds within 1-2 hours during business hours"
-        :fields="contactFormFields"
         buttonText="Send Message"
+        :form="form"
         :loading="loading"
+        :fields="formFields"
+        :meta="fieldsMeta"
         @submit="submitContactForm"
       >
         <!-- Extra content below the form -->
@@ -32,14 +34,30 @@
 </template>
 
 <script setup>
+import { computed, reactive } from "vue";
 import BaseForm from "../BaseForm.vue";
 import { useToast } from "../composables/useToast";
 import { useContactForm } from "../composables/useContactForm";
 import { useUserStore } from "../store/userStore";
+import { fieldsMeta } from "@/Utility/meta";
 
 const { show } = useToast();
 const { loading, handleContactForm } = useContactForm();
 const userStore = useUserStore();
+const form = reactive({});
+
+const formFields = computed(() => {
+  return Object.keys(fieldsMeta).filter((key) =>
+    ["name", "contactFormEmail", "contactFormPhone", "message"].includes(key),
+  );
+});
+
+Object.assign(
+  form,
+  Object.fromEntries(
+    formFields.value.map((f) => [f, userStore.user?.[f] || ""]),
+  ),
+);
 
 const submitContactForm = async (formdata) => {
   try {

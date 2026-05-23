@@ -3,14 +3,16 @@
     <h1 class="page-title">Security Settings</h1>
 
     <!-- Change Password -->
-    <div class="section-card">
+    <div>
       <h2>Change Password</h2>
 
       <BaseForm
         title="update your password"
         subtitle="Keep your account secure by using a strong password"
-        :fields="passwordFields"
+        :fields="formFields"
         buttonText="Update Password"
+        :form="form"
+        :meta="fieldsMeta"
         :loading="passwordLoading"
         @submit="handlePasswordChange"
       />
@@ -24,7 +26,7 @@
           <i class="fa-solid fa-envelope"></i>
           <div>
             <strong>Email Address</strong>
-            <p>{{ user?.email }}</p>
+            <p>{{ userStore.user?.email }}</p>
           </div>
         </div>
 
@@ -48,46 +50,6 @@
       </button>
     </div>
 
-    <!-- Active Sessions -->
-    <!-- <div class="section-card"> -->
-    <!-- <h2>Active Sessions</h2>
-      <p class="section-desc">You're currently logged in on these devices</p>
-
-      <div class="sessions-list">
-        <div class="session-item current">
-          <div class="session-info">
-            <i class="fa-solid fa-desktop"></i>
-            <div>
-              <strong>This Device</strong>
-              <small>Chrome on Windows • Last active: Just now</small>
-            </div>
-          </div>
-          <span class="current-badge">Current</span>
-        </div> -->
-
-    <!-- Other sessions example -->
-    <!-- <div
-          v-for="session in otherSessions"
-          :key="session.id"
-          class="session-item"
-        >
-          <div class="session-info">
-            <i class="fa-solid fa-mobile-screen-button"></i>
-            <div>
-              <strong>{{ session.device }}</strong>
-              <small
-                >{{ session.browser }} • Last active:
-                {{ session.lastActive }}</small
-              >
-            </div>
-          </div>
-          <button class="logout-session-btn" @click="logoutSession(session.id)">
-            Logout
-          </button>
-        </div>
-      </div>
-    </div> -->
-
     <!-- Danger Zone -->
     <div class="danger-zone">
       <h3>Danger Zone</h3>
@@ -96,15 +58,6 @@
       </p>
 
       <div class="danger-actions">
-        <!-- <button class="danger-btn" @click="logoutAllDevices">
-          <i class="fa-solid fa-right-from-bracket"></i>
-          Logout from All Devices
-        </button>
-
-        <button class="danger-btn delete" @click="deactivateAccount">
-          <i class="fa-solid fa-user-slash"></i>
-          Deactivate Account
-        </button> -->
         <BaseButton
           iconLeft="fa-solid fa-right-from-bracket"
           label="logout"
@@ -138,58 +91,59 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, reactive, computed } from "vue";
 import BaseForm from "@/components/BaseForm.vue";
 import { useUserApi } from "../composables/userApi";
 import { useToast } from "../composables/useToast";
 import BaseButton from "../BaseButton.vue";
 import ConfirmModal from "../ConfirmModal.vue";
+import { useRouter } from "vue-router";
+import { fieldsMeta } from "@/Utility/meta";
+import { resetForm } from "@/Utility/utils.js";
+import { useUserStore } from "../store/userStore";
+const userStore = useUserStore();
 
+const router = useRouter();
 const passwordLoading = ref(false);
-const isEmailVerified = ref(true);
-const { handleDeleteAccount, logOutUser } = useUserApi();
+const isEmailVerified = ref(userStore.user?.isVerified);
+const showDeleteModal = ref(false);
+const isDeleting = ref(false);
+const isLoggingOut = ref(false);
+const { handleDeleteAccount, logOutUser, updatePassword } = useUserApi();
 const { show } = useToast();
+const form = reactive({});
+const formFields = computed(() => [
+  "currentPassword",
+  "newPassword",
+  "confirmPassword",
+]);
+formFields.value.forEach((field) => {
+  form[field] = "";
+});
 
-const passwordFields = [
-  {
-    id: "currentPassword",
-    label: "Current Password",
-    type: "password",
-    required: true,
-  },
-  {
-    id: "newPassword",
-    label: "New Password",
-    type: "password",
-    required: true,
-  },
-  {
-    id: "confirmPassword",
-    label: "Confirm New Password",
-    type: "password",
-    required: true,
-  },
-];
-
-const otherSessions = [
-  { id: 2, device: "iPhone 14", browser: "Safari", lastActive: "2 days ago" },
-  { id: 3, device: "MacBook Pro", browser: "Chrome", lastActive: "1 week ago" },
-];
-
-const handlePasswordChange = () => {
+//password change
+const handlePasswordChange = async (formData) => {
   passwordLoading.value = true;
-  setTimeout(() => {
-    alert("Password updated successfully!");
+  try {
+    const { message } = await updatePassword(formData);
+    show({
+      message: message || "Password updated successfully",
+      type: "success",
+    });
+    resetForm(form, formFields.value);
+  } catch (err) {
+    console.error("Password update failed:", err);
+    show({
+      message: err.message || "Failed to update password.",
+      type: "error",
+      duration: 5000,
+    });
+  } finally {
     passwordLoading.value = false;
-  }, 1500);
+  }
 };
 
 const resendVerification = () => alert("Verification email sent!");
-const logoutAllDevices = () => alert("Logged out from all other devices");
-const deactivateAccount = () => alert("Deactivate account flow...");
-///DELETE ACCOUNT
-const showDeleteModal = ref(false);
-const isDeleting = ref(false);
 
 const deleteAccount = async () => {
   isDeleting.value = true;
@@ -200,6 +154,7 @@ const deleteAccount = async () => {
       type: "success",
     });
     showDeleteModal.value = false;
+    router.push("/register");
   } catch (error) {
     show({
       message: error.message || "booking cancel failed",
@@ -212,7 +167,7 @@ const deleteAccount = async () => {
 };
 
 //logout
-const isLoggingOut = ref(false);
+
 const logout = async () => {
   isLoggingOut.value = true;
   try {
@@ -221,6 +176,7 @@ const logout = async () => {
       message: data.message || "logged out successfully",
       type: "success",
     });
+    router.push("/login");
   } catch (error) {
     show({
       message: error.message || "logged out failed",
@@ -232,12 +188,6 @@ const logout = async () => {
 };
 </script>
 <style scoped>
-.security-page {
-  padding: 30px 20px;
-  max-width: 780px;
-  margin: 0 auto;
-}
-
 .page-title {
   font-size: 2.2rem;
   margin-bottom: 10px;
@@ -346,5 +296,23 @@ const logout = async () => {
 .warning-text {
   color: #f87171;
   margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .danger-actions {
+    flex-direction: column;
+  }
+
+  .verification-status {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  .session-info p {
+    margin: 0;
+  }
+  .session-info p:first-child {
+    font-weight: 600;
+  }
 }
 </style>

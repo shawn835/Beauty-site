@@ -8,18 +8,20 @@
         @click="enableEditing"
         label="Edit Profile"
         variant="outline"
-        icon-left=""
+        icon-left="pen"
       />
     </div>
 
     <BaseForm
       :title="isEditing ? 'Edit Account Details' : 'Your Information'"
       :subtitle="isEditing ? 'Update your personal information' : ''"
-      :fields="fields"
+      :fields="formFields"
       :buttonText="isEditing ? 'Save Changes' : ''"
       :loading="loading"
       :showButton="isEditing"
       @submit="handleSubmit"
+      :form="form"
+      :meta="fieldsMeta"
     >
       <!-- Extra slot for Cancel button when editing -->
 
@@ -36,62 +38,32 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, reactive } from "vue";
 import BaseForm from "../BaseForm.vue";
 import BaseButton from "../BaseButton.vue";
 import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";
 import { useUserApi } from "../composables/userApi";
+import { fieldsMeta } from "@/Utility/meta";
 
 const userStore = useUserStore();
 const { show } = useToast();
 const { updateProfile, loading } = useUserApi();
 
+const formFields = computed(() => {
+  return Object.keys(fieldsMeta).filter((key) =>
+    ["name", "email", "phone"].includes(key),
+  );
+});
+
+const form = reactive({});
+Object.assign(
+  form,
+  Object.fromEntries(
+    formFields.value.map((f) => [f, userStore.user?.[f] || ""]),
+  ),
+);
 const isEditing = ref(false);
-
-const formData = ref({
-  name: "",
-  email: "",
-  phone: "",
-});
-
-const fields = computed(() => [
-  {
-    id: "name",
-    label: "Full Name",
-    type: "text",
-    required: true,
-    disabled: !isEditing.value,
-    value: userStore.user.name || "",
-  },
-  {
-    id: "email",
-    label: "Email Address",
-    type: "email",
-    required: true,
-    disabled: !isEditing.value,
-    value: userStore.user.email || "",
-  },
-  {
-    id: "phone",
-    label: "Phone Number",
-    type: "tel",
-    required: true,
-    disabled: !isEditing.value,
-    value: userStore.user.phone || "",
-  },
-]);
-
-onMounted(() => {
-  // Prefill from store
-  if (userStore.user) {
-    formData.value = {
-      name: userStore.user.name || "",
-      email: userStore.user.email || "",
-      phone: userStore.user.phone || "",
-    };
-  }
-});
 
 const enableEditing = () => {
   isEditing.value = true;
@@ -101,11 +73,11 @@ const cancelEditing = () => {
   isEditing.value = false;
   // Reset form to original values
   if (userStore.user) {
-    formData.value = {
+    Object.assign(form, {
       name: userStore.user.name || "",
       email: userStore.user.email || "",
       phone: userStore.user.phone || "",
-    };
+    });
   }
 };
 

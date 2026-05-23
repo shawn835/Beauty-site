@@ -2,12 +2,15 @@ import { ref } from "vue";
 import router from "@/router/router";
 import { handleResponse } from "@/Utility/response";
 
+import { delay } from "@/Utility/utils.js";
+
 export function useUserApi() {
   const loading = ref(false);
 
   const handleRegister = async (form) => {
     loading.value = true;
     try {
+      await delay(800);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -19,10 +22,6 @@ export function useUserApi() {
       localStorage.setItem("pendingEmail", form.email);
       setTimeout(() => router.push("/token/confirmation"), 1500);
       return data;
-    } catch (err) {
-      console.error(err.message);
-      loading.value = false;
-      throw err;
     } finally {
       loading.value = false;
     }
@@ -31,6 +30,8 @@ export function useUserApi() {
   const handleLogin = async (form) => {
     loading.value = true;
     try {
+      await delay(800); // Simulate network delay
+
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -46,15 +47,9 @@ export function useUserApi() {
         }
       }
 
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+      router.push("/");
 
       return data;
-    } catch (err) {
-      console.error(err.message);
-      loading.value = false;
-      throw err;
     } finally {
       loading.value = false;
     }
@@ -76,10 +71,6 @@ export function useUserApi() {
       const data = await handleResponse(res);
 
       return data;
-    } catch (err) {
-      console.error(err.message);
-      loading.value = false;
-      throw err;
     } finally {
       loading.value = false;
     }
@@ -100,10 +91,6 @@ export function useUserApi() {
 
       const data = await handleResponse(res);
       return data;
-    } catch (err) {
-      console.error(err.message);
-      loading.value = false;
-      throw err;
     } finally {
       loading.value = false;
     }
@@ -122,10 +109,8 @@ export function useUserApi() {
 
       const data = await handleResponse(res);
       return data;
-    } catch (err) {
-      console.error(err.message);
+    } finally {
       loading.value = false;
-      throw err;
     }
   };
 
@@ -133,17 +118,15 @@ export function useUserApi() {
   const logOutUser = async () => {
     loading.value = true;
     try {
+      await delay(500);
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/logout`, {
         method: "DELETE",
         credentials: "include",
       });
 
       const data = await handleResponse(res);
-
       router.push("/login");
-    } catch (err) {
-      console.error(error.message || "Error occurred when logging out!");
-      throw err;
+      return data;
     } finally {
       loading.value = false;
     }

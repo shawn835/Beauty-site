@@ -115,3 +115,11 @@ export const messageCustomer = (phone) => {
 
   window.open(`https://wa.me/${phoneNumber}?text=${message}`, "_blank");
 };
+
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+export function resetForm(form, fields) {
+  fields.forEach((f) => {
+    form[f] = "" || null;
+  });
+}

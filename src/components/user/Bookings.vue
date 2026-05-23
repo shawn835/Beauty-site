@@ -38,12 +38,12 @@
         </div>
 
         <div class="card-time">
-          {{ formatTimeRange(booking.startTime, booking.endTime) }}
+          {{ formatTimeRange(booking.startTime, booking.endTime) || "no date" }}
         </div>
 
         <div class="card-body">
           <p class="technician">
-            <strong>Technician:</strong> {{ booking.technicianName }}
+            <strong>Technician:</strong> {{ booking.technicianName || "no" }}
           </p>
           <p v-if="booking.amount" class="price">
             <strong>Total:</strong> KES {{ booking.amount.toLocaleString() }}
@@ -112,7 +112,7 @@ const goToDetails = (bookingCode) => {
 .bookings-page {
   padding: 40px 20px 100px;
   background: var(--bg-dark);
-  min-height: 100vh;
+
   color: var(--text-light);
 }
 
@@ -256,11 +256,21 @@ const goToDetails = (bookingCode) => {
 @media (max-width: 768px) {
   .bookings-grid {
     grid-template-columns: 1fr;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .booking-card {
+    width: 100%;
   }
 
   .tab-btn {
     padding: 10px 20px;
     font-size: 0.95rem;
+  }
+
+  .title {
+    font-size: 1.8rem;
   }
 }
 </style>

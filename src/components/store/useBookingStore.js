@@ -54,7 +54,7 @@ export const useBookingStore = defineStore("booking", () => {
     date: form.date,
     time: form.time,
     notes: form.notes.trim(),
-    files: files.value,
+    images: files.value,
   }));
 
   /** ACTIONS */

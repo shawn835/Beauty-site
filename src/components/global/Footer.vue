@@ -105,6 +105,7 @@ const goToBooking = () => {
   background: #1f2528;
   color: var(--text-light);
   padding-top: 80px;
+  width: 100%;
 }
 
 .footer-container {

@@ -76,6 +76,12 @@ const navItems = [
     active: "payments",
     icon: "credit-card",
   },
+   {
+    label: "Uploads",
+    route: "admin-uploads",
+    active: "uploads",
+    icon: "upload",
+  },
 ];
 
 const activeRoute = computed(() => route.name);

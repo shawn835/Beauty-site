@@ -37,6 +37,7 @@
     <MobileNav
       :open="menuOpen"
       :navLinks="navLinks"
+      :profileLinks="profileMenu"
       @close="menuOpen = false"
     />
   </header>
@@ -56,6 +57,21 @@ const navLinks = [
   { text: "Services", path: "/services" },
   { text: "About", path: "/about" },
   { text: "Contact", path: "/contact" },
+];
+
+const profileMenu = [
+  { label: "Account Details", name: "user-account", icon: "fa-solid fa-user" },
+  {
+    label: "Security",
+    name: "user-security",
+    icon: "lock",
+  },
+  {
+    label: "Bookings",
+    name: "user-bookings",
+    icon: "calendar",
+  },
+  { label: "Favourites", name: "user-favourites", icon: "heart" },
 ];
 
 watch(menuOpen, (isOpen) => {

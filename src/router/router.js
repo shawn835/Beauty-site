@@ -147,6 +147,11 @@ const router = createRouter({
           name: "admin-payments",
           component: () => import("@/views/admin/PaymentsView.vue"),
         },
+        {
+          path: "uploads",
+          name: "admin-uploads",
+          component: () => import("@/views/admin/Upload/UploadView.vue"),
+        },
       ],
     },
   ],

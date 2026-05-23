@@ -9,7 +9,6 @@ export function useBooking() {
   const createBooking = async (payload) => {
     loading.value = true;
     try {
-      console.log("payload", payload);
       const fd = mapBookingToFormData(payload);
 
       const res = await fetch(`${BASE}/api/book`, {
