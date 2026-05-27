@@ -150,20 +150,17 @@ const handleSubmit = () => {
   emit("submit", props.form);
 };
 </script>
+
 <style scoped>
 .form-wrapper {
+  margin-top: 1rem;
+  background: var(--bg-dark);
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background: var(--bg-dark);
-  padding: 20px;
 }
-
 .form-container {
   background: #3a4246;
-  max-width: 480px;
-  width: 100%;
   border-radius: 24px;
   padding: 40px 36px;
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);

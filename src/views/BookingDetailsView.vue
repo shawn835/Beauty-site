@@ -137,15 +137,6 @@
         <div class="card actions-card">
           <h3>Actions</h3>
           <div class="user-actions">
-            <!-- Reschedule -->
-            <button
-              v-if="!['cancelled', 'completed'].includes(booking.status)"
-              class="btn btn-reschedule"
-              @click="rescheduleBooking"
-            >
-              Reschedule
-            </button>
-
             <!-- Cancel -->
             <BaseButton
               v-if="!['cancelled', 'completed'].includes(booking.status)"
@@ -168,12 +159,10 @@
             />
 
             <!-- Rebook always visible -->
-            <button class="btn btn-rebook" @click="rebookService">
+            <!-- <button class="btn btn-rebook" @click="rebookService">
               Rebook Same Services
-            </button>
-            <button class="btn btn-contact" @click="contactSalon">
-              Contact Salon
-            </button>
+            </button> -->
+            <BaseButton label="contact salon" variant="success" />
           </div>
         </div>
       </div>

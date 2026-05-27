@@ -31,6 +31,8 @@ export function usePaymentPolling() {
 
         if (status === "pending_payment" || status === "processing") return;
 
+        console.log("status", status, "message", message, 'code', bookingCode);
+
         stopPolling();
 
         onEvent?.({

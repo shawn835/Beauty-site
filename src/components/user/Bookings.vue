@@ -104,7 +104,7 @@ const { data, loading, page, totalPages, nextPage, prevPage } = useApi(url, {
 const bookings = computed(() => data.value?.bookings || []);
 // Navigate to details
 const goToDetails = (bookingCode) => {
-  router.push(`/bookings/${bookingCode}`);
+  router.push(`/user/bookings/${bookingCode}`);
 };
 </script>
 

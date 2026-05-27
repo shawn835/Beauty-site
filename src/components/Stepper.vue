@@ -82,9 +82,8 @@ const progressWidth = computed(() => {
 <style scoped>
 .stepper-container {
   max-width: 720px;
-  margin: 40px auto;
+  margin-top: 40px;
   padding: 0 20px;
-  background: var(--bg-dark);
 }
 
 .stepper {
@@ -137,7 +136,6 @@ const progressWidth = computed(() => {
   font-size: 1.4rem;
   font-weight: 600;
   border: 3px solid #555;
-  background: #2e3538;
   color: #ccc;
   transition: all 0.3s ease;
   z-index: 2;

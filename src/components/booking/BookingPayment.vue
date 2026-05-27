@@ -195,6 +195,7 @@
   />
 </template>
 <script setup>
+import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useBookingStore } from "../store/useBookingStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -203,6 +204,7 @@ import Spinner from "../Spinner.vue";
 import { useToast } from "../composables/useToast";
 import { usePaymentPolling } from "../composables/usePaymentpolling";
 import { useBooking } from "../composables/useBooking";
+const router = useRouter();
 
 const agreed = ref(false);
 const bookingStore = useBookingStore();
@@ -238,7 +240,7 @@ const submitBooking = async () => {
             type: "success",
           });
           bookingStore.resetBooking();
-          router.push(`/orders/track-order/${event.bookingCode}`);
+          router.push(`/user/bookings/${event.bookingCode}`);
           break;
 
         case "completed":
@@ -247,14 +249,22 @@ const submitBooking = async () => {
             type: "success",
           });
           bookingStore.resetBooking();
-          router.push(`/orders/track-order/${event.bookingCode}`);
+          router.push(`/user/bookings/${event.bookingCode}`);
           break;
 
+        case "failed":
+          show({
+            message: event.message || "Booking failed",
+            type: "error",
+          });
+
+          stopPolling();
         case "payment_failed":
           show({
             message: event.message || "Payment failed",
             type: "error",
           });
+          stopPolling();
           break;
       }
     });

@@ -188,7 +188,6 @@ const proceedToPayment = () => {
   padding: 40px 20px 100px;
   background: var(--bg-dark);
   color: var(--text-light);
-  min-height: 100vh;
 }
 
 .review-container {
@@ -360,7 +359,17 @@ const proceedToPayment = () => {
 
 .review-actions {
   display: flex;
-  gap: 16px;
-  margin-top: 40px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .review-actions {
+    flex-direction: row;
+  }
+
+  .review-actions button {
+    flex: 1;
+  }
 }
 </style>
