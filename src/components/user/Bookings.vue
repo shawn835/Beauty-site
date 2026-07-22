@@ -16,8 +16,9 @@
         size="small"
       />
     </div>
-    <div v-if="loading">
-      <Spinner size="large" message="loading bookings..." />
+
+    <div v-if="loading" class="loading-state">
+      <Spinner size="large" message="Loading bookings..." />
     </div>
 
     <!-- Bookings Grid -->
@@ -32,37 +33,46 @@
           <span class="booking-date">
             {{ formatDate(booking.startTime) }}
           </span>
-          <span :class="['status-badge', booking.status.toLowerCase()]">
+          <span :class="['status-badge', booking.status]">
             {{ booking.status }}
           </span>
         </div>
 
         <div class="card-time">
-          {{ formatTimeRange(booking.startTime, booking.endTime) || "no date" }}
+          <strong
+            >{{ formatTime(booking.startTime) }} —
+            {{ formatTime(booking.endTime) }}</strong
+          >
         </div>
 
         <div class="card-body">
+          <!-- <p class="service-name">
+            {{ booking.serviceName || "Nail Service" }}
+          </p> -->
           <p class="technician">
-            <strong>Technician:</strong> {{ booking.technicianName || "no" }}
-          </p>
-          <p v-if="booking.amount" class="price">
-            <strong>Total:</strong> KES {{ booking.amount.toLocaleString() }}
+            with <strong>{{ booking.technicianName || "Our Expert" }}</strong>
           </p>
         </div>
 
-        <BaseButton
-          label="View Details "
-          variant="primary"
-          full-width
-          icon-right="arrow-right"
-        />
+        <div class="card-footer">
+          <p v-if="booking.amount" class="price">
+            KES {{ booking.amount.toLocaleString() }}
+          </p>
+          <BaseButton
+            label="View Details"
+            variant="primary"
+            size="small"
+            icon-right="arrow-right"
+          />
+        </div>
       </div>
 
       <!-- Empty State -->
       <div v-if="!bookings.length" class="empty-state">
-        <FontAwesomeIcon icon="calendar" class="calendar" />
-        <h3>No {{ activeTab }} bookings found</h3>
-        <p>Book your first session today and enjoy luxury nail care.</p>
+        <font-awesome-icon icon="calendar" class="empty-icon" />
+        <h3>No {{ activeTab.toLowerCase() }} bookings yet</h3>
+        <p>Book your next luxury session and treat yourself.</p>
+        <BaseButton label="Book Now" variant="primary" @click="goToBooking" />
       </div>
     </div>
 
@@ -78,30 +88,47 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRouter } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
 import Paginator from "@/components/Paginator.vue";
-import { formatDate, formatTimeRange } from "@/Utility/utils";
+import { formatDate, formatTime } from "@/Utility/utils";
 import BaseButton from "../BaseButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Spinner from "../Spinner.vue";
+import { usePagination } from "../composables/usePagination.js";
+
+const { nextPage, prevPage, limit, page, totalPages, setMeta } =
+  usePagination();
 
 // Tabs and state
-const tabs = ["All", "Upcoming", "Complete", "Cancelled"];
+const tabs = ["All", "Upcoming", "Complete", "pending", "Cancelled"];
 const activeTab = ref("All");
 const router = useRouter();
 
-const url = computed(
-  () =>
-    `${import.meta.env.VITE_API_URL}/api/user/bookings?status=${activeTab.value}`,
-);
+const url = computed(() => {
+  const params = new URLSearchParams({
+    limit: String(limit.value),
+    page: String(page.value),
+  });
 
-const { data, loading, page, totalPages, nextPage, prevPage } = useApi(url, {
-  perPage: 8,
-  withCredentials: true,
+  if (activeTab.value !== "All") {
+    params.set("status", activeTab.value);
+  }
+
+  return `${import.meta.env.VITE_API_URL}/api/user/bookings?${params.toString()}`;
+});
+
+const { data, loading } = useApi(url, {
+  credentials: "include",
 });
 const bookings = computed(() => data.value?.bookings || []);
+
+watch(data, (response) => {
+  if (response) {
+    setMeta(response);
+  }
+});
 // Navigate to details
 const goToDetails = (bookingCode) => {
   router.push(`/user/bookings/${bookingCode}`);
@@ -110,167 +137,119 @@ const goToDetails = (bookingCode) => {
 
 <style scoped>
 .bookings-page {
-  padding: 40px 20px 100px;
-  background: var(--bg-dark);
-
-  color: var(--text-light);
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .bookings-header {
-  text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: 2rem;
 }
 
 .title {
-  font-size: 2.6rem;
-  margin-bottom: 8px;
-  color: white;
+  font-size: 2.1rem;
+  color: #f5d698;
+  margin-bottom: 0.4rem;
 }
 
 .subtitle {
-  color: var(--text-gray);
-  font-size: 1.15rem;
+  color: #aaa;
+  font-size: 1.1rem;
 }
 
 /* Tabs */
 .tabs-container {
   display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 40px;
+  gap: 12px;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
 }
 
-/* Booking Cards */
+/* Bookings Grid */
 .bookings-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-  gap: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.8rem;
 }
 
 .booking-card {
-  background: #2e3538;
-  border-radius: 20px;
-  overflow: hidden;
-  transition: all 0.4s ease;
+  background: #252b2e;
+  border-radius: 18px;
+  padding: 1.6rem;
+  transition: all 0.3s ease;
   cursor: pointer;
-  border: 1px solid #444;
+  border: 1px solid rgba(245, 214, 152, 0.1);
 }
 
 .booking-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15);
-  border-color: var(--bg-pink);
+  transform: translateY(-6px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: #f5d698;
 }
 
 .card-top {
-  padding: 20px 24px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #3a4246;
+  margin-bottom: 1rem;
 }
 
 .booking-date {
   font-weight: 600;
-  color: var(--text-light);
+  color: #ddd;
 }
 
-.status-badge {
-  padding: 6px 16px;
-  border-radius: 30px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.status-badge.confirmed {
-  background: #10b981;
-  color: white;
-}
-.status-badge.pending {
-  background: #f59e0b;
-  color: black;
-}
-.status-badge.cancelled {
-  background: #ef4444;
-  color: white;
-}
-.status-badge.completed {
-  background: #64748b;
-  color: white;
-}
-
-.card-time {
-  padding: 16px 24px;
+.service-name {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--bg-pink);
+  color: #f5d698;
+  margin-bottom: 0.4rem;
 }
 
-.card-body {
-  padding: 0 24px 20px;
-  color: var(--text-gray);
+.technician {
+  color: #aaa;
 }
 
-.card-body p {
-  margin: 8px 0;
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.view-details-btn {
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  border: none;
-  border-top: 1px solid #444;
-  color: var(--bg-pink);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.view-details-btn:hover {
-  background: rgba(216, 27, 96, 0.1);
-  color: white;
+.price {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #f5d698;
 }
 
 /* Empty State */
 .empty-state {
+  grid-column: 1 / -1;
   text-align: center;
-  padding: 80px 20px;
-  color: var(--text-gray);
+  padding: 4rem 2rem;
+  color: #aaa;
 }
 
-.book-now-btn {
-  margin-top: 24px;
-  padding: 14px 32px;
-  background: var(--bg-pink);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-weight: 600;
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .bookings-grid {
     grid-template-columns: 1fr;
-    max-width: 1200px;
-    margin: 0 auto;
   }
 
   .booking-card {
-    width: 100%;
+    padding: 1.4rem;
   }
 
-  .tab-btn {
-    padding: 10px 20px;
-    font-size: 0.95rem;
-  }
-
-  .title {
-    font-size: 1.8rem;
+  .price {
+    font-size: 0.7rem;
   }
 }
 </style>

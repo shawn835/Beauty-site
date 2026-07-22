@@ -1,24 +1,34 @@
 <template>
-  <BaseForm
-    title="login"
-    subtitle="login for access"
-    :fields="formFields"
-    button-text="login"
-    :loading="loading"
-    :meta="fieldsMeta"
-    :form="form"
-    @submit="submitLogin"
-  >
-    <template #form-extra>
-      <p class="extra-text">
-        don't have an account?
-        <router-link to="/register" class="extra-link"
-          >register here</router-link
-        >
-      </p>
-    </template>
-  </BaseForm>
+  <div class="login-page">
+    <BaseForm
+      title="Welcome Back"
+      subtitle="Sign in to manage your salon"
+      :fields="formFields"
+      button-text="Login"
+      :loading="loading"
+      :meta="fieldsMeta"
+      :form="form"
+      @submit="submitLogin"
+    >
+      <template #form-extra>
+        <!-- Forgot Password -->
+        <div class="forgot-password">
+          <router-link to="/forgot-password" class="forgot-link">
+            Forgot your password?
+          </router-link>
+        </div>
+
+        <p class="extra-text">
+          Don't have an account?
+          <router-link to="/register" class="extra-link"
+            >Register here</router-link
+          >
+        </p>
+      </template>
+    </BaseForm>
+  </div>
 </template>
+
 
 <script setup>
 import { reactive, computed } from "vue";
@@ -52,3 +62,56 @@ const submitLogin = async (loginData) => {
   }
 };
 </script>
+
+<style scoped>
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: #1a1f22;
+}
+
+@media (max-width: 1024px) {
+  .login-container {
+    grid-template-columns: 1fr;
+  }
+  .image-side {
+    display: none;
+  }
+}
+
+/* Forgot Password */
+.forgot-password {
+  text-align: right;
+  margin: 0.8rem 0 1.5rem;
+}
+
+.forgot-link {
+  color: #f5d698;
+  text-decoration: none;
+  font-size: 0.98rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.forgot-link:hover {
+  color: #f76706;
+  text-decoration: underline;
+}
+
+.extra-text {
+  text-align: center;
+  margin-top: 1.8rem;
+  color: #aaa;
+}
+
+.extra-link {
+  color: #f5d698;
+  font-weight: 600;
+}
+
+.extra-link:hover {
+  text-decoration: underline;
+}
+</style>
+

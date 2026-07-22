@@ -1,15 +1,10 @@
 <template>
   <header class="header">
     <!-- MiniBar (now animated) -->
-    <MiniBar :progress="progress" />
+    <!-- <MiniBar :progress="progress" /> -->
 
     <!-- Main Navbar -->
-    <nav
-      class="navbar"
-      :style="{
-        transform: `translateY(${-progress * 42}px)`,
-      }"
-    >
+    <nav class="navbar">
       <div class="nav-container">
         <!-- Logo -->
         <div class="logo">

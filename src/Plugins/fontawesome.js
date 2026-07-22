@@ -39,7 +39,8 @@ import {
   faLocationPin,
   faHeart,
   faPen,
-  faToggleOn,
+  faPowerOff,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -80,7 +81,8 @@ library.add(
   faLocationPin,
   faHeart,
   faPen,
-  faToggleOn,
+  faPowerOff,
+  faBan,
 );
 
 export default FontAwesomeIcon;

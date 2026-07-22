@@ -1,5 +1,6 @@
 <template>
-  <div class="services-page">
+  <Spinner v-if="loading" />
+  <div class="services-page" v-else>
     <!-- Services Grid -->
     <ServiceCard
       :title="activeFilter === null ? 'All Services' : categoryName"
@@ -19,7 +20,8 @@
     <!-- Pagination -->
     <div class="pagination-wrapper">
       <Paginator
-        :page="currentPage"
+        v-if="totalPages > 1"
+        :page="page"
         :total-pages="totalPages"
         :next-page="nextPage"
         :prev-page="prevPage"
@@ -29,31 +31,39 @@
 </template>
 
 <script setup>
-import { onMounted, computed, ref } from "vue";
+import { watch, computed, ref } from "vue";
 import { useApi } from "../composables/useFetch";
 import Paginator from "../Paginator.vue";
 import { useAppStore } from "../store/appStore";
 import ServiceCard from "./ServiceCard.vue";
+import { usePagination } from "../composables/usePagination";
+import Spinner from "../Spinner.vue";
 const appStore = useAppStore();
 const activeFilter = ref(null);
-const url = computed(
-  () =>
-    `${import.meta.env.VITE_API_URL}/api/services?serviceId=${activeFilter.value}`,
-);
-const {
-  data,
-  page: currentPage,
-  totalPages,
-  fetchData,
-  nextPage,
-  prevPage,
-} = useApi(url, {
-  perPage: 8,
+
+const { nextPage, prevPage, limit, page, totalPages, setMeta } =
+  usePagination();
+
+const url = computed(() => {
+  const params = new URLSearchParams({
+    page: String(page.value),
+    limit: String(limit.value),
+  });
+
+  if (activeFilter.value) {
+    params.set("serviceId", String(activeFilter.value));
+  }
+
+  return `${import.meta.env.VITE_API_URL}/api/users/services?${params.toString()}`;
 });
 
-onMounted(async () => {
-  await fetchData();
+const { data, loading, fetchData } = useApi(url);
+watch(data, (response) => {
+  if (response) {
+    setMeta(response);
+  }
 });
+
 const services = computed(() => data.value?.services || []);
 
 const categoryName = computed(() => {

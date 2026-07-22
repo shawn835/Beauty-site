@@ -7,7 +7,7 @@
         <div class="footer-col">
           <div class="logo">symos<span class="logo-pink">spa</span></div>
           <p class="about-text">
-            Premium nail care and spa experience in Nairobi. Bringing luxury and
+            Premium nail care and spa experience in nakuru. Bringing luxury and
             beauty directly to you.
           </p>
           <div class="social-links">
@@ -85,6 +85,8 @@
 <script setup>
 import BaseButton from "../BaseButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useRouter } from "vue-router";
+const router = useRouter();
 const schedule = [
   { day: "Monday", hours: "6:00 AM - 9:00 PM" },
   { day: "Tuesday", hours: "6:00 AM - 9:00 PM" },
@@ -96,7 +98,7 @@ const schedule = [
 ];
 
 const goToBooking = () => {
-  window.location.href = "/book-appointment";
+  router.push("/book/appointment");
 };
 </script>
 

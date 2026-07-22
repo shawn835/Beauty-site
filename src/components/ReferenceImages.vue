@@ -4,7 +4,7 @@
 
     <!-- Custom Images -->
     <div v-if="customImages.length" class="images-section">
-      <h4 class="subsection-title">Submitted Custom Images</h4>
+      <h4 class="subsection-title">Your Custom Images</h4>
       <div class="gallery-grid">
         <div
           v-for="(img, i) in customImages"
@@ -12,9 +12,9 @@
           class="gallery-item"
           @click="openLightbox(img, 'custom')"
         >
-          <img :src="img.imageUrl || img.url" alt="Custom image" />
+          <img :src="img.imageUrl || img.url" alt="Custom reference" />
           <div class="overlay">
-            <button class="overlay-btn">View</button>
+            <button class="overlay-btn">View Full</button>
           </div>
         </div>
       </div>
@@ -23,24 +23,19 @@
     <!-- Inspiration Images -->
     <div v-if="inspirationImages.length" class="images-section">
       <h4 class="subsection-title">Inspiration from Services</h4>
-      <div class="inspiration-container">
-        <div
-          v-for="(sub, index) in inspirationImages"
-          :key="index"
-          class="inspo-sub"
-        >
-          <h5 class="sub-title">{{ sub.name || "sub" }}</h5>
-          <div class="gallery-grid">
-            <div
-              v-for="(img, i) in sub.images"
-              :key="i"
-              class="gallery-item"
-              @click="openLightbox(img, 'inspiration')"
-            >
-              <img :src="img.imageUrl || img.url" alt="Inspiration" />
-              <div class="overlay">
-                <button class="overlay-btn">View</button>
-              </div>
+
+      <div class="inspiration-grid">
+        <div v-for="sub in inspirationImages" :key="sub.id" class="inspo-card">
+          <h5 class="sub-title">{{ sub.name }}</h5>
+
+          <div
+            v-if="sub.inspiration"
+            class="gallery-item"
+            @click="openLightbox(sub.inspiration, 'inspiration')"
+          >
+            <img :src="sub.inspiration.imageUrl" alt="Inspiration" />
+            <div class="overlay">
+              <button class="overlay-btn">View</button>
             </div>
           </div>
         </div>
@@ -55,9 +50,8 @@
     />
   </div>
 </template>
-
 <script setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import ImageLightbox from "./ImageLightbox.vue";
 
 const props = defineProps({
@@ -86,79 +80,71 @@ const closeLightbox = () => {
   lightboxVisible.value = false;
   currentImage.value = null;
 };
-
-// sub inspirations by service (if needed)
-// const subedInspirations = computed(() => {
-//   const map = new Map();
-
-//   props.inspirationImages.forEach((img) => {
-//     const service = img.serviceName || "General Inspiration";
-//     if (!map.has(service)) map.set(service, []);
-//     map.get(service).push(img);
-//   });
-
-//   return Array.from(map, ([serviceName, images]) => ({ serviceName, images }));
-// });
 </script>
 <style scoped>
-.inspiration-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 1rem;
-}
 .reference-images {
-  background: #2e3538;
-  border-radius: 20px;
-  padding: 32px;
+  margin-top: 3rem;
 }
 
 .section-title {
-  color: var(--bg-pink);
-  margin-bottom: 24px;
-  font-size: 1.55rem;
+  font-size: 1.85rem;
+  color: #f5d698;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(245, 214, 152, 0.2);
+  padding-bottom: 0.8rem;
 }
 
 .subsection-title {
+  font-size: 1.35rem;
   color: #ddd;
-  margin: 32px 0 18px;
-  font-size: 1.2rem;
+  margin: 2.5rem 0 1.2rem;
+  font-weight: 600;
 }
 
-.gallery-grid {
+/* Gallery Grid */
+.gallery-grid,
+.inspiration-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.6rem;
 }
 
 .gallery-item {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-  transition: transform 0.4s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
 }
 
 .gallery-item:hover {
-  transform: scale(1.05);
+  transform: scale(1.04);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
 
 .gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease;
 }
 
+.gallery-item:hover img {
+  transform: scale(1.08);
+}
+
+/* Overlay */
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s ease;
 }
 
 .gallery-item:hover .overlay {
@@ -166,19 +152,57 @@ const closeLightbox = () => {
 }
 
 .overlay-btn {
-  background: white;
-  color: #111;
+  background: #f5d698;
+  color: #2e3538;
   border: none;
-  padding: 10px 20px;
-  border-radius: 50px;
+  padding: 10px 24px;
+  border-radius: 9999px;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
-/* sub Titles */
+.overlay-btn:hover {
+  background: white;
+  transform: scale(1.05);
+}
+
+/* Inspiration Section */
+.inspo-card {
+  background: #252b2e;
+  border-radius: 16px;
+  padding: 1rem;
+  transition: all 0.3s;
+}
+
+.inspo-card:hover {
+  background: #2e3538;
+}
+
 .sub-title {
-  color: #ccc;
-  margin: 28px 0 14px;
+  margin: 0 0 1rem 0;
+  color: #ddd;
   font-size: 1.1rem;
+  text-align: center;
+}
+
+/* Empty / Loading States */
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #888;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .gallery-grid,
+  .inspiration-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
 }
 </style>

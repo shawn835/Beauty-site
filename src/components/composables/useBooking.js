@@ -11,6 +11,8 @@ export function useBooking() {
     try {
       const fd = mapBookingToFormData(payload);
 
+      console.log("payload", payload);
+
       const res = await fetch(`${BASE}/api/book`, {
         method: "POST",
         body: fd,
@@ -19,9 +21,22 @@ export function useBooking() {
 
       const data = await handleResponse(res);
       return data;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  //retry booking
+  const retryPayment = async (id) => {
+    loading.value = true;
+    try {
+      const res = await fetch(`${BASE}/bookings/${id}/retry-payment`, {
+        credentials: "include",
+        method: "POST",
+      });
+
+      const data = await handleResponse(res);
+      return data;
     } finally {
       loading.value = false;
     }
@@ -40,8 +55,6 @@ export function useBooking() {
 
       const data = await handleResponse(res);
       return data.booking;
-    } catch (error) {
-      console.error("error fetching booking:", error);
     } finally {
       loading.value = false;
     }
@@ -59,13 +72,30 @@ export function useBooking() {
       });
       const data = await handleResponse(res);
       return data;
-    } catch (error) {
-      console.error("error canceling booking:", error);
-      throw error;
     } finally {
       loading.value = false;
     }
   };
 
-  return { loading, createBooking, fetchBookingById, cancelBooking };
+  const downloadReceipt = async (bookingId) => {
+    try {
+      const res = await fetch(`${BASE}/api/receipt/${bookingId}`, {
+        credentials: "include",
+      });
+
+      const data = await handleResponse(res);
+      return data;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return {
+    loading,
+    createBooking,
+    fetchBookingById,
+    cancelBooking,
+    downloadReceipt,
+    retryPayment,
+  };
 }

@@ -42,6 +42,7 @@ export const formatDate = (dateInput, { withTime = false } = {}) => {
     year: "numeric",
     month: "short",
     day: "numeric",
+    timeZone: "Africa/Nairobi",
   });
 };
 
@@ -52,37 +53,56 @@ export const formatTimeRange = (start, end) => {
     new Date(dateString).toLocaleTimeString([], {
       hour: "numeric",
       minute: "2-digit",
+      timeZone: "Africa/Nairobi",
       hour12: true,
     });
 
   return `${format(start)} - ${format(end)}`;
 };
 
-// ...
-export const getStatusClass = (status) => {
-  const s = status?.toLowerCase() || "";
-  if (s.includes("pending")) return "pending";
-  if (s.includes("confirmed")) return "confirmed";
-  if (s.includes("progress")) return "in-progress";
-  if (s.includes("completed")) return "completed";
-  if (s.includes("cancelled")) return "cancelled";
-  if (s.includes("no-show")) return "no-show";
-  if (s.includes("paid") || s.includes("success")) return "paid";
-  if (s.includes("failed")) return "failed";
-  if (s.includes("pending")) return "pending-payment";
-  if (s.includes("refunded")) return "refunded";
-  return "";
-};
+export function formatTime(datetime) {
+  if (!datetime) return "";
+
+  const date = new Date(datetime);
+
+  if (isNaN(date.getTime())) return "";
+
+  return date.toLocaleTimeString("en-KE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}
 
 export function mapBookingToFormData(payload) {
   const fd = new FormData();
 
   Object.entries(payload).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((v) => fd.append(key, v));
-    } else {
-      fd.append(key, value);
+    if (value == null) {
+      return;
     }
+
+    if (Array.isArray(value)) {
+      if (value.length && value[0] instanceof File) {
+        value.forEach((file) => fd.append(key, file));
+      } else {
+        fd.append(key, JSON.stringify(value));
+      }
+
+      return;
+    }
+
+    if (value instanceof File) {
+      fd.append(key, value);
+      return;
+    }
+
+    if (typeof value === "object") {
+      fd.append(key, JSON.stringify(value));
+      return;
+    }
+
+    fd.append(key, String(value));
   });
 
   return fd;

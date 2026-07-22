@@ -1,21 +1,23 @@
 <template>
-  <BaseForm
-    title="register"
-    subtitle="register to enjoy full experience"
-    :fields="formFields"
-    :meta="fieldsMeta"
-    :form="form"
-    button-text="register"
-    :loading="loading"
-    @submit="submitRegister"
-  >
-    <template #form-extra>
-      <p class="extra-text">
-        Already registered?
-        <RouterLink to="/login" class="extra-link">Login here</RouterLink>
-      </p>
-    </template>
-  </BaseForm>
+  <div class="register">
+    <BaseForm
+      title="register"
+      subtitle="register to enjoy full experience"
+      :fields="formFields"
+      :meta="fieldsMeta"
+      :form="form"
+      button-text="register"
+      :loading="loading"
+      @submit="submitRegister"
+    >
+      <template #form-extra>
+        <p class="extra-text">
+          Already registered?
+          <RouterLink to="/login" class="extra-link">Login here</RouterLink>
+        </p>
+      </template>
+    </BaseForm>
+  </div>
 </template>
 <script setup>
 import { reactive, computed } from "vue";
@@ -48,3 +50,14 @@ const submitRegister = async (registerData) => {
   }
 };
 </script>
+
+<style scoped>
+.register {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: #1a1f22;
+  margin-top: 4rem;
+  padding: 1rem;
+}
+</style>

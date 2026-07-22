@@ -22,6 +22,7 @@
       @submit="handleSubmit"
       :form="form"
       :meta="fieldsMeta"
+      :disabled="!isEditing"
     >
       <!-- Extra slot for Cancel button when editing -->
 
@@ -30,6 +31,7 @@
           label="Cancel"
           variant="warning"
           size="medium"
+          full-width
           @click="cancelEditing"
         />
       </template>

@@ -2,165 +2,213 @@
   <div class="filter-bar-container">
     <div class="filter-header">
       <h2 class="filter-title">Filter Appointments</h2>
-      <button
-        class="toggle-btn"
+
+      <BaseButton
+        :label="showFilters ? 'Hide Filters' : 'Show Filters'"
         @click="showFilters = !showFilters"
-        :class="{ active: showFilters }"
-      >
-        {{ showFilters ? "Hide Filters" : "Show Filters" }}
-      </button>
+        variant="warning"
+        size="small"
+      />
     </div>
 
-    <div class="filter-belt" :class="{ show: showFilters }">
+    <div :class="{ show: showFilters }" class="filter-belt">
       <div class="filters-grid">
         <!-- Search -->
         <div class="filter-group">
-          <label>Search</label>
+          <label for="search">Search</label>
+
           <div class="search-input-wrapper">
             <input
-              v-model="localFilters.search"
+              id="search"
+              v-model.trim="localFilters.search"
               type="text"
-              placeholder="Client name, phone, or booking ID..."
               class="filter-input search-input"
+              placeholder="Client name, phone or booking ID..."
+              @keyup.enter="applyFilters"
             />
-            <span class="search-icon">🔍</span>
-          </div>
-        </div>
 
-        <!-- Date Range -->
-        <div class="filter-group">
-          <label>Date Range</label>
-          <div class="date-range">
-            <input
-              v-model="localFilters.startDate"
-              type="date"
-              class="filter-input"
-            />
-            <span class="date-separator">to</span>
-            <input
-              v-model="localFilters.endDate"
-              type="date"
-              class="filter-input"
-            />
+            <span class="search-icon">🔍</span>
           </div>
         </div>
 
         <!-- Technician -->
         <div class="filter-group">
-          <label>Technician</label>
+          <label for="technician">Technician</label>
+
           <select
+            id="technician"
             v-model="localFilters.technicianId"
             class="filter-input"
-            v-if="technicians && technicians.length > 0"
           >
             <option value="">All Technicians</option>
+
             <option
               v-for="tech in technicians"
-              :key="tech.technician_id"
-              :value="tech.technician_id"
+              :key="tech.technicianId"
+              :value="tech.technicianId"
             >
               {{ tech.name }}
             </option>
           </select>
         </div>
 
-        <!-- Service -->
-        <div class="filter-group">
-          <label>Service</label>
-          <select v-model="localFilters.serviceId" class="filter-input">
-            <option value="">All Services</option>
+        <!-- Dynamic Select Filters -->
+        <div
+          v-for="group in filterGroups"
+          :key="group.modelKey"
+          class="filter-group"
+        >
+          <label :for="group.modelKey">
+            {{ group.label }}
+          </label>
 
-            <option v-for="srv in services" :key="srv.id" :value="srv.id">
-              {{ srv.name }}
+          <select
+            :id="group.modelKey"
+            v-model="localFilters[group.modelKey]"
+            class="filter-input"
+          >
+            <option value="">
+              {{ group.defaultOption }}
             </option>
-          </select>
-        </div>
 
-        <!-- Status -->
-        <div class="filter-group">
-          <label>Appointment Status</label>
-          <select v-model="localFilters.status" class="filter-input">
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </div>
-
-        <!-- Payment Status -->
-        <div class="filter-group">
-          <label>Payment Status</label>
-          <select v-model="localFilters.paymentStatus" class="filter-input">
-            <option value="">All Payments</option>
-            <option value="paid">Paid</option>
-            <option value="pending">Pending</option>
-            <option value="failed">Failed</option>
-            <option value="refunded">Refunded</option>
+            <option
+              v-for="option in group.options"
+              :key="option.value"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
           </select>
         </div>
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Date Range -->
+      <div class="filter-group">
+        <label>Date Range</label>
+
+        <div class="date-range">
+          <input
+            v-model="localFilters.startDate"
+            type="date"
+            class="filter-input"
+          />
+
+          <span class="date-separator">to</span>
+
+          <input
+            v-model="localFilters.endDate"
+            type="date"
+            class="filter-input"
+          />
+        </div>
+      </div>
+
       <div class="filter-actions">
-        <button @click="resetFilters" class="btn secondary-btn">
-          Reset Filters
-        </button>
-        <button @click="applyFilters" class="btn primary-btn">
-          Apply Filters
-        </button>
+        <BaseButton
+          label="Reset Filters"
+          variant="warning"
+          @click="resetFilters"
+          :disabled="loading || !hasActiveFilters"
+        />
+
+        <BaseButton
+          label="Search"
+          variant="success"
+          @click="applyFilters"
+          :disabled="loading"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, defineProps, defineEmits } from "vue";
-
+import { ref, reactive, toRef, watch, computed } from "vue";
+import { useDebounce } from "@/components/composables/useDebounce";
+import BaseButton from "@/components/BaseButton.vue";
 const props = defineProps({
-  technicians: { type: Array, default: () => [] },
-  services: { type: Array, default: () => [] },
-  modelValue: { type: Object, required: true },
+  technicians: {
+    type: Array,
+    default: () => [],
+  },
+  services: {
+    type: Array,
+    default: () => [],
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["update:modelValue", "apply"]);
+const emit = defineEmits(["apply"]);
 
 const showFilters = ref(true);
 
-const localFilters = ref({ ...props.modelValue });
+const defaultFilters = {
+  search: "",
+  startDate: "",
+  endDate: "",
+  technicianId: "",
+  status: "",
+  paymentStatus: "",
+};
 
-// Sync with parent
-watch(
-  localFilters,
-  (newVal) => {
-    emit("update:modelValue", newVal);
-  },
-  { deep: true },
-);
+const localFilters = reactive({ ...defaultFilters });
+
+const debouncedSearch = useDebounce(toRef(localFilters, "search"), 400);
+
+watch(debouncedSearch, () => {
+  emit("apply", { ...localFilters });
+});
 
 const applyFilters = () => {
-  emit("apply", localFilters.value);
+  emit("apply", { ...localFilters });
 };
 
 const resetFilters = () => {
-  localFilters.value = {
-    search: "",
-    startDate: "",
-    endDate: "",
-    technicianId: "",
-    serviceId: "",
-    status: "",
-    paymentStatus: "",
-  };
-  emit("apply", localFilters.value);
+  Object.assign(localFilters, defaultFilters);
+
+  emit("apply", { ...localFilters });
 };
+
+const hasActiveFilters = computed(() => {
+  return Object.values(localFilters).some(
+    (value) => value !== "" && value !== null,
+  );
+});
+
+const filterGroups = [
+  {
+    label: "Appointment Status",
+    modelKey: "status", // Matches localFilters.status
+    defaultOption: "All Status",
+    options: [
+      { value: "pending", label: "Pending" },
+      { value: "confirmed", label: "Confirmed" },
+      { value: "completed", label: "Completed" },
+      { value: "cancelled", label: "Cancelled" },
+    ],
+  },
+  {
+    label: "Payment Status",
+    modelKey: "paymentStatus", // Matches localFilters.paymentStatus
+    defaultOption: "All Payments",
+    options: [
+      { value: "paid", label: "Paid" },
+      { value: "pending", label: "Pending" },
+      { value: "partial", label: "partial" },
+      { value: "failed", label: "Failed" },
+    ],
+  },
+];
 </script>
 
 <style scoped>
 .filter-bar-container {
   background: var(--bg-dark);
   color: var(--text-light);
-  padding: 1.5rem 2rem;
+  padding: 0.5rem 0.9rem;
   border-radius: 16px;
   margin-bottom: 2rem;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
@@ -170,7 +218,7 @@ const resetFilters = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.2rem;
+  /* margin-bottom: 1.2rem; */
 }
 
 .filter-title {
@@ -178,23 +226,6 @@ const resetFilters = () => {
   font-size: 1.35rem;
   font-weight: 600;
   margin: 0;
-}
-
-.toggle-btn {
-  background: transparent;
-  border: 2px solid var(--primary-button-background);
-  color: var(--primary-button-color);
-  padding: 8px 16px;
-  border-radius: 9999px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.toggle-btn:hover,
-.toggle-btn.active {
-  background: var(--primary-button-background);
-  color: var(--primary-button-color);
 }
 
 .filter-belt {
@@ -277,35 +308,6 @@ const resetFilters = () => {
   justify-content: flex-end;
 }
 
-.btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-  min-width: 140px;
-}
-
-.primary-btn {
-  background: var(--primary-button-background);
-  color: var(--primary-button-color);
-}
-
-.primary-btn:hover {
-  background: var(--hover-bg);
-  color: var(--hover-color);
-}
-
-.secondary-btn {
-  background: var(--secondary-button-background);
-  color: var(--secondary-button-color);
-}
-
-.secondary-btn:hover {
-  background: #f5d698dd;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
   .filter-bar-container {
@@ -319,10 +321,6 @@ const resetFilters = () => {
 
   .filter-actions {
     justify-content: stretch;
-  }
-
-  .btn {
-    flex: 1;
   }
 }
 </style>

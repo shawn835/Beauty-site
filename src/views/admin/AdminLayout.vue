@@ -1,9 +1,12 @@
 <template>
   <div class="dashboard-container">
-    <!-- Sidebar -->
+    <!-- Fixed Sidebar -->
     <aside :class="{ sidebar: true, 'sidebar-collapsed': !isSidebarOpen }">
       <div class="sidebar-header">
-        <Font-awesome-icon icon="spa" class="spa" @click="toggleSidebar" />
+        <div class="logo" @click="toggleSidebar">
+          <Font-awesome-icon icon="spa" class="spa-icon" />
+          <span v-if="isSidebarOpen" class="logo-text">symos nail</span>
+        </div>
       </div>
 
       <nav class="sidebar-nav">
@@ -14,19 +17,52 @@
             :class="['nav-item', { active: activeRoute === item.route }]"
             @click="goTo(item.route)"
           >
-            <Font-awesome-icon :icon="item.icon" :class="item.icon" />
+            <Font-awesome-icon :icon="item.icon" />
             <span v-if="isSidebarOpen">{{ item.label }}</span>
           </li>
         </ul>
       </nav>
+
+      <div class="sidebar-footer" v-if="isSidebarOpen">
+        <div class="user-info">
+          <div class="user-avatar">👩‍💼</div>
+          <div class="user-details">
+            <strong>Admin</strong>
+            <small>admin@luxenails.com</small>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Dynamic Page Content -->
-      <section class="dashboard-content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <button class="toggle-btn" @click="toggleSidebar">
+            <Font-awesome-icon icon="bars" />
+          </button>
+          <h1 class="page-title">{{ `${activeRoute} Management` }}</h1>
+        </div>
+
+        <div class="top-bar-right">
+          <div class="search-bar">
+            <Font-awesome-icon icon="magnifying-glass" />
+            <input type="text" placeholder="Search..." />
+          </div>
+          <div class="notifications">
+            <Font-awesome-icon icon="bell" />
+          </div>
+          <div class="profile">
+            <div class="avatar">👩‍💼</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Scrollable Content -->
+      <div class="content-area">
         <router-view />
-      </section>
+      </div>
     </main>
   </div>
 </template>
@@ -76,11 +112,17 @@ const navItems = [
     active: "payments",
     icon: "credit-card",
   },
-   {
+  {
     label: "Uploads",
     route: "admin-uploads",
     active: "uploads",
     icon: "upload",
+  },
+  {
+    label: "technicians",
+    route: "admin-technicians",
+    active: "technicians",
+    icon: "star",
   },
 ];
 
@@ -101,118 +143,220 @@ watch(
 <style scoped>
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
-  background-color: #f8f1f1;
-  font-family: "Playfair Display", serif;
+  height: 100vh;
+  overflow: hidden;
+  background: #1a1f22;
 }
 
 .sidebar {
-  width: 250px;
-  background-color: #2e2e2e; /* Dark charcoal */
-  color: #fff;
-  transition: width 0.3s ease;
+  width: 260px;
+  background: #252b2e;
+  border-right: 1px solid rgba(245, 214, 152, 0.12);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  height: 100vh;
   overflow: hidden;
 }
 
 .sidebar-collapsed {
-  width: 60px;
+  width: 72px;
 }
 
-.sidebar-header {
-  padding: 20px;
-  text-align: center;
+.sidebar-header,
+.sidebar-footer {
+  flex-shrink: 0;
 }
 
-.spa {
-  font-size: 24px;
+.sidebar-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  scrollbar-width: thin;
+}
+
+/* ==================== MAIN AREA ==================== */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.top-bar {
+  height: 72px;
+  background: #252b2e;
+  border-bottom: 1px solid rgba(245, 214, 152, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  flex-shrink: 0;
+}
+
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto; /* Only this scrolls */
+  background: #1a1f22;
+}
+
+/* Rest of your styles */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1.8rem 1.5rem;
+  color: #f5d698;
   cursor: pointer;
-  transition: color 0.3s ease;
 }
 
-.sidebar-nav ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.spa-icon {
+  font-size: 1.9rem;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 15px 20px;
+  gap: 14px;
+  padding: 14px 1.5rem;
+  color: #ddd;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.2s;
 }
 
-.nav-item i {
-  font-size: 20px;
-  margin-right: 15px;
-  color: #e6b8b8;
-}
-
-.nav-item span {
-  font-size: 16px;
-}
-
-.nav-item:hover {
-  background-color: #3c3c3c;
+.nav-item:hover,
+.nav-item.active {
+  background: rgba(245, 214, 152, 0.12);
+  color: #f5d698;
 }
 
 .nav-item.active {
-  background-color: #d89b9b; /* Active item highlight */
+  border-left: 4px solid #f5d698;
+}
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.nav-item.active i,
-.nav-item.active span {
-  color: #fff;
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
+.user-avatar {
+  font-size: 1.6rem;
+}
+
+.user-details small {
+  color: #888;
+}
+
+/* ==================== MAIN CONTENT ==================== */
 .main-content {
-  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Top Bar */
+.top-bar {
+  height: 72px;
+  background: #252b2e;
+  border-bottom: 1px solid rgba(245, 214, 152, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  z-index: 90;
+}
+
+.top-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: #ddd;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.page-title {
+  font-size: 1.65rem;
+  color: #f5d698;
+  margin: 0;
+  font-weight: 600;
+}
+
+.top-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: #2e3538;
+  border-radius: 9999px;
+  padding: 8px 16px;
+  width: 260px;
+}
+
+.search-bar input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  margin-left: 10px;
   width: 100%;
 }
 
-.dashboard-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  text-align: center;
+.notifications,
+.profile {
+  cursor: pointer;
+  font-size: 1.35rem;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.2s;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 60px; /* Collapsed by default on mobile */
-  }
-
-  .sidebar-collapsed {
-    width: 60px;
-  }
-
-  .sidebar-nav span {
-    display: none; /* Hide text by default */
-  }
-
-  .sidebar:hover {
-    width: 250px; /* Expand on hover */
-  }
-
-  .sidebar:hover .sidebar-nav span {
-    display: inline; /* Show text on hover */
-  }
-
-  .dashboard-header h1 {
-    font-size: 24px;
-  }
+.notifications:hover,
+.profile:hover {
+  background: rgba(245, 214, 152, 0.1);
 }
 
-@media (max-width: 480px) {
-  .dashboard-header h1 {
-    font-size: 20px;
-  }
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: #f5d698;
+  color: #2e3538;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
 
-  .dashboard-content {
-    padding: 15px;
-  }
+/* Content Area */
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: #1a1f22;
 }
 </style>

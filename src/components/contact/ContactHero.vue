@@ -40,7 +40,7 @@
           <i class="fa-solid fa-location-dot"></i>
           <div>
             <strong>Visit Us</strong>
-            <span>Nairobi, Kenya</span>
+            <span>nakuru, Kenya</span>
           </div>
         </div>
       </div>

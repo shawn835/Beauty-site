@@ -79,6 +79,14 @@ export const fieldsMeta = {
     required: true,
   },
 
+  technicians: {
+    type: "select",
+    placeholder: "technicians",
+    label: "technician list",
+    required: true,
+    optionsKey: "technicians",
+  },
+
   images: {
     type: "file",
     placeholder: "Upload Image",

@@ -50,7 +50,7 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
   fullWidth: { type: Boolean, default: false },
-  iconLeft: { type: String, default: "" }, // e.g. "fa-solid fa-plus"
+  iconLeft: { type: String, default: "" },
   iconRight: { type: String, default: "" },
 });
 

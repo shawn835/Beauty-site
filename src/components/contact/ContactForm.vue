@@ -72,42 +72,6 @@ const submitContactForm = async (formdata) => {
     });
   }
 };
-
-const contactFormFields = [
-  {
-    id: "name",
-    label: "enter your name",
-    type: "text",
-    required: true,
-    placeholder: "Enter your name ",
-    value: userStore.user ? userStore.user.name : "",
-  },
-  {
-    id: "email",
-    label: "enter your email",
-    type: "text",
-    required: false,
-    placeholder: "Enter your email",
-    value: userStore.user ? userStore.user.email : "",
-  },
-
-  {
-    id: "phone",
-    label: "phone (optional, whatsapp if possible)",
-    type: "tel",
-    required: false,
-    placeholder: "Enter phone number ",
-    value: userStore.user ? userStore.user.phone : "",
-  },
-  {
-    id: "message",
-    label: "message",
-    type: "textarea",
-    required: true,
-    placeholder: "type your message...",
-    value: "",
-  },
-];
 </script>
 
 <style scoped>

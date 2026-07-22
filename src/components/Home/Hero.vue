@@ -32,7 +32,7 @@
       <h1 class="hero-title">
         Luxury Nail Care &amp;<br />
         Spa Experience
-        <span class="location">in Nairobi</span>
+        <span class="location">in Nakuru</span>
       </h1>
 
       <p class="hero-subtitle">
@@ -78,16 +78,13 @@
 </template>
 
 <script setup>
+import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BaseButton from "../BaseButton.vue";
+const router = useRouter();
 
 const goToBooking = () => {
-  // Navigate to booking page
-  window.location.href = "/book-appointment"; // or use router
-};
-
-const goToServices = () => {
-  window.location.href = "/services";
+  router.push("/book/appointment");
 };
 </script>
 

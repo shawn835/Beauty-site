@@ -56,14 +56,12 @@
 <script setup>
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BaseButton from "../BaseButton.vue";
-const scrollToServices = () => {
-  document.getElementById("all-services")?.scrollIntoView({
-    behavior: "smooth",
-  });
-};
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const goToBooking = () => {
-  window.location.href = "/book-appointment";
+  router.push("/book/appointment");
 };
 </script>
 

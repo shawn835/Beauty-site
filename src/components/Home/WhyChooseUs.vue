@@ -31,7 +31,7 @@ const features = [
     icon: "car-side",
     title: "Home Appointments",
     description:
-      "Premium salon experience delivered conveniently to your doorstep in Nairobi.",
+      "Premium salon experience delivered conveniently to your doorstep in nakuru.",
   },
 ];
 </script>

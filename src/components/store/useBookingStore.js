@@ -7,15 +7,31 @@ import { useUserStore } from "./userStore";
 const userStore = useUserStore();
 
 export const useBookingStore = defineStore("booking", () => {
-  const { removeFile, previews, files, handleFileUpload, clearAll } =
-    useFileUpload();
+  /**
+   * --------------------------------------------------------------------------
+   * STATE
+   * --------------------------------------------------------------------------
+   */
 
-  //refs
   const selectedServices = ref([]);
   const selectedTechnician = ref(null);
   const paymentOption = ref("deposit");
 
-  // payment composable
+  const form = reactive({
+    phoneNumber: userStore?.user?.phone ?? "",
+    date: "",
+    time: "",
+    notes: "",
+  });
+
+  /**
+   * --------------------------------------------------------------------------
+   * COMPOSABLES
+   * --------------------------------------------------------------------------
+   */
+  const { removeFile, previews, files, handleFileUpload, clearAll } =
+    useFileUpload();
+
   const {
     totalPrice,
     totalDuration,
@@ -25,30 +41,33 @@ export const useBookingStore = defineStore("booking", () => {
     paymentLabel,
   } = usePaymentCalculation(selectedServices, paymentOption);
 
-  //user form
-  const form = reactive({
-    phoneNumber: userStore.user.phone,
-    date: "",
-    time: "",
-    notes: "",
-  });
+  /**
+   * --------------------------------------------------------------------------
+   * DERIVED STATE
+   * --------------------------------------------------------------------------
+   */
 
-  //COMPUTED
-  const serviceIds = computed(() => [
-    ...new Set(selectedServices.value.map((s) => s.serviceId)),
-  ]);
+  const items = computed(() =>
+    selectedServices.value.map((item) => {
+      if (item.type === "service") {
+        return {
+          type: "service",
+          serviceId: item.serviceId,
+        };
+      }
 
-  const subServiceIds = computed(() => [
-    ...new Set(
-      selectedServices.value.map((s) => s.subId).filter((id) => id != null),
-    ),
-  ]);
+      return {
+        type: "subservice",
+        serviceId: item.serviceId,
+        subServiceId: item.subServiceId,
+        inspirationImageId: item.inspirationImageId,
+      };
+    }),
+  );
 
-  //bbooking payload
   const bookingPayload = computed(() => ({
-    serviceIds: serviceIds.value,
-    subServiceIds: subServiceIds.value,
-    technicianId: selectedTechnician.value?.technicianId || null,
+    items: items.value,
+    technicianId: selectedTechnician.value?.technicianId ?? null,
     phoneNumber: form.phoneNumber.trim(),
     paymentOption: paymentOption.value,
     date: form.date,
@@ -56,65 +75,6 @@ export const useBookingStore = defineStore("booking", () => {
     notes: form.notes.trim(),
     images: files.value,
   }));
-
-  /** ACTIONS */
-  const addService = (payload) => {
-    const normalized = {
-      serviceId: payload.serviceId ?? payload.id,
-      serviceName: payload.serviceName ?? payload.name,
-
-      subId: payload.subServiceId ?? null,
-      subServiceName: payload.subServiceName ?? null,
-
-      price: Number(payload.price ?? 0),
-      duration: Number(payload.duration ?? 60),
-    };
-
-    const exists = selectedServices.value.some(
-      (s) =>
-        s.serviceId === normalized.serviceId && s.subId === normalized.subId,
-    );
-
-    if (!exists) {
-      selectedServices.value.push(normalized);
-    }
-  };
-
-  const removeService = (serviceId, subId = null) => {
-    selectedServices.value = selectedServices.value.filter(
-      (s) => !(s.serviceId === serviceId && s.subId === subId),
-    );
-  };
-
-  const toggleService = (payload) => {
-    const serviceId = payload.serviceId ?? payload.id;
-    const subId = payload.subServiceId ?? null;
-
-    if (
-      selectedServices.value.some(
-        (s) => s.serviceId === serviceId && s.subId === subId,
-      )
-    ) {
-      removeService(serviceId, subId);
-    } else {
-      addService(payload);
-    }
-  };
-
-  const isServiceSelected = (serviceId) => {
-    return selectedServices.value.some((s) => s.serviceId === serviceId);
-  };
-
-  const isSubServiceSelected = (subId) =>
-    selectedServices.value.some((service) => service.subId === subId);
-
-  const addTechnician = (tech) => {
-    selectedTechnician.value = tech;
-  };
-
-  const clearTechnician = () => {
-    selectedTechnician.value = null;
-  };
 
   const isDetailsComplete = computed(() => {
     return !!(
@@ -124,6 +84,85 @@ export const useBookingStore = defineStore("booking", () => {
       form.phoneNumber
     );
   });
+
+  /**
+   * --------------------------------------------------------------------------
+   * SERVICE ACTIONS
+   * --------------------------------------------------------------------------
+   */
+
+  const addService = (payload) => {
+    const exists = selectedServices.value.some(
+      (service) =>
+        service.serviceId === payload.serviceId &&
+        service.subServiceId === payload.subServiceId,
+    );
+
+    if (exists) return;
+
+    selectedServices.value.push({
+      ...payload,
+      subServiceId: payload.subServiceId ?? null,
+      inspirationImageId: payload.inspirationImageId ?? null,
+    });
+  };
+
+  const removeService = (serviceId, subServiceId = null) => {
+    selectedServices.value = selectedServices.value.filter(
+      (service) =>
+        !(
+          service.serviceId === serviceId &&
+          service.subServiceId === subServiceId
+        ),
+    );
+  };
+
+  const toggleService = (payload) => {
+    const serviceId = payload.serviceId;
+    const subServiceId = payload.subServiceId ?? null;
+
+    const exists = selectedServices.value.some(
+      (service) =>
+        service.serviceId === serviceId &&
+        service.subServiceId === subServiceId,
+    );
+
+    if (exists) {
+      removeService(serviceId, subServiceId);
+      return "removed";
+    }
+
+    addService(payload);
+    return "added";
+  };
+
+  const isServiceSelected = (serviceId) =>
+    selectedServices.value.some((service) => service.serviceId === serviceId);
+
+  const isSubServiceSelected = (subServiceId) =>
+    selectedServices.value.some(
+      (service) => service.subServiceId === (subServiceId ?? null),
+    );
+
+  /**
+   * --------------------------------------------------------------------------
+   * TECHNICIAN ACTIONS
+   * --------------------------------------------------------------------------
+   */
+
+  const addTechnician = (technician) => {
+    selectedTechnician.value = technician;
+  };
+
+  const clearTechnician = () => {
+    selectedTechnician.value = null;
+  };
+
+  /**
+   * --------------------------------------------------------------------------
+   * BOOKING ACTIONS
+   * --------------------------------------------------------------------------
+   */
 
   const resetBooking = () => {
     selectedServices.value = [];
@@ -135,38 +174,55 @@ export const useBookingStore = defineStore("booking", () => {
       time: "",
       notes: "",
     });
+
     clearTechnician();
     clearAll();
   };
 
-  return {
-    // refs
-    previews: previews.value,
-    selectedServices,
-    paymentOption,
+  /**
+   * --------------------------------------------------------------------------
+   * EXPOSE
+   * --------------------------------------------------------------------------
+   */
 
-    // derived
-    serviceIds,
-    subServiceIds,
+  return {
+    // State
+    selectedServices,
+    selectedTechnician,
+    paymentOption,
+    form,
+
+    // File uploads
+    files,
+    previews,
+    handleFileUpload,
+    removeFile,
+
+    // Derived state
+    items,
+    bookingPayload,
+    isDetailsComplete,
+
+    // Payment
+    totalPrice,
     totalDuration,
     depositAmount,
-    totalPrice,
     amountToPay,
     remainingBalance,
     paymentLabel,
-    selectedTechnician,
-    isDetailsComplete,
-    form,
-    bookingPayload,
 
-    // actions
+    // Service actions
+    addService,
+    removeService,
     toggleService,
     isServiceSelected,
     isSubServiceSelected,
+
+    // Technician actions
     addTechnician,
     clearTechnician,
-    handleFileUpload,
-    removeFile,
+
+    // Booking actions
     resetBooking,
   };
 });

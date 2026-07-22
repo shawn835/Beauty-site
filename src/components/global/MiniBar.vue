@@ -10,7 +10,7 @@
       <div class="mini-left">
         <span>
           <font-awesome-icon icon="location-pin" />
-          Nairobi, Kenya
+          Nakuru, Kenya
         </span>
 
         <span class="mini-divider">•</span>
@@ -32,9 +32,9 @@
 
         <span class="mini-divider">•</span>
 
-        <a href="mailto:hello@symosnailspa.com" class="mini-contact">
+        <a href="mailto:chegesimon949@gmail.com" class="mini-contact">
           <font-awesome-icon icon="envelope" />
-          hello@symosnailspa.com
+          chegesimon949@gmail.com
         </a>
       </div>
     </div>

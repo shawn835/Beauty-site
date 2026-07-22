@@ -155,6 +155,7 @@ const deleteAccount = async () => {
     });
     showDeleteModal.value = false;
     router.push("/register");
+    userStore.clearUser();
   } catch (error) {
     show({
       message: error.message || "booking cancel failed",
@@ -177,6 +178,7 @@ const logout = async () => {
       type: "success",
     });
     router.push("/login");
+    userStore.clearUser();
   } catch (error) {
     show({
       message: error.message || "logged out failed",

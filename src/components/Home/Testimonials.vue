@@ -2,7 +2,7 @@
   <section class="testimonials-section">
     <div class="section-header">
       <h2>What Our Clients Say</h2>
-      <p>Real experiences from real clients in Nairobi</p>
+      <p>Real experiences from real clients in nakuru</p>
     </div>
 
     <!-- Carousel -->
@@ -60,7 +60,7 @@ const current = ref(0);
 
 const reviews = [
   {
-    text: "Best gel polish I've had in Nairobi. Lasted almost 3 weeks with zero chipping. Esther is amazing!",
+    text: "Best gel polish I've had in nakuru. Lasted almost 3 weeks with zero chipping. Esther is amazing!",
     name: "Michelle W.",
     location: "Westlands",
     service: "Gel Manicure",

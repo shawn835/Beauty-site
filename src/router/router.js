@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import("@/views/ServicesView.vue"),
     },
     {
+      path: "/services/:subServiceId",
+      name: "services-details",
+      component: () => import("@/components/services/Inspo.vue"),
+    },
+    {
       path: "/about",
       name: "about us",
       component: () => import("@/views/AboutView.vue"),
@@ -52,6 +57,16 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: () => import("@/components/user/login.vue"),
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot password",
+      component: () => import("@/components/user/ForgotPassword.vue"),
+    },
+    {
+      path: "/reset-password",
+      name: "reset-password",
+      component: () => import("@/components/user/ResetPassword.vue"),
     },
     {
       path: "/token/confirmation",
@@ -132,11 +147,17 @@ const router = createRouter({
             import("@/views/admin/Bookings/AdminBookingDetails.vue"),
           props: true,
         },
-        // {
-        //   path: "services",
-        //   name: "admin-services",
-        //   component: () => import("@/views/admin/Services/ServicesView.vue"),
-        // },
+        {
+          path: "services",
+          name: "admin-services",
+          component: () => import("@/views/admin/Services/ServicesView.vue"),
+        },
+        {
+          path: "services/:serviceName/:subServiceId",
+          name: "admin-service-details",
+          component: () =>
+            import("@/views/admin/Services/ServiceDetailsView.vue"),
+        },
         {
           path: "users",
           name: "admin-users",
@@ -151,6 +172,19 @@ const router = createRouter({
           path: "uploads",
           name: "admin-uploads",
           component: () => import("@/views/admin/Upload/UploadView.vue"),
+        },
+        {
+          path: "technicians",
+          name: "admin-technicians",
+          component: () =>
+            import("@/views/admin/Technicians/techniciansView.vue"),
+        },
+
+        {
+          path: "technicians/:technicianId",
+          name: "admin-technician-details",
+          component: () =>
+            import("@/views/admin/Technicians/technicianDetails.vue"),
         },
       ],
     },

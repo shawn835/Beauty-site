@@ -1,90 +1,85 @@
 <template>
   <div class="admin-bookings-container">
-    <h1 class="page-title">Admin Booking Management</h1>
-    <p class="page-subtitle">Manage and oversee all booking activities</p>
-
-    <BookingBar
-      v-model="filters"
-      :technicians="appStore.technicians"
+    <FilterPanel
+      :technicians="technicianStore.technicians"
       :services="appStore.services"
       @apply="applyFilters"
+      :loading="loading"
     />
 
-    <!-- Your appointments table below -->
-
-    <bookingTable
+    <BookingTable
       :bookings="bookings"
+      :page="page"
       :total-pages="totalPages"
       :next-page="nextPage"
       :prev-page="prevPage"
-      :page="page"
     />
   </div>
 </template>
 
 <script setup>
-import { reactive, computed, ref } from "vue";
-import bookingTable from "./bookingTable.vue";
-import BookingBar from "./FilterPanel.vue";
+import { computed, ref, watch } from "vue";
+import BookingTable from "./BookingTable.vue";
+import FilterPanel from "./FilterPanel.vue";
 import { useApi } from "@/components/composables/useFetch";
 import { useAppStore } from "@/components/store/appStore";
+import { useTechnicianStore } from "@/components/store/TechnicianStore.js";
+import { usePagination } from "@/components/composables/usePagination.js";
 
 const appStore = useAppStore();
-const filters = reactive({
+const technicianStore = useTechnicianStore();
+const pagination = usePagination();
+const { page, limit, totalPages, totalCount, nextPage, prevPage, setMeta } =
+  usePagination();
+
+const filters = ref({
   search: "",
   startDate: "",
   endDate: "",
-  technician: "",
-  service: "",
+  technicianId: "",
   status: "",
   paymentStatus: "",
 });
 
-const queryString = computed(() => {
-  const params = new URLSearchParams();
+const applyFilters = (newFilters) => {
+  // Reset to first page whenever filters change
+  pagination.page.value = 1;
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value) params.append(key, value);
-  });
-
-  return params.toString();
-});
+  // Replace the entire object
+  filters.value = { ...newFilters };
+};
 
 const url = computed(() => {
-  const base = `${import.meta.env.VITE_API_URL}/api/admin/bookings`;
-  return queryString.value ? `${base}?${queryString.value}` : base;
-});
+  const params = new URLSearchParams();
 
-const { data, loading, page, totalPages, nextPage, prevPage, fetchData } =
-  useApi(url, {
-    perPage: 8,
-    withCredentials: true,
+  params.set("page", String(page.value));
+  params.set("limit", String(limit.value));
+
+  Object.entries(filters.value).forEach(([key, value]) => {
+    if (value) {
+      params.set(key, String(value));
+    }
   });
 
-const bookings = computed(() => data.value?.bookings || []);
+  return `${import.meta.env.VITE_API_URL}/api/admin/bookings?${params.toString()}`;
+});
 
-const applyFilters = (newFilters) => {
-  Object.assign(filters, newFilters);
-  fetchData();
-};
+const { data, loading } = useApi(url, {
+  credentials: "include",
+});
+
+const bookings = computed(() => data.value?.bookings ?? []);
+watch(data, (response) => {
+  if (response) {
+    setMeta(response);
+  }
+});
 </script>
 <style scoped>
 .admin-bookings-container {
-  /* max-width: 1200px; */
-  /* margin: 40px auto; */
   padding: 20px;
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe4e1 100%);
   border-radius: 15px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   font-family: "Lora", serif;
-}
-
-.page-title {
-  font-family: "Playfair Display", serif;
-  font-size: 2.5rem;
-  color: #d81b60;
-  margin-bottom: 10px;
-  text-align: center;
 }
 
 @media (max-width: 768px) {

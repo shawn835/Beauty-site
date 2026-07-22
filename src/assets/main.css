@@ -13,7 +13,6 @@
   --bg-pink: #d81b60;
   --bg-light: #fff;
   --text-dark: #2e3538;
-  --text-pink: #d81b60;
   --text-light: #fff;
   --text-gray: #ccc;
   --dark-gray: #666;
@@ -159,28 +158,37 @@ button.disabled {
   font-size: 0.95rem;
 }
 
-/* Booking Status */
-.pending {
+/* booking ststus Shared styles for all badges */
+.status-badge {
+  padding: 6px 16px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.pending {
   background: var(--bg-pending);
   color: var(--status-pending);
 }
-.confirmed {
+.status-badge.confirmed {
   background: var(--bg-confirmed);
   color: var(--status-confirmed);
 }
-.in-progress {
+.status-badge.in-progress {
   background: var(--bg-in-progress);
   color: var(--status-in-progress);
 }
-.completed {
+.status-badge.completed {
   background: var(--bg-completed);
   color: var(--status-completed);
 }
-.cancelled {
+.status-badge.cancelled {
   background: var(--bg-cancelled);
   color: var(--status-cancelled);
 }
-.no-show {
+.status-badge.no-show {
   background: var(--bg-no-show);
   color: var(--status-no-show);
 }

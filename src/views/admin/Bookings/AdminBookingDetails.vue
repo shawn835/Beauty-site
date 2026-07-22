@@ -4,7 +4,7 @@
     <div class="booking-header">
       <div class="booking-code">
         <h1>Booking #{{ booking.bookingCode }}</h1>
-        <span :class="getStatusClass(booking.status)">
+        <span :class="['status-badge', booking.status]">
           {{ booking.status }}
         </span>
       </div>
@@ -12,15 +12,15 @@
       <div class="header-actions">
         <BaseButton label="edit status" @click="editStatus" variant="primary" />
         <BaseButton
-          @click="reassignTechnician"
+          @click="showReassignModal = true"
           variant="secondary"
           label="reassign technician"
         />
 
         <BaseButton
-          @click="printBooking"
           label="print slip"
           variant="success"
+          @click="receiptDownload(booking.id)"
         />
       </div>
     </div>
@@ -238,25 +238,36 @@
       </div>
     </div>
   </div>
+
+  <ReassignmentModal
+    :booking-id="booking.id"
+    v-if="showReassignModal"
+    @close="showReassignModal = false"
+  />
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import ReferenceImages from "@/components/ReferenceImages.vue";
 import { useApi } from "@/components/composables/useFetch";
+import { useBooking } from "@/components/composables/useBooking.js";
+import { useToast } from "@/components/composables/useToast.js";
+const { downloadReceipt } = useBooking();
+const { show } = useToast();
+const isDownloading = ref(false);
 
 import {
   formatDate,
   formatDuration,
-  getStatusClass,
   formatTimeRange,
   callCustomer,
   messageCustomer,
 } from "@/Utility/utils";
 import BaseButton from "@/components/BaseButton.vue";
-
+import ReassignmentModal from "./ReassignmentModal.vue";
 const route = useRoute();
+const showReassignModal = ref(false);
 
 const bookingCode = computed(() => route.params.bookingCode);
 
@@ -266,7 +277,7 @@ const url = computed(
 );
 
 const { data, fetchData } = useApi(url, {
-  withCredentials: true,
+  credentials: "include",
 });
 
 const booking = computed(() => safeData.value.booking || {});
@@ -307,6 +318,37 @@ const customerHistory = computed(() => {
     },
   ];
 });
+const receiptDownload = async (bookingId) => {
+  if (!bookingId) {
+    show({
+      message: "Invalid booking selected",
+      type: "error",
+    });
+    return;
+  }
+
+  isDownloading.value = true;
+
+  try {
+    const data = await downloadReceipt(bookingId);
+
+    window.location.href = data.receiptUrl;
+
+    show({
+      message: data.message || "Receipt downloaded successfully",
+      type: "success",
+    });
+  } catch (error) {
+    show({
+      message: error.message || "Receipt download failed",
+      type: "error",
+    });
+
+    console.error(error);
+  } finally {
+    isDownloading.value = false;
+  }
+};
 </script>
 
 <style scoped>
@@ -400,11 +442,6 @@ h3 {
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.check {
-  color: #10b981;
-  font-weight: bold;
 }
 
 .price {

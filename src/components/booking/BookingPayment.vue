@@ -188,7 +188,7 @@
   </div>
 
   <Spinner
-    :show="isProcessing"
+    :show="isSubmitting"
     size="large"
     message="initiating payment..."
     subtext="Check your phone for M-Pesa prompt, do not close this page"
@@ -196,7 +196,7 @@
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import { useBookingStore } from "../store/useBookingStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BaseButton from "../BaseButton.vue";
@@ -209,7 +209,7 @@ const router = useRouter();
 const agreed = ref(false);
 const bookingStore = useBookingStore();
 const { createBooking } = useBooking();
-const { isProcessing, startPolling, stopPolling } = usePaymentPolling();
+const { isProcessing, stopPolling } = usePaymentPolling();
 const { show } = useToast();
 const isSubmitting = ref(false);
 
@@ -224,62 +224,22 @@ const submitBooking = async () => {
     );
 
     show({
-      message: message || "Booking received. Awaiting payment confirmation.",
+      message: message || "Booking created successfully",
       type: "success",
     });
 
-    startPolling(bookingCode, (event) => {
-      switch (event.type) {
-        case "info":
-          show({ message: event.message, type: "info" });
-          break;
+    bookingStore.resetBooking();
 
-        case "confirmed":
-          show({
-            message: event.message || "Payment successful!",
-            type: "success",
-          });
-          bookingStore.resetBooking();
-          router.push(`/user/bookings/${event.bookingCode}`);
-          break;
-
-        case "completed":
-          show({
-            message: event.message || "Service completed.",
-            type: "success",
-          });
-          bookingStore.resetBooking();
-          router.push(`/user/bookings/${event.bookingCode}`);
-          break;
-
-        case "failed":
-          show({
-            message: event.message || "Booking failed",
-            type: "error",
-          });
-
-          stopPolling();
-        case "payment_failed":
-          show({
-            message: event.message || "Payment failed",
-            type: "error",
-          });
-          stopPolling();
-          break;
-      }
-    });
+    router.push(`/user/bookings/${bookingCode}`);
   } catch (err) {
     show({
-      message: err.message || "booking failed",
+      message: err.message || "Booking failed",
       type: "error",
     });
-
-    stopPolling();
   } finally {
     isSubmitting.value = false;
   }
 };
-
 const emit = defineEmits(["back"]);
 
 function goBack() {

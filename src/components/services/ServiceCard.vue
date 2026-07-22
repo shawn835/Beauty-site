@@ -33,14 +33,14 @@
         class="service-card"
       >
         <div class="card-image">
-          <img :src="service.image" :alt="service.subServiceName" />
+          <img :src="service?.images?.[0]?.image_url" :alt="service.name" />
           <div class="price-tag">
             From <strong>KSh {{ service.price }}</strong>
           </div>
         </div>
 
         <div class="card-body">
-          <h3>{{ service.subServiceName }}</h3>
+          <h3>{{ service.name }}</h3>
 
           <p class="description">
             {{
@@ -52,13 +52,13 @@
           <div class="duration" v-if="service.duration">
             ⏱ <strong>{{ formatDuration(service.duration) }}</strong>
           </div>
+
           <BaseButton
-            :label="
-              bookingStore.isSubServiceSelected(service.subServiceId)
-                ? 'Remove'
-                : 'Book this'
-            "
-            @click="handleBookService(service)"
+            label="view to book"
+            icon-right="arrow-right"
+            full-width
+            size="medium"
+            @click="navigate(service)"
           />
         </div>
       </div>
@@ -74,26 +74,13 @@
   </section>
 </template>
 <script setup>
-import { defineProps, defineEmits } from "vue";
-import { useBookingStore } from "../store/useBookingStore";
+import { useRouter } from "vue-router";
 import { formatDuration } from "@/Utility/utils";
 import BaseButton from "../BaseButton.vue";
-const bookingStore = useBookingStore();
-import { useToast } from "../composables/useToast";
 
-const { show } = useToast();
-const handleBookService = (service) => {
-  const wasSelected = bookingStore.isSubServiceSelected(service.subServiceId);
+const emit = defineEmits(["view-all", "change-filter", "navigate"]);
 
-  bookingStore.toggleService(service);
-
-  show({
-    message: wasSelected
-      ? `${service.subServiceName} removed from your preview`
-      : `${service.subServiceName} added to your preview`,
-    type: wasSelected ? "info" : "success",
-  });
-};
+const router = useRouter();
 
 const props = defineProps({
   title: {
@@ -111,7 +98,7 @@ const props = defineProps({
   },
   filters: {
     type: Array,
-    required: true,
+    required: false,
   },
   showHeader: {
     type: Boolean,
@@ -123,7 +110,7 @@ const props = defineProps({
   },
   viewAllText: {
     type: String,
-    default: "View All Services →",
+    default: "View All Services",
   },
   activeFilter: {
     type: [Number, null],
@@ -131,7 +118,9 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["view-all", "change-filter"]);
+const navigate = (service) => {
+  router.push(`/services/${service.subServiceId}`);
+};
 
 const handleViewAll = () => {
   emit("view-all");
@@ -243,7 +232,7 @@ const handleViewAll = () => {
   font-weight: 500;
 }
 
-service-filters {
+.service-filters {
   max-width: 1400px;
   margin: 0 auto 50px;
 }

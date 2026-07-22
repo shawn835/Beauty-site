@@ -2,14 +2,12 @@
   <div class="user-booking-detail">
     <!-- Header -->
     <div class="booking-header">
-      <button class="back-btn" @click="$emit('back')">
-        ← Back to My Bookings
-      </button>
+      <button class="back-btn" @click="goBack()">← Back to My Bookings</button>
 
       <div class="header-main">
         <h1>Booking #{{ booking.bookingCode }}</h1>
-        <span :class="getStatusClass(booking.status)">
-          {{ booking.status }}
+        <span :class="['status-badge', booking.status]">
+          {{ bookingStatus }}
         </span>
       </div>
     </div>
@@ -42,33 +40,36 @@
 
         <!-- Services -->
         <div class="card">
-          <h3>Your Services</h3>
+          <h3 class="section-title">Your Services</h3>
+
           <div class="services-list">
             <div
-              v-if="subServices.length"
-              v-for="sub in subServices"
-              :key="sub.id"
+              v-for="service in services"
+              :key="service.id"
               class="service-item"
             >
-              <div class="service-main">
-                <span class="check"
-                  ><font-awesome-icon icon="check" class="check"
-                /></span>
-                <div>
-                  <strong>{{ sub.name }}</strong>
-                  <small>{{ formatDuration(sub.duration) }}</small>
-                </div>
-                <span class="price">KES {{ sub.price }}</span>
+              <!-- PARENT HEADER -->
+              <div class="parent-header">
+                <strong class="parent-name">{{ service.name }}</strong>
               </div>
 
-              <div v-if="services.length" class="sub-services">
+              <!-- CHILD SUB-SERVICES (with price & duration) -->
+              <div class="sub-services">
                 <div
-                  v-for="service in services"
-                  :key="service.id"
-                  class="sub-service"
+                  v-for="sub in subServices"
+                  :key="sub.id"
+                  class="sub-service-item"
                 >
-                  • {{ service.name }}
-                  <span class="extra">+KES {{ service.price || "0" }}</span>
+                  <div class="sub-main">
+                    <span class="check">
+                      <font-awesome-icon icon="check-circle" />
+                    </span>
+                    <div class="sub-info">
+                      <strong>{{ sub.name }}</strong>
+                      <small>{{ formatDuration(sub.duration) }}</small>
+                    </div>
+                    <span class="price">KES {{ sub.price }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,8 +111,8 @@
           </div>
 
           <div class="payment-status-badge">
-            <span :class="getStatusClass(payment.status)">
-              {{ payment.status }}
+            <span :class="['status-badge', payment.status]">
+              {{ paymentStatus }}
             </span>
           </div>
         </div>
@@ -127,8 +128,8 @@
           <h3>Booking Activity</h3>
           <div class="activity-list">
             <div v-for="(log, i) in activityLog" :key="i" class="activity-item">
-              <span class="time">{{ log.time }}</span>
-              <span>{{ log.action }}</span>
+              <span class="time">{{ log.time }} </span>
+              <span>{{ log.text }}</span>
             </div>
           </div>
         </div>
@@ -143,6 +144,15 @@
               label="Cancel Booking"
               variant="danger"
               @click="showCancelModal = true"
+              :disabled="isCancelling"
+            />
+
+            <BaseButton
+              label="retry payment"
+              variant="outline"
+              v-if="paymentStatus === 'failed'"
+              @click="paymentRetry(booking.id)"
+              :disabled="isRetrying"
             />
 
             <ConfirmModal
@@ -159,36 +169,44 @@
             />
 
             <!-- Rebook always visible -->
-            <!-- <button class="btn btn-rebook" @click="rebookService">
-              Rebook Same Services
-            </button> -->
+            <BaseButton
+              label="receipt"
+              variant="success"
+              @click="receiptDownload(booking.id)"
+              :loading="isDownloading"
+              :disabled="isDownloading"
+            />
             <BaseButton label="contact salon" variant="success" />
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <Spinner
+    :show="showPaymentSpinner"
+    size="large"
+    message="Waiting for payment confirmation..."
+    subtext="Check your phone for the M-Pesa prompt"
+  />
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
+import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { useApi } from "@/components/composables/useFetch";
 import { useBooking } from "@/components/composables/useBooking";
 import { useToast } from "@/components/composables/useToast";
 import BaseButton from "@/components/BaseButton.vue";
 import ReferenceImages from "@/components/ReferenceImages.vue";
-import {
-  formatDate,
-  formatDuration,
-  formatTimeRange,
-  getStatusClass,
-} from "@/Utility/utils";
+import Spinner from "@/components/Spinner.vue";
+import { useBookingSocket } from "@/components/composables/useBookingSocket";
+import { formatDate, formatDuration, formatTimeRange } from "@/Utility/utils";
 
 import ConfirmModal from "@/components/ConfirmModal.vue";
 const route = useRoute();
-const { loading, cancelBooking } = useBooking();
-const emit = defineEmits(["back"]);
+const router = useRouter();
+const { cancelBooking, downloadReceipt, retryPayment } = useBooking();
 const bookingCode = computed(() => route.params.bookingCode);
 const { show } = useToast();
 
@@ -198,23 +216,75 @@ const url = computed(
 );
 
 const { data } = useApi(url, {
-  withCredentials: true,
+  credentials: "include",
 });
 
 /******cancel booking********/
 const showCancelModal = ref(false);
 const isCancelling = ref(false);
+const isDownloading = ref(false);
+const isRetrying = ref(false);
+const paymentStatus = ref(null);
+
+const { joinBooking, onBookingEvent, leaveBooking, onBookingState } =
+  useBookingSocket();
+
+onBookingState((data) => {
+  paymentStatus.value = data.status;
+});
+
+onBookingEvent((data) => {
+  switch (data.status) {
+    case "payment_initiated":
+      paymentStatus.value = "processing";
+      break;
+
+    case "payment_received":
+      paymentStatus.value = "processing";
+      break;
+
+    case "booking_confirmed":
+      paymentStatus.value = "confirmed";
+
+      show({
+        message: data.message,
+        type: "success",
+      });
+      break;
+
+    case "payment_failed":
+      paymentStatus.value = "failed";
+
+      show({
+        message: data.message || "payment failed",
+        type: "error",
+      });
+      break;
+  }
+});
+
+onMounted(() => {
+  joinBooking(bookingCode.value);
+});
+
+onBeforeUnmount(() => {
+  leaveBooking();
+});
+
+const showPaymentSpinner = computed(() => {
+  return ["pending", "processing"].includes(paymentStatus.value);
+});
 
 const confirmCancel = async (bookingId) => {
+  isCancelling.value = true;
   try {
-    isCancelling.value = true;
-
     const data = await cancelBooking(bookingId);
     show({
       message: data.message || `booking ${bookingCode} cancelled successfully`,
       type: "success",
     });
     showCancelModal.value = false;
+    router.push("/profile/user/bookings");
   } catch (error) {
     show({
       message: error.message || "booking cancel failed",
@@ -223,6 +293,56 @@ const confirmCancel = async (bookingId) => {
     console.error(error);
   } finally {
     isCancelling.value = false;
+  }
+};
+
+//retry
+const paymentRetry = async (bookingId) => {
+  isRetrying.value = true;
+  try {
+    const data = await retryPayment(bookingId);
+
+    show({ message: data.message, type: "success" });
+  } catch (error) {
+    show({
+      message: error.message,
+      type: "error",
+    });
+    console.error(error);
+  } finally {
+    isRetrying.value = false;
+  }
+};
+
+const receiptDownload = async (bookingId) => {
+  if (!bookingId) {
+    show({
+      message: "Invalid booking selected",
+      type: "error",
+    });
+    return;
+  }
+
+  isDownloading.value = true;
+
+  try {
+    const data = await downloadReceipt(bookingId);
+
+    window.location.href = data.receiptUrl;
+
+    show({
+      message: data.message || "Receipt downloaded successfully",
+      type: "success",
+    });
+  } catch (error) {
+    show({
+      message: error.message || "Receipt download failed",
+      type: "error",
+    });
+
+    console.error(error);
+  } finally {
+    isDownloading.value = false;
   }
 };
 
@@ -236,34 +356,36 @@ const stats = computed(() => finance.value.stats || {});
 const services = computed(() => details.value.services || []);
 const subServices = computed(() => details.value.subServices || []);
 const customImages = computed(() => details.value.customImages || []);
-const subService = computed(() => data.value?.subServices?.[0]);
-// const activityLogs = computed(() => safeData.value.activity || []);
 
-const activityLog = [
-  { time: "10:22", action: "Booking created successfully" },
-  { time: "10:25", action: "Payment completed via M-Pesa" },
-  { time: "10:30", action: "Technician assigned" },
-  { time: "Yesterday", action: "Booking confirmed" },
-];
+const activityLog = computed(() => safeData.value.activity || []);
 
-// Actions
-const rescheduleBooking = () => {
-  alert("Reschedule modal would open here");
-};
+const bookingStatus = computed(() => {
+  if (
+    ["paid", "partial", "failed", "pending"].includes(paymentStatus.value) &&
+    booking.value.status === "cancelled"
+  ) {
+    return "cancelled";
+  }
 
-const rebookService = () => {
-  alert("Redirecting to booking page with same services...");
-};
+  if (["processing", "pending"].includes(paymentStatus.value)) {
+    return "pending";
+  }
 
-const contactSalon = () => {
-  window.open("https://wa.me/254712345678", "_blank");
+  if (["paid", "partial"].includes(paymentStatus.value)) {
+    return "confirmed";
+  }
+
+  return booking.value.status;
+});
+
+const goBack = () => {
+  router.push("/profile/user/bookings");
 };
 </script>
 
 <style scoped>
 .user-booking-detail {
-  /* max-width: 1200px; */
-  margin: 0 auto;
+  margin: 1rem auto;
   padding: 2.5rem 20px;
   background: var(--bg-dark);
   color: var(--text-light);
@@ -275,7 +397,8 @@ const contactSalon = () => {
   display: flex;
   align-items: center;
   gap: 2rem 20px;
-  margin-bottom: 30px;
+  margin-top: 3rem;
+  padding: 20px;
   flex-wrap: wrap;
 }
 
@@ -291,27 +414,6 @@ const contactSalon = () => {
 .header-main h1 {
   margin: 0;
   font-size: 1.9rem;
-}
-
-.status-badge {
-  padding: 8px 20px;
-  border-radius: 30px;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-}
-
-.status-badge.confirmed {
-  background: #10b981;
-  color: white;
-}
-.status-badge.pending {
-  background: #f59e0b;
-  color: black;
-}
-.status-badge.cancelled {
-  background: #ef4444;
-  color: white;
 }
 
 .booking-content {
@@ -349,46 +451,78 @@ h3 {
   margin-bottom: 4px;
 }
 
-.service-item {
-  padding: 16px 0;
-  border-bottom: 1px solid #4a5258;
+.card {
+  background: #252b2e;
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 }
 
-.service-main {
+.section-title {
+  color: #f5d698;
+  font-size: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Parent */
+.parent-header {
+  margin-bottom: 1.2rem;
+}
+
+.parent-name {
+  font-size: 1.45rem;
+  color: #f5d698;
+}
+
+/* Sub Service Items */
+.sub-service-item {
+  margin-bottom: 1.4rem;
+}
+
+.sub-main {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 1.2rem;
 }
 
 .check {
-  color: #10b981;
-  font-size: 1.3rem;
+  color: #4ade80;
+  font-size: 1.6rem;
+}
+
+.sub-info {
+  flex: 1;
+}
+
+.sub-info strong {
+  font-size: 1.25rem;
+  color: #ddd;
+}
+
+.duration {
+  color: #aaa;
+  font-size: 0.97rem;
 }
 
 .price {
-  margin-left: auto;
-  font-weight: 600;
-  color: var(--bg-pink);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #f5d698;
 }
 
-.sub-services {
-  margin-top: 10px;
-  padding-left: 34px;
-  color: var(--text-gray);
-}
-
+/* Total */
 .total-row {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 2px solid var(--bg-pink);
   display: flex;
   justify-content: space-between;
-  font-size: 1.25rem;
   align-items: center;
+  margin-top: 2.5rem;
+  padding-top: 1.8rem;
+  border-top: 2px solid #f5d698;
+  font-size: 1.45rem;
 }
 
 .total-price {
-  color: var(--bg-pink);
+  color: #f5d698;
 }
 
 .payment-summary .amount-row {
@@ -408,37 +542,6 @@ h3 {
   gap: 12px;
 }
 
-.btn {
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-reschedule {
-  background: #3b82f6;
-  color: white;
-}
-.btn-cancel {
-  background: #ef4444;
-  color: white;
-}
-.btn-rebook {
-  background: var(--bg-pink);
-  color: white;
-}
-.btn-contact {
-  background: #10b981;
-  color: white;
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .notes {
   background: #2e3538;
   padding: 16px;
@@ -454,6 +557,15 @@ h3 {
 
   .user-actions {
     grid-template-columns: 1fr;
+  }
+
+  .service-main {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .price {
+    margin-left: auto;
   }
 }
 </style>

@@ -2,77 +2,25 @@
   <ServiceCard
     title="Our Signature Services"
     subtitle="Professional nail care with premium products and experienced technicians"
-    :services="services"
-    @book-service="bookService"
+    :services="featuredServices"
+    @view-all="viewAllServices"
   />
 </template>
 
 <script setup>
+import { computed } from "vue";
+import { useApi } from "../composables/useFetch.js";
 import ServiceCard from "../services/ServiceCard.vue";
-const services = [
-  {
-    id: 1,
-    icon: "💅",
-    title: "Classic Manicure",
-    description: "Nail shaping, cuticle care, scrub & luxurious massage",
-    price: 1200,
-    duration: 120,
-    image: "https://picsum.photos/600/400?random=10",
-  },
-  {
-    id: 2,
-    icon: "🦶",
-    title: "Spa Pedicure",
-    description: "Deep exfoliation, callus removal & relaxing foot massage",
-    price: 1500,
-    duration: 90,
-    image: "https://picsum.photos/600/400?random=11",
-  },
-  {
-    id: 3,
-    icon: "✨",
-    title: "Gel Polish",
-    description: "Long-lasting shine with zero chipping for up to 3 weeks",
-    price: 2500,
-    duration: 90,
-    image: "https://picsum.photos/600/400?random=12",
-  },
-  {
-    id: 4,
-    icon: "🎨",
-    title: "Nail Art",
-    description: "Custom designs, rhinestones, chrome & 3D embellishments",
-    price: 800,
-    duration: 50,
-    image: "https://picsum.photos/600/400?random=13",
-  },
-  {
-    id: 5,
-    icon: "💎",
-    title: "Acrylic Extensions",
-    description: "Strong, beautiful extensions with flawless finish",
-    price: 3500,
-    duration: 50,
-    image: "https://picsum.photos/600/400?random=14",
-  },
-  {
-    id: 6,
-    icon: "🏠",
-    title: "Home Service",
-    description: "Premium salon experience delivered to your doorstep",
-    price: 2000,
-    duration: 50,
-    image: "https://picsum.photos/600/400?random=15",
-  },
-];
+import { useRouter } from "vue-router";
+const router = useRouter();
 
-const bookService = (service) => {
-  alert(`Booking flow for ${service.title} would open here`);
-  // router.push(`/book?service=${service.id}`)
-};
+const url = computed(() => `${import.meta.env.VITE_API_URL}/api/featured`);
+
+const { data } = useApi(url);
+const featuredServices = computed(() => data?.value?.featured);
 
 const viewAllServices = () => {
-  alert("Redirecting to full services page...");
+  router.push("/services");
 };
 </script>
 

@@ -8,72 +8,65 @@
       </div>
 
       <!-- Form -->
-
       <form class="form" @submit.prevent="handleSubmit">
         <div
           class="form-group"
           v-for="field in validFields"
           :key="field"
-          :class="{ 'has-file': meta[field].type === 'file' }"
+          :class="{ 'has-file': meta[field]?.type === 'file' }"
         >
-          <label class="form-label">
-            {{ meta[field].label || meta[field].placeholder }}
-            <span v-if="meta[field].required" class="required">*</span>
+          <label class="form-label" v-if="meta[field]?.type !== 'checkbox'">
+            {{ meta[field]?.label || meta[field]?.placeholder }}
+            <span v-if="meta[field]?.required" class="required">*</span>
           </label>
 
-          <!-- File input – inline assignment + nice styling -->
-          <div v-if="meta[field].type === 'file'" class="file-upload-area">
-            <i class="fa-solid fa-cloud-arrow-up"></i>
-            <p>
+          <!-- File Upload -->
+          <div v-if="meta[field]?.type === 'file'" class="file-upload-area">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <p class="upload-text">
               {{
-                meta[field].placeholder || "Drop files here or click to browse"
+                meta[field]?.placeholder || "Drop files here or click to browse"
               }}
             </p>
-            <small class="file-hint">PNG, JPG, JPEG up to 5MB</small>
+            <small class="file-hint">PNG, JPG, JPEG • Max 5MB</small>
+
             <input
               type="file"
-              :accept="meta[field].accept || 'image/*'"
+              :accept="meta[field]?.accept || 'image/*'"
               @change="upload.handleFileUpload"
               multiple
               class="file-input"
               :id="`file-${field}`"
             />
-            <label
-              :for="`file-${field}`"
-              class="file-label"
-              :class="{ 'has-file': props.form[field] }"
-            >
+
+            <label :for="`file-${field}`" class="file-label">
               <span class="file-icon">📷</span>
               <span class="file-text">
-                {{
-                  props.form[field]?.name ||
-                  meta[field].placeholder ||
-                  "Choose file..."
-                }}
+                {{ props.form[field]?.name || "Choose file..." }}
               </span>
             </label>
           </div>
+
           <!-- Select -->
           <select
-            v-else-if="meta[field].type === 'select'"
+            v-else-if="meta[field]?.type === 'select'"
             v-model="props.form[field]"
             class="form-select"
-            :required="meta[field].required"
+            :required="meta[field]?.required"
           >
             <option disabled value="">
-              {{ meta[field].placeholder || "Select option" }}
+              {{ meta[field]?.placeholder || "Select option" }}
             </option>
             <option
-              v-for="opt in options[meta[field].optionsKey] || []"
+              v-for="opt in options[meta[field]?.optionsKey] || []"
               :key="opt.value"
               :value="opt.value"
             >
               {{ opt.label }}
             </option>
-            >
           </select>
 
-          <!-- Text, email, tel, number, password -->
+          <!-- Regular Inputs -->
           <input
             v-else-if="
               [
@@ -84,25 +77,43 @@
                 'tel',
                 'date',
                 'time',
-              ].includes(meta[field].type)
+              ].includes(meta[field]?.type)
             "
             v-model="props.form[field]"
-            :type="meta[field].type"
-            :placeholder="meta[field].placeholder"
+            :type="meta[field]?.type"
+            :placeholder="meta[field]?.placeholder"
             class="form-input"
-            :required="meta[field].required"
+            :required="meta[field]?.required"
+            :disabled="disabled"
             autocomplete="on"
           />
 
           <!-- Textarea -->
           <textarea
-            v-else-if="meta[field].type === 'textarea'"
+            v-else-if="meta[field]?.type === 'textarea'"
             v-model="props.form[field]"
-            :placeholder="meta[field].placeholder"
+            :placeholder="meta[field]?.placeholder"
             class="form-textarea"
-            rows="4"
-            :required="meta[field].required"
+            rows="5"
+            :required="meta[field]?.required"
+            :disabled="disabled"
           />
+
+          <!-- Checkbox -->
+          <div
+            v-else-if="meta[field]?.type === 'checkbox'"
+            class="checkbox-group"
+          >
+            <label class="checkbox-label">
+              <input
+                v-model="props.form[field]"
+                type="checkbox"
+                :required="meta[field]?.required"
+                :disabled="disabled"
+              />
+              {{ meta[field]?.label }}
+            </label>
+          </div>
         </div>
 
         <!-- Submit Button -->
@@ -114,6 +125,7 @@
             variant="primary"
             size="medium"
             :loading="loading"
+            full-width
           />
         </div>
         <!-- Extra content slot -->
@@ -141,6 +153,7 @@ const props = defineProps({
   showButton: { type: Boolean, default: true },
   options: { type: Object, default: () => ({}) },
   upload: { type: Object, default: () => ({}) },
+  disabled: { type: Boolean, default: false },
   form: Object,
 });
 
@@ -153,61 +166,55 @@ const handleSubmit = () => {
 
 <style scoped>
 .form-wrapper {
-  margin-top: 1rem;
-  background: var(--bg-dark);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
 }
+
 .form-container {
-  background: #3a4246;
-  border-radius: 24px;
-  padding: 40px 36px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  background: #2e3538;
+  padding: 2.5rem 2rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .form-header {
   text-align: center;
-  margin-bottom: 36px;
+  margin-bottom: 2rem;
 }
 
 .title {
   font-size: 2.1rem;
-  color: white;
-  margin-bottom: 8px;
+  color: #f5d698;
+  margin: 0 0 0.5rem;
+  font-weight: 700;
 }
 
 .subtitle {
-  color: var(--text-gray);
+  color: #aaa;
+  margin: 0;
   font-size: 1.05rem;
-  line-height: 1.5;
 }
 
-/* Form Group */
+/* Form Fields */
 .form-group {
-  margin-bottom: 24px;
+  margin-bottom: 1.4rem;
 }
 
-.form-group label {
+.form-label {
   display: block;
   margin-bottom: 8px;
   color: #ddd;
   font-weight: 500;
-  font-size: 0.98rem;
 }
 
-.required {
-  color: #ef4444;
-  margin-left: 4px;
-}
-
-/* Input Fields */
 .form-input,
+.form-select,
 .form-textarea {
   width: 100%;
-  padding: 14px 18px;
-  background: #2e3538;
-  border: 2px solid #555;
+  padding: 14px 16px;
+  background: #252b2e;
+  border: 2px solid rgba(245, 214, 152, 0.25);
   border-radius: 12px;
   color: white;
   font-size: 1rem;
@@ -215,16 +222,69 @@ const handleSubmit = () => {
 }
 
 .form-input:focus,
+.form-select:focus,
 .form-textarea:focus {
   outline: none;
-  border-color: var(--bg-pink);
-  box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.15);
+  border-color: #f5d698;
+  box-shadow: 0 0 0 3px rgba(245, 214, 152, 0.15);
 }
 
 .form-textarea {
-  min-height: 120px;
   resize: vertical;
 }
+
+/* File Upload */
+.file-upload-area {
+  border: 2px dashed #f5d698;
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  background: rgba(245, 214, 152, 0.05);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.file-upload-area:hover {
+  background: rgba(245, 214, 152, 0.1);
+  border-color: #f76706;
+}
+
+.upload-icon {
+  font-size: 2.8rem;
+  color: #f5d698;
+  margin-bottom: 1rem;
+}
+
+.upload-text {
+  color: #ddd;
+  margin: 0.5rem 0;
+}
+
+.file-hint {
+  color: #888;
+}
+
+.file-label {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ddd;
+}
+
+/* Checkbox */
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: #ddd;
+}
+
+/* Actions */
 
 /* Extra Content */
 .form-extra {
@@ -238,65 +298,13 @@ const handleSubmit = () => {
   gap: 1rem;
 }
 
-.form-actions > * {
-  flex: 1;
-}
-
-/* Select Styling */
-.form-select {
-  width: 100%;
-  padding: 14px 18px;
-  background: #2e3538;
-  border: 2px solid #555;
-  border-radius: 12px;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.form-select:focus {
-  outline: none;
-  border-color: var(--bg-pink);
-  box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.15);
-}
-
-/* File Upload Area - Same style as Sub-Service */
-.file-upload-area {
-  border: 2px dashed #666;
-  border-radius: 16px;
-  padding: 40px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: #242a2d;
-}
-
-.file-upload-area:hover {
-  border-color: var(--bg-pink);
-  background: rgba(216, 27, 96, 0.08);
-}
-
-.file-upload-area i {
-  font-size: 2.8rem;
-  color: var(--bg-pink);
-  margin-bottom: 12px;
-  display: block;
-}
-
-.file-hint {
-  color: var(--text-gray);
-  font-size: 0.85rem;
-}
-
 /* Responsive */
-@media (max-width: 540px) {
+@media (max-width: 640px) {
   .form-container {
-    padding: 32px 24px;
+    padding: 2rem 1.5rem;
   }
-
   .title {
-    font-size: 1.9rem;
+    font-size: 1.85rem;
   }
 }
 </style>

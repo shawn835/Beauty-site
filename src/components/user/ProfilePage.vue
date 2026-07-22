@@ -3,6 +3,9 @@
     <!-- Top Banner -->
     <div class="profile-banner">
       <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <h1 class="banner-title">My Profile</h1>
+      </div>
     </div>
 
     <div class="profile-container">
@@ -10,24 +13,28 @@
       <aside class="profile-sidebar">
         <div class="avatar-section">
           <div class="avatar">
-            <font-awesome-icon icon="user" class="user" />
+            <img v-if="user?.avatar" :src="user.avatar" alt="Profile" />
+            <font-awesome-icon v-else icon="user" class="user-icon" />
           </div>
           <div class="user-details">
-            <h2>{{ user?.name || "Guest" }}</h2>
-            <p class="phone">{{ user?.phone }}</p>
+            <h2>{{ user?.name || "Guest User" }}</h2>
+            <p class="phone">{{ user?.phone || "No phone added" }}</p>
+            <p class="email">{{ user?.email }}</p>
           </div>
         </div>
 
-        <router-link
-          v-for="item in menuItems"
-          :key="item.name"
-          :to="{ name: item.name }"
-          class="menu-item"
-          :class="{ active: isActive(item.name) }"
-        >
-          <font-awesome-icon :icon="item.icon" />
-          <span>{{ item.label }}</span>
-        </router-link>
+        <div class="menu-list">
+          <router-link
+            v-for="item in menuItems"
+            :key="item.name"
+            :to="{ name: item.name }"
+            class="menu-item"
+            :class="{ active: isActive(item.name) }"
+          >
+            <font-awesome-icon :icon="item.icon" />
+            <span>{{ item.label }}</span>
+          </router-link>
+        </div>
       </aside>
 
       <!-- Main Content -->
@@ -37,6 +44,7 @@
     </div>
   </div>
 </template>
+
 <script setup>
 import { computed } from "vue";
 import { useRoute } from "vue-router";
@@ -64,131 +72,163 @@ const menuItems = [
 
 const isActive = (name) => route.name === name;
 </script>
+
 <style scoped>
 .profile-page {
-  background: var(--bg-dark);
   min-height: 100vh;
-  margin-top: 1.5rem;
-  width: 100vw;
+  background: #1a1f22;
+  color: #e5e7eb;
 }
 
 .profile-banner {
-  height: 180px;
-  background: linear-gradient(135deg, var(--bg-pink), #9f1239);
+  height: 260px;
+  background: linear-gradient(135deg, #2e3538, #1f2528);
   position: relative;
-  border-bottom: 6px solid #2e3538;
+  overflow: hidden;
 }
 
 .banner-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent, rgba(46, 53, 56, 0.7));
+  background: linear-gradient(to bottom, transparent, rgba(26, 31, 34, 0.85));
+}
+
+.banner-content {
+  position: absolute;
+  bottom: 2rem;
+  left: 2.5rem;
+  z-index: 2;
+}
+
+.banner-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #f5d698;
+  margin: 0;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  margin: auto;
+  width: 100%;
 }
 
 /* Container */
 .profile-container {
-  margin: -60px auto 0;
-  padding: 30px 20px;
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  gap: 30px;
-  width: 100%;
+  display: flex;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  gap: 2.5rem;
+  margin-top: -80px;
+  position: relative;
+  z-index: 3;
+}
+
+@media (max-width: 1024px) {
+  .profile-container {
+    flex-direction: column;
+    margin-top: -40px;
+  }
 }
 
 /* Sidebar */
 .profile-sidebar {
-  background: #2e3538;
-  border-radius: 24px;
-  padding: 32px 24px;
+  width: 280px;
+  background: #252b2e;
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
   height: fit-content;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  position: sticky;
-  top: 100px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
 }
 
 .avatar-section {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
 }
 
 .avatar {
-  font-size: 5.5rem;
-  color: var(--bg-pink);
-  margin-bottom: 16px;
-  filter: drop-shadow(0 8px 15px rgba(216, 27, 96, 0.3));
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 5px solid #f5d698;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-icon {
+  font-size: 3.5rem;
+  color: white;
 }
 
 .user-details h2 {
-  margin: 0 0 6px;
-  font-size: 1.45rem;
+  margin: 0 0 0.3rem;
+  color: #f5d698;
 }
 
-.phone {
-  color: var(--text-gray);
-  font-size: 0.98rem;
+.phone,
+.email {
+  margin: 0;
+  color: #aaa;
+  font-size: 0.95rem;
 }
 
 /* Menu */
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  gap: 14px;
+  padding: 14px 18px;
   color: #ddd;
   text-decoration: none;
-  border-radius: 14px;
-  font-weight: 500;
+  border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .menu-item:hover {
-  background: #3a4246;
-  transform: translateX(6px);
+  background: rgba(245, 214, 152, 0.1);
+  color: #f5d698;
 }
 
 .menu-item.active {
-  background: var(--bg-pink);
-  color: white;
+  background: rgba(245, 214, 152, 0.15);
+  color: #f5d698;
   font-weight: 600;
-}
-
-/* Danger Zone */
-.danger-zone {
-  margin-top: 50px;
-  padding-top: 20px;
-  border-top: 1px solid #444;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }
 
 /* Main Content */
 .profile-content {
-  margin-top: 1rem;
-  background: #2e3538;
-  border-radius: 24px;
-  padding: 40px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  width: 100%;
+  flex: 1;
+  background: #252b2e;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  min-height: 600px;
 }
 
 /* Responsive */
-@media (max-width: 992px) {
-  .profile-container {
-    grid-template-columns: 1fr;
-    margin: 0 auto;
-    padding: 20px;
+@media (max-width: 768px) {
+  .profile-sidebar {
+    width: 100%;
   }
 
-  .profile-sidebar,
-  .profile-banner {
-    display: none;
+  .profile-content {
+    padding: 2rem 1.5rem;
   }
 }
 </style>

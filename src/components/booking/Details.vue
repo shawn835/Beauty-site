@@ -14,7 +14,7 @@
             :class="{
               selected: bookingStore.isServiceSelected(service.id),
             }"
-            @click="bookingStore.toggleService(service)"
+            @click="handleServiceClick(service)"
           >
             <!-- <span class="service-icon">{{ service.icon }}</span> -->
             <div>
@@ -35,7 +35,7 @@
         >
           <option value="">No Preference</option>
           <option
-            v-for="tech in appStore.technicians"
+            v-for="tech in technicianStore.technicians"
             :key="tech.technicianId"
             :value="tech.technicianId"
           >
@@ -166,6 +166,8 @@
 import { computed } from "vue";
 import { useBookingStore } from "../store/useBookingStore";
 import { useAppStore } from "../store/appStore";
+import { useTechnicianStore } from "../store/TechnicianStore";
+import { useServiceBookingActions } from "../composables/useServiceBookingActions";
 import { formatDuration } from "@/Utility/utils";
 import BaseButton from "../BaseButton.vue";
 const today = new Date().toISOString().split("T")[0];
@@ -181,14 +183,9 @@ const minTime = computed(() => {
 const emit = defineEmits(["next"]);
 
 const bookingStore = useBookingStore();
+const technicianStore = useTechnicianStore();
 const appStore = useAppStore();
-
-const handleDrop = (e) => {
-  const files = Array.from(e.dataTransfer.files).filter((f) =>
-    f.type.startsWith("image/"),
-  );
-  // same logic as handleFileUpload
-};
+const { handleBookService } = useServiceBookingActions();
 
 const proceedToReview = () => {
   if (!bookingStore.isDetailsComplete) return;
@@ -205,13 +202,23 @@ const selectTechnician = (event) => {
     return;
   }
 
-  const tech = appStore.technicians.find(
+  const tech = technicianStore.technicians.find(
     (t) => String(t.technicianId) === technicianId,
   );
 
   if (tech) {
     bookingStore.addTechnician(tech);
   }
+};
+
+const handleServiceClick = (service) => {
+  if (!service) return null;
+
+  handleBookService({
+    type: "service",
+    serviceId: service.id,
+    serviceName: service.name,
+  });
 };
 </script>
 <style scoped>
