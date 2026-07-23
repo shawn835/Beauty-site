@@ -8,6 +8,7 @@
       :loading="loading"
       :meta="fieldsMeta"
       :form="form"
+      :errors="errors"
       @submit="submitLogin"
     >
       <template #form-extra>
@@ -29,7 +30,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { reactive, computed } from "vue";
 import { fieldsMeta } from "@/Utility/meta";
@@ -38,8 +38,10 @@ import { useUserApi } from "../composables/userApi";
 import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";
 import { useRouter } from "vue-router";
+import { useFormErrors } from "@/Utility/useFormErrors.js";
 
 const router = useRouter();
+const { errors, setErrors, clearErrors } = useFormErrors();
 
 const { show } = useToast();
 const userStore = useUserStore();
@@ -52,12 +54,16 @@ formFields.value.forEach((field) => {
 
 const submitLogin = async (loginData) => {
   try {
+    clearErrors();
     const { owner, message } = await handleLogin(loginData);
     show({ message: message || "logged in successfully", type: "success" });
     userStore.setUser(owner);
     router.push("/");
   } catch (error) {
-    console.error(error.message);
+    if (error.errors) {
+      setErrors(err.errors);
+      return;
+    }
     show({ message: error.message || "login failed" });
   }
 };
@@ -114,4 +120,3 @@ const submitLogin = async (loginData) => {
   text-decoration: underline;
 }
 </style>
-

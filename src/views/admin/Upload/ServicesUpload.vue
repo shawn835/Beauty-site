@@ -9,18 +9,6 @@
     :meta="fieldsMeta"
     :form="form"
   >
-    <!-- Extra content for toggle -->
-    <!-- <template #extra>
-      <div class="toggle-wrapper">
-        <label class="toggle-label">
-          <input type="checkbox" v-model="form.isActive" class="toggle-input" />
-          <span class="toggle-slider"></span>
-          <span class="toggle-text">
-            {{ form.isActive ? "Service is Active" : "Service is Inactive" }}
-          </span>
-        </label>
-      </div>
-    </template> -->
   </BaseForm>
 </template>
 
@@ -60,61 +48,3 @@ const handleSubmit = async (data) => {
   }
 };
 </script>
-
-<style scoped>
-.toggle-wrapper {
-  margin-top: 20px;
-  padding: 16px 20px;
-  background: #242a2d;
-  border-radius: 12px;
-}
-
-.toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.toggle-input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: relative;
-  width: 52px;
-  height: 28px;
-  background: #555;
-  border-radius: 50px;
-  transition: background 0.3s;
-}
-
-.toggle-slider:before {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 22px;
-  height: 22px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.3s;
-}
-
-.toggle-input:checked + .toggle-slider {
-  background: var(--bg-pink);
-}
-
-.toggle-input:checked + .toggle-slider:before {
-  transform: translateX(24px);
-}
-
-.toggle-text {
-  color: var(--text-light);
-  font-weight: 500;
-}
-</style>

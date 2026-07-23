@@ -99,7 +99,6 @@ const activeTab = ref("main");
   background: #2e3538;
   border-radius: 24px;
   padding: 40px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
 }
 
 /* Responsive */

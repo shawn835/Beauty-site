@@ -58,7 +58,7 @@
             </p>
             <p>
               <Font-awesome-icon icon="envelope" class="envelope" />
-              nahashonm851@gmail.com
+              chegesimon949@gmail.com
             </p>
           </div>
 

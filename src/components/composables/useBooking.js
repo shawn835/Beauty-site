@@ -68,7 +68,7 @@ export function useBooking() {
         credentials: "include",
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bookingId }),
+        body: JSON.stringify({ id: bookingId }),
       });
       const data = await handleResponse(res);
       return data;
@@ -77,9 +77,9 @@ export function useBooking() {
     }
   };
 
-  const downloadReceipt = async (bookingId) => {
+  const downloadReceipt = async (id) => {
     try {
-      const res = await fetch(`${BASE}/api/receipt/${bookingId}`, {
+      const res = await fetch(`${BASE}/api/receipt/${id}`, {
         credentials: "include",
       });
 

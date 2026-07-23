@@ -41,6 +41,8 @@ import {
   faPen,
   faPowerOff,
   faBan,
+  faEyeSlash,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -83,6 +85,8 @@ library.add(
   faPen,
   faPowerOff,
   faBan,
+  faEyeSlash,
+  faEye,
 );
 
 export default FontAwesomeIcon;

@@ -19,6 +19,7 @@
         :loading="loading"
         :fields="formFields"
         :meta="fieldsMeta"
+        :error="errors"
         @submit="submitContactForm"
       >
         <!-- Extra content below the form -->
@@ -40,6 +41,8 @@ import { useToast } from "../composables/useToast";
 import { useContactForm } from "../composables/useContactForm";
 import { useUserStore } from "../store/userStore";
 import { fieldsMeta } from "@/Utility/meta";
+import { useFormErrors } from "@/Utility/useFormErrors.js";
+const { errors, setErrors, clearErrors } = useFormErrors();
 
 const { show } = useToast();
 const { loading, handleContactForm } = useContactForm();
@@ -61,12 +64,17 @@ Object.assign(
 
 const submitContactForm = async (formdata) => {
   try {
+    clearErrors();
     const { message } = await handleContactForm(formdata);
     show({
       message: message || "message submitted successfully",
       type: "success",
     });
   } catch (error) {
+    if (error.errors) {
+      setErrors(err.errors);
+      return;
+    }
     show({
       message: error.message || "something went wrong",
     });

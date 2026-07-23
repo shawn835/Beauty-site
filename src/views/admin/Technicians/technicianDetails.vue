@@ -144,6 +144,18 @@
               <span class="info-key">Joined</span>
               <span>{{ formatDate(profile.createdAt) }}</span>
             </div>
+            <div class="info-row">
+              <span class="info-key"> works on sundays </span>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  :checked="profile.worksOnSundays"
+                  @change="toggleWorkingStatus"
+                  :disabled="technicianStore.isUpdating"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
         </div>
 
@@ -434,6 +446,29 @@ const handleModalConfirm = async () => {
 const openStatusModal = () => {
   modalState.value = "confirm";
   showModal.value = true;
+};
+
+const toggleWorkingStatus = async (e) => {
+  try {
+    const newValue = e.target.checked;
+
+    const data = await technicianStore.toggleWorking(
+      route.params.technicianId,
+      newValue,
+    );
+    if (data) {
+      show({
+        type: "success",
+        message:
+          data.message || "Sub-service featured status updated successfully",
+      });
+    }
+  } catch (error) {
+    show({
+      type: "error",
+      message: error.message || "Failed to update sub-service featured status",
+    });
+  }
 };
 </script>
 
@@ -738,6 +773,51 @@ input:checked + .slider:before {
   padding: 8px 16px;
   margin-bottom: 1rem;
   cursor: pointer;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 30px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ccc;
+  transition: 0.4s;
+  border-radius: 9999px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 22px;
+  width: 22px;
+  left: 4px;
+  bottom: 4px;
+  background: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background: #10b981;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
 }
 </style>
 

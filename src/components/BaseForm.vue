@@ -13,7 +13,10 @@
           class="form-group"
           v-for="field in validFields"
           :key="field"
-          :class="{ 'has-file': meta[field]?.type === 'file' }"
+          :class="{
+            'has-file': meta[field]?.type === 'file',
+            'has-error': errors[field],
+          }"
         >
           <label class="form-label" v-if="meta[field]?.type !== 'checkbox'">
             {{ meta[field]?.label || meta[field]?.placeholder }}
@@ -40,7 +43,7 @@
             />
 
             <label :for="`file-${field}`" class="file-label">
-              <span class="file-icon">📷</span>
+              <span class="file-icon"></span>
               <span class="file-text">
                 {{ props.form[field]?.name || "Choose file..." }}
               </span>
@@ -48,6 +51,7 @@
           </div>
 
           <!-- Select -->
+
           <select
             v-else-if="meta[field]?.type === 'select'"
             v-model="props.form[field]"
@@ -66,18 +70,36 @@
             </option>
           </select>
 
+          <!-- Password Input with Eye -->
+          <div
+            v-else-if="meta[field]?.type === 'password'"
+            class="password-wrapper"
+          >
+            <input
+              v-model="props.form[field]"
+              :type="showPassword[field] ? 'text' : 'password'"
+              :placeholder="meta[field]?.placeholder"
+              class="form-input password-input"
+              :required="meta[field]?.required"
+              :disabled="disabled"
+            />
+            <button
+              type="button"
+              class="eye-btn"
+              @click="togglePasswordVisibility(field)"
+            >
+              <font-awesome-icon
+                :icon="showPassword[field] ? 'eye-slash' : 'eye'"
+              />
+            </button>
+          </div>
+
           <!-- Regular Inputs -->
           <input
             v-else-if="
-              [
-                'text',
-                'email',
-                'password',
-                'number',
-                'tel',
-                'date',
-                'time',
-              ].includes(meta[field]?.type)
+              ['text', 'email', 'number', 'tel', 'date', 'time'].includes(
+                meta[field]?.type,
+              )
             "
             v-model="props.form[field]"
             :type="meta[field]?.type"
@@ -114,9 +136,16 @@
               {{ meta[field]?.label }}
             </label>
           </div>
+
+          <!-- Error Message -->
+          <div v-if="errors[field]?.length" class="error-message">
+            <div v-for="error in errors[field]" :key="error">
+              {{ error }}
+            </div>
+          </div>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Submit Button & Extra -->
         <div v-if="showButton || $slots.actions" class="form-actions">
           <slot name="actions" />
           <BaseButton
@@ -128,7 +157,6 @@
             full-width
           />
         </div>
-        <!-- Extra content slot -->
         <div class="form-extra">
           <slot name="form-extra"></slot>
         </div>
@@ -138,7 +166,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import BaseButton from "./BaseButton.vue";
 
 const emit = defineEmits(["submit"]);
@@ -154,6 +182,7 @@ const props = defineProps({
   options: { type: Object, default: () => ({}) },
   upload: { type: Object, default: () => ({}) },
   disabled: { type: Boolean, default: false },
+  errors: { type: Object, default: () => ({}) },
   form: Object,
 });
 
@@ -161,6 +190,13 @@ const validFields = computed(() => props.fields.filter((f) => props.meta?.[f]));
 
 const handleSubmit = () => {
   emit("submit", props.form);
+};
+
+// Password visibility
+const showPassword = ref({});
+
+const togglePasswordVisibility = (field) => {
+  showPassword.value[field] = !showPassword.value[field];
 };
 </script>
 
@@ -233,6 +269,48 @@ const handleSubmit = () => {
   resize: vertical;
 }
 
+/* ==================== ERROR SPACE ==================== */
+.form-group.has-error {
+  margin-bottom: 1.8rem;
+}
+
+.error-message {
+  color: #f87171;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  padding-left: 4px;
+  min-height: 20px;
+}
+
+/* ==================== PASSWORD INPUT WITH EYE ==================== */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input {
+  padding-right: 48px !important; /* Space for eye icon */
+}
+
+.eye-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: color 0.2s;
+}
+
+.eye-btn:hover {
+  color: #f5d698;
+}
+
 /* File Upload */
 .file-upload-area {
   border: 2px dashed #f5d698;
@@ -283,8 +361,6 @@ const handleSubmit = () => {
   cursor: pointer;
   color: #ddd;
 }
-
-/* Actions */
 
 /* Extra Content */
 .form-extra {

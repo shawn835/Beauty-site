@@ -27,8 +27,6 @@ export const useTechnicianStore = defineStore("technician", () => {
 
   const technicians = computed(() => techniciansData.value?.technicians ?? []);
 
-  console.log("tech", technicians.value);
-
   const technicianStats = computed(() => techniciansData.value?.stats ?? null);
 
   /***********************
@@ -169,6 +167,29 @@ export const useTechnicianStore = defineStore("technician", () => {
     }
   };
 
+  const toggleWorking = async (id, isWorking) => {
+    isUpdating.value = true;
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/technicians/${id}/working`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ isWorking }),
+        },
+      );
+
+      const data = await handleResponse(res);
+      return data;
+    } catch (error) {
+    } finally {
+      isUpdating.value = false;
+    }
+  };
+
   return {
     // state
     technicians,
@@ -188,5 +209,6 @@ export const useTechnicianStore = defineStore("technician", () => {
     patchTechnician,
     updateTechnician,
     toggleTechnicianStatus,
+    toggleWorking,
   };
 });

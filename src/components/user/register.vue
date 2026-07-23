@@ -8,6 +8,7 @@
       :form="form"
       button-text="register"
       :loading="loading"
+      :errors="errors"
       @submit="submitRegister"
     >
       <template #form-extra>
@@ -25,9 +26,11 @@ import { useUserApi } from "@/components/composables/userApi";
 import BaseForm from "../BaseForm.vue";
 import { useToast } from "../composables/useToast";
 import { fieldsMeta } from "@/Utility/meta";
+import { useFormErrors } from "@/Utility/useFormErrors.js";
 const { show } = useToast();
 const { handleRegister, loading } = useUserApi();
 
+const { errors, setErrors, clearErrors } = useFormErrors();
 const formFields = computed(() => ["name", "phone", "email", "password"]);
 const form = reactive({});
 formFields.value.forEach((field) => {
@@ -36,14 +39,22 @@ formFields.value.forEach((field) => {
 
 const submitRegister = async (registerData) => {
   try {
+    clearErrors();
+
     const { message } = await handleRegister(registerData);
+
     show({
-      message: message || "registered successfully!",
+      message: message || "Registered successfully!",
       type: "success",
     });
   } catch (err) {
+    if (err.errors) {
+      setErrors(err.errors);
+      return;
+    }
+
     show({
-      message: err.message || "failed to register",
+      message: err.message || "Failed to register",
       type: "error",
       duration: 5000,
     });

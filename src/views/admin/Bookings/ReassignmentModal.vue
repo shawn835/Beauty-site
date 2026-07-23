@@ -13,6 +13,7 @@
           :show-button="true"
           :disabled="loading"
           :options="selectOptions"
+          :errors="errors"
           @submit="reassignTechnician"
         >
           <template #form-extra>
@@ -45,6 +46,10 @@ import BaseButton from "@/components/BaseButton.vue";
 import { fieldsMeta } from "@/Utility/meta";
 import { handleResponse } from "@/Utility/response";
 import { useToast } from "@/components/composables/useToast";
+import { useFormErrors } from "@/Utility/useFormErrors";
+
+const { errors, setErrors, clearErrors } = useFormErrors();
+
 const props = defineProps({
   bookingId: {
     type: String,
@@ -73,6 +78,7 @@ const selectOptions = computed(() => ({
 const reassignTechnician = async () => {
   loading.value = true;
   try {
+    clearErrors();
     const res = await fetch(
       `${import.meta.env.VITE_API_URL}/api/bookings/${props.bookingId}/reassign`,
       {
@@ -80,7 +86,7 @@ const reassignTechnician = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ technicianId: form.technicians }),
+        body: JSON.stringify({ id: form.technicians }),
         credentials: "include",
       },
     );
@@ -92,6 +98,10 @@ const reassignTechnician = async () => {
     });
     closeModal();
   } catch (err) {
+    if (err.errors) {
+      setErrors(err);
+      return;
+    }
     show({
       message: err.message || "error re-assigning technician",
       type: "error",

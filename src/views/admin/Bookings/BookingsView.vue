@@ -29,7 +29,7 @@ import { usePagination } from "@/components/composables/usePagination.js";
 const appStore = useAppStore();
 const technicianStore = useTechnicianStore();
 const pagination = usePagination();
-const { page, limit, totalPages, totalCount, nextPage, prevPage, setMeta } =
+const { page, limit, totalPages, nextPage, prevPage, setMeta } =
   usePagination();
 
 const filters = ref({
