@@ -133,6 +133,9 @@ watch(data, (response) => {
 const goToDetails = (bookingCode) => {
   router.push(`/user/bookings/${bookingCode}`);
 };
+const goToBooking = () => {
+  router.push("/book/appointment");
+};
 </script>
 
 <style scoped>
