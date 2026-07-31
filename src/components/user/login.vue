@@ -61,7 +61,7 @@ const submitLogin = async (loginData) => {
     router.push("/");
   } catch (error) {
     if (error.errors) {
-      setErrors(err.errors);
+      setErrors(error.errors);
       return;
     }
     show({ message: error.message || "login failed" });

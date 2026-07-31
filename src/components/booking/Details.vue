@@ -33,7 +33,7 @@
           @change="selectTechnician"
           class="select-input"
         >
-          <option value="">No Preference</option>
+          <option value="" disabled>select technician</option>
           <option
             v-for="tech in technicianStore.technicians"
             :key="tech.technicianId"

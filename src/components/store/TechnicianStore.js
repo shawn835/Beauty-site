@@ -118,11 +118,6 @@ export const useTechnicianStore = defineStore("technician", () => {
 
       const data = await handleResponse(res);
 
-      // Update local state if backend returns updated technician
-      // if (data.technician) {
-      //   patchTechnician(data.technician.technicianId, data.technician);
-      // }
-
       return data;
     } catch (error) {
       console.error("Error updating technician:", error);
@@ -150,14 +145,6 @@ export const useTechnicianStore = defineStore("technician", () => {
 
       const data = await handleResponse(res);
 
-      // update detail view
-      // if (selectedTechnician.value?.technicianId === id) {
-      //   Object.assign(selectedTechnician.value, { isActive });
-      // }
-
-      // update list state
-      // patchSubService(subServiceId, { isActive });
-
       return data;
     } catch (err) {
       console.error("Error toggling technician active status:", err);
@@ -183,6 +170,7 @@ export const useTechnicianStore = defineStore("technician", () => {
       );
 
       const data = await handleResponse(res);
+      
       return data;
     } catch (error) {
     } finally {

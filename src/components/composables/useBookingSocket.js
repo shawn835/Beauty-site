@@ -7,24 +7,34 @@ export function useBookingSocket() {
     setCurrentBookingCode(bookingCode);
 
     if (socket.connected) {
-      socket.emit("join-booking", bookingCode);
+      socket.emit("join-booking", bookingCode, (response) => {
+        if (!response?.ok) {
+          console.error("Failed to join booking room:", response?.error);
+        }
+      });
     }
   };
 
-  // LIVE UPDATES
   const onBookingEvent = (callback) => {
-    socket.off("booking-event");
     socket.on("booking-event", callback);
+
+    return () => {
+      socket.off("booking-event", callback);
+    };
   };
 
-  // INITIAL STATE (IMPORTANT ADDITION)
   const onBookingState = (callback) => {
-    socket.off("booking-state");
     socket.on("booking-state", callback);
+
+    return () => {
+      socket.off("booking-state", callback);
+    };
   };
 
   const leaveBooking = (bookingCode) => {
     socket.emit("leave-booking", bookingCode);
+
+    setCurrentBookingCode(null);
   };
 
   return {

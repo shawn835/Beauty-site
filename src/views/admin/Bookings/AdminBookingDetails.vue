@@ -10,17 +10,16 @@
       </div>
 
       <div class="header-actions">
-        <BaseButton label="edit status" @click="editStatus" variant="primary" />
-        <BaseButton
-          @click="showReassignModal = true"
-          variant="secondary"
-          label="reassign technician"
-        />
-
         <BaseButton
           label="print slip"
           variant="success"
           @click="receiptDownload(booking.id)"
+        />
+
+        <BaseButton
+          @click="showReassignModal = true"
+          variant="warning"
+          label="reassign technician"
         />
       </div>
     </div>
@@ -33,31 +32,31 @@
           <h3>Customer Information</h3>
           <div class="info-grid">
             <div class="info-item">
-              <strong>Name:</strong>
+              <strong>Name: </strong>
               <span>{{ booking.customerName }}</span>
             </div>
             <div class="info-item">
-              <strong>Phone:</strong>
-              <span class="phone-link" @click="copyPhone">
-                {{ booking.phone }}
+              <strong>Phone: </strong>
+              <span>
+                {{ booking.customerPhone }}
               </span>
             </div>
             <div class="info-item">
-              <strong>Booking Date:</strong>
+              <strong>Booking Date: </strong>
               <span>{{ formatDate(booking.startTime) }}</span>
             </div>
             <div class="info-item">
-              <strong>Time Slot:</strong>
+              <strong>Time Slot: </strong>
               <span>{{
                 formatTimeRange(booking.startTime, booking.endTime)
               }}</span>
             </div>
             <div class="info-item">
-              <strong>Duration:</strong>
+              <strong>Duration: </strong>
               <span>{{ formatDuration(booking.duration || "60") }}</span>
             </div>
             <div class="info-item">
-              <strong>Assigned Technician:</strong>
+              <strong>Assigned Technician: </strong>
               <span>{{ booking.technicianName || "Not Assigned" }}</span>
             </div>
           </div>
@@ -115,8 +114,14 @@
           </div>
 
           <div class="subtotal">
-            <strong>Subtotal:</strong>
-            <span>KES {{ booking.totalPrice }}</span>
+            <template v-if="subServices.length">
+              <strong>Total Amount</strong>
+              <strong class="total-price">KES {{ payment.totalAmount }}</strong>
+            </template>
+            <template v-else>
+              <strong>Reservation Fee</strong>
+              <strong class="total-price">KES {{ payment.amountPaid }}</strong>
+            </template>
           </div>
         </div>
 
@@ -134,7 +139,7 @@
 
           <div class="payment-info">
             <div class="amount-row">
-              <span>Expected Amount</span>
+              <span v-if="payment.totalAmount > 0">Expected Amount</span>
               <strong>KES {{ payment.totalAmount }}</strong>
             </div>
 
@@ -143,7 +148,7 @@
               <strong>KES {{ payment.amountPaid || 0 }}</strong>
             </div>
 
-            <div class="amount-row balance">
+            <div class="amount-row balance" v-if="payment.remainingBalance > 0">
               <span>Balance</span>
               <strong :class="{ 'text-danger': payment.balance > 0 }">
                 KES {{ payment.remainingBalance || 0 }}
@@ -152,10 +157,8 @@
           </div>
 
           <div class="payment-status">
-            <span
-              :class="['status-badge', payment.paymentStatus?.toLowerCase()]"
-            >
-              {{ payment.paymentStatus || "PENDING" }}
+            <span :class="['status-badge', payment.status?.toLowerCase()]">
+              {{ payment.status }}
             </span>
           </div>
 
@@ -186,23 +189,9 @@
 
           <div class="payment-actions">
             <BaseButton
-              label="  Verify Payment"
-              size="small"
-              variant="success"
-              @click="verifyPayment"
-            />
-
-            <BaseButton
-              label="mark cash paid"
-              size="small"
-              variant="outline"
-              @click="markCashPaid"
-            />
-
-            <BaseButton
               label="resend STK push"
               size="small"
-              variant="warning"
+              variant="outline"
               @click="resendSTK"
             />
           </div>
@@ -276,12 +265,12 @@ const url = computed(
     `${import.meta.env.VITE_API_URL}/api/admin/bookings/${bookingCode.value}`,
 );
 
-const { data, fetchData } = useApi(url, {
+const { data } = useApi(url, {
   credentials: "include",
 });
 
-const booking = computed(() => safeData.value.booking || {});
 const safeData = computed(() => data.value || {});
+const booking = computed(() => safeData.value.booking || {});
 const details = computed(() => safeData.value.details || {});
 const finance = computed(() => safeData.value.finance || {});
 

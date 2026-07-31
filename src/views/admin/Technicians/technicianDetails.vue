@@ -65,7 +65,7 @@
                 :label="profile?.isActive ? 'deactivate' : 'activate'"
                 :variant="profile?.isActive ? 'success' : 'danger'"
                 size="small"
-                @click="openStatusModal"
+                @click="openDeactivateModal"
               />
             </div>
           </div>
@@ -150,12 +150,19 @@
                 <input
                   type="checkbox"
                   :checked="profile.worksOnSundays"
+                  :disabled="
+                    !profile.isActive || loading || technicianStore.isUpdating
+                  "
                   @change="toggleWorkingStatus"
-                  :disabled="technicianStore.isUpdating"
                 />
                 <span class="slider"></span>
               </label>
             </div>
+
+            <!-- Red warning text when technician is inactive -->
+            <p v-if="!profile.isActive" class="inactive-warning">
+              this technician is inactive
+            </p>
           </div>
         </div>
 
@@ -246,15 +253,19 @@
   </div>
 
   <ConfirmModal
-    :isOpen="showModal"
-    v-bind="modalConfig"
-    @cancel="handleModalCancel"
+    :is-open="modal.open"
+    :title="modal.title"
+    :message="modal.message"
+    :confirm-text="modal.confirmText"
+    :loading="modal.loading"
+    type="danger"
     @confirm="handleModalConfirm"
+    @cancel="modal.open = false"
   />
 </template>
 
 <script setup>
-import { computed, ref, watch } from "vue";
+import { computed, reactive, watch } from "vue";
 import BaseButton from "@/components/BaseButton.vue";
 import { useFileUpload } from "@/components/composables/useFileUpload";
 import { useTechnicianStore } from "@/components/store/TechnicianStore";
@@ -265,17 +276,27 @@ import Spinner from "@/components/Spinner.vue";
 import { useToast } from "@/components/composables/useToast";
 
 const technicianStore = useTechnicianStore();
+const router = useRouter();
 const route = useRoute();
 const { show } = useToast();
 const upload = useFileUpload();
-const router = useRouter();
 
-const showModal = ref(false);
+const modal = reactive({
+  open: false,
+  title: "",
+  message: "",
+  confirmText: "",
+  action: null, // "deactivate" | "viewBookings"
+  loading: false,
+});
 
-const modalState = ref("confirm"); // confirm | blocked
-
-const affectedBookings = ref([]);
-const bookingCount = ref(0);
+const openDeactivateModal = () => {
+  modal.open = true;
+  modal.title = "Deactivate Technician?";
+  modal.message = "Are you sure you want to deactivate this technician?";
+  modal.confirmText = "Deactivate";
+  modal.action = "deactivate";
+};
 
 const technician = computed(() => technicianStore.selectedTechnician);
 const profile = computed(() => technician.value?.profile);
@@ -343,6 +364,8 @@ const technicianUpdate = async () => {
 };
 
 const toggleStatus = async () => {
+  modal.loading = true;
+
   try {
     const newStatus = !profile.value.isActive;
 
@@ -353,99 +376,45 @@ const toggleStatus = async () => {
 
     profile.value.isActive = newStatus;
 
+    modal.open = false;
+
     show({
       message: data.message,
       type: "success",
     });
-
-    showModal.value = false;
   } catch (error) {
-    if (error.code === "TECHNICIAN_HAS_UPCOMING_BOOKINGS") {
-      bookingCount.value = error.bookingCount;
-      affectedBookings.value = error.bookings;
+    // Keep the modal open and transform it
+    modal.title = "Unable to Deactivate";
+    modal.message =
+      error.message || "This technician cannot be deactivated at the moment.";
 
-      modalState.value = "blocked";
-
-      return;
-    }
-
-    showModal.value = false;
-
-    show({
-      message: error.message || "Failed to update technician status.",
-      type: "error",
-    });
+    modal.confirmText = "View Bookings";
+    modal.action = "viewBookings";
+  } finally {
+    modal.loading = false;
   }
 };
 
-const modalConfig = computed(() => {
-  const activating = !profile.value?.isActive;
+const handleModalConfirm = () => {
+  switch (modal.action) {
+    case "deactivate":
+      return toggleStatus();
 
-  if (modalState.value === "confirm") {
-    return {
-      title: activating ? "Activate Technician" : "Deactivate Technician",
-
-      message: activating
-        ? "Are you sure you want to activate this technician?"
-        : "Are you sure you want to deactivate this technician?",
-
-      warningText: activating
-        ? "The technician will be available for new bookings."
-        : "The technician will no longer receive new bookings.",
-
-      confirmText: activating ? "Activate" : "Deactivate",
-
-      cancelText: "Cancel",
-
-      type: activating ? "success" : "danger",
-    };
-  }
-
-  return {
-    title: "Cannot Deactivate Technician",
-
-    message: `This technician has ${bookingCount.value} upcoming booking${
-      bookingCount.value === 1 ? "" : "s"
-    }.`,
-
-    warningText:
-      "These bookings must be reassigned before the technician can be deactivated.",
-
-    confirmText: "View Bookings",
-
-    cancelText: "Close",
-
-    type: "warning",
-  };
-});
-
-const handleModalCancel = () => {
-  showModal.value = false;
-
-  // Reset for the next time the modal is opened
-  modalState.value = "confirm";
-  bookingCount.value = 0;
-  affectedBookings.value = [];
-};
-
-const handleModalConfirm = async () => {
-  switch (modalState.value) {
-    case "confirm":
-      await toggleStatus();
-      break;
-
-    case "blocked":
-      showModal.value = false;
+    case "viewBookings":
+      modal.open = false;
 
       router.push("/admin/bookings");
 
-      break;
-  }
-};
+      // router.push({
+      //   name: "Bookings",
+      //   query: {
+      //     technician: route.params.technicianId,
+      //     status: "upcoming",
+      //   },
+      // });
 
-const openStatusModal = () => {
-  modalState.value = "confirm";
-  showModal.value = true;
+      return;
+  }
 };
 
 const toggleWorkingStatus = async (e) => {
@@ -635,6 +604,29 @@ input:checked + .slider {
 
 input:checked + .slider:before {
   transform: translateX(30px);
+}
+
+input:disabled + .slider {
+  background-color: #e5e7eb; /* Muted gray background */
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Optional: Dull the thumb circle when disabled */
+input:disabled + .slider:before {
+  background-color: #f3f4f6;
+  box-shadow: none;
+}
+
+input:checked:disabled + .slider {
+  background-color: #a7f3d0;
+}
+
+.inactive-warning {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #ef4444;
+  font-weight: 500;
 }
 
 .quick-stats {

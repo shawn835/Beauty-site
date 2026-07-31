@@ -20,7 +20,11 @@ export const getSocket = () => {
     socket.on("connect", () => {
       // restore room after reconnect
       if (currentBookingCode) {
-        socket.emit("join-booking", currentBookingCode);
+        socket.emit("join-booking", currentBookingCode, (response) => {
+          if (!response?.ok) {
+            console.error(response?.error);
+          }
+        });
       }
     });
 
@@ -43,7 +47,6 @@ export const getSocket = () => {
 export const disconnectSocket = () => {
   if (!socket) return;
 
-  socket.removeAllListeners();
   socket.disconnect();
   socket = null;
   currentBookingCode = null;

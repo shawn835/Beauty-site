@@ -44,7 +44,7 @@ const router = createRouter({
     {
       path: "/user/bookings/:bookingCode",
       name: "booking-view",
-      component: () => import("@/views/BookingDetailsView.vue"),
+      component: () => import("@/views/UserBookingDetail.vue"),
       meta: { requiresAuth: true },
     },
     {
@@ -62,6 +62,11 @@ const router = createRouter({
       path: "/forgot-password",
       name: "forgot password",
       component: () => import("@/components/user/ForgotPassword.vue"),
+    },
+    {
+      path: "/reset-password",
+      name: "reset password",
+      component: () => import("@/components/user/ResetPassword.vue"),
     },
     {
       path: "/verify-email-change",

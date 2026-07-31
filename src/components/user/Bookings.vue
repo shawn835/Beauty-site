@@ -46,17 +46,17 @@
         </div>
 
         <div class="card-body">
-          <!-- <p class="service-name">
-            {{ booking.serviceName || "Nail Service" }}
-          </p> -->
           <p class="technician">
             with <strong>{{ booking.technicianName || "Our Expert" }}</strong>
           </p>
         </div>
 
         <div class="card-footer">
-          <p v-if="booking.amount" class="price">
+          <p v-if="booking.amount > 0" class="price">
             KES {{ booking.amount.toLocaleString() }}
+          </p>
+          <p v-else>
+            you have selected a service whose price may vary upon arrival
           </p>
           <BaseButton
             label="View Details"
