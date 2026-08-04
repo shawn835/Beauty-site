@@ -234,5 +234,9 @@ const goToBooking = () => {
     flex-direction: column;
     text-align: center;
   }
+
+  .footer-col:nth-child(1) {
+    display: none;
+  }
 }
 </style>

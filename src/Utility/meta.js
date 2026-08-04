@@ -101,16 +101,4 @@ export const fieldsMeta = {
     label: "Message",
     required: true,
   },
-
-  contactFormEmail: {
-    type: "email",
-    placeholder: "Your Email Address",
-    label: "Email Address",
-  },
-
-  contactFormPhone: {
-    type: "tel",
-    placeholder: "Your Phone Number",
-    label: "Phone Number",
-  },
 };

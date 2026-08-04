@@ -2,7 +2,7 @@
   <section class="contact-hero">
     <div class="hero-bg">
       <img
-        src="https://picsum.photos/2000/1200?random=70"
+        src="https://media.istockphoto.com/id/1203441568/photo/caucasian-young-women-owner-standing-at-the-nail-salon-wearing-apron-and-using-mobile-phone.jpg?s=612x612&w=0&k=20&c=sa-ZqI1a7OVHr7yBSeFG1bt2AeqC0R4hMHYfPRxoy7A="
         alt="Contact Symos Nail Spa"
         class="hero-image"
       />
@@ -24,7 +24,7 @@
           <i class="fa-solid fa-phone"></i>
           <div>
             <strong>Call Us</strong>
-            <span>+254 712 345 678</span>
+            <span>+254 24 300 399</span>
           </div>
         </div>
 
@@ -32,7 +32,7 @@
           <i class="fa-solid fa-envelope"></i>
           <div>
             <strong>Email Us</strong>
-            <span>hello@symosnailspa.com</span>
+            <span>chegesimon949@gmail.com</span>
           </div>
         </div>
 
@@ -69,6 +69,7 @@ const scrollToForm = () => {
   color: white;
   text-align: center;
   overflow: hidden;
+  padding-top: 5rem;
 }
 
 .hero-bg {
@@ -80,7 +81,7 @@ const scrollToForm = () => {
 .hero-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .hero-overlay {

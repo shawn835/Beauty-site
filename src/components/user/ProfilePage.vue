@@ -76,87 +76,98 @@ const isActive = (name) => route.name === name;
 <style scoped>
 .profile-page {
   min-height: 100vh;
-  background: #1a1f22;
-  color: #e5e7eb;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
 }
 
+/* Banner Styling */
 .profile-banner {
-  height: 260px;
-  background: linear-gradient(135deg, #2e3538, #1f2528);
   position: relative;
-  overflow: hidden;
+  height: 180px;
+  background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1e20 100%);
+  border-bottom: 2px solid var(--bg-pink);
+  display: flex;
+  align-items: flex-end;
+  padding: 0 2rem 1.5rem;
 }
 
 .banner-overlay {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent, rgba(26, 31, 34, 0.85));
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--overlay-color);
 }
 
 .banner-content {
-  position: absolute;
-  bottom: 2rem;
-  left: 2.5rem;
-  z-index: 2;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .banner-title {
-  font-size: 2.4rem;
+  color: var(--nav-links);
+  font-size: 2.25rem;
   font-weight: 700;
-  color: #f5d698;
   margin: 0;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-  text-align: center;
-  margin: auto;
-  width: 100%;
+  letter-spacing: 0.5px;
 }
 
-/* Container */
+/* Container Layout */
 .profile-container {
-  display: flex;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 2.5rem;
-  gap: 2.5rem;
-  margin-top: -80px;
-  position: relative;
-  z-index: 3;
+  padding: var(--gap);
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: var(--gap);
 }
 
-@media (max-width: 1024px) {
-  .profile-container {
-    flex-direction: column;
-    margin-top: -40px;
-  }
-}
-
-/* Sidebar */
+/* Sidebar Styling */
 .profile-sidebar {
-  width: 280px;
-  background: #252b2e;
-  border-radius: 20px;
-  padding: 2rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   height: fit-content;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  flex-shrink: 0;
+  backdrop-filter: blur(10px);
 }
 
+/* Avatar Header Section */
 .avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .avatar {
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 1rem;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background: #3b82f6;
+  background-color: var(--secondary-button-background);
+  border: 3px solid var(--bg-pink);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 5px solid #f5d698;
   overflow: hidden;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .avatar img {
@@ -166,69 +177,106 @@ const isActive = (name) => route.name === name;
 }
 
 .user-icon {
-  font-size: 3.5rem;
-  color: white;
+  font-size: 2.5rem;
+  color: var(--secondary-icon-color);
 }
 
 .user-details h2 {
-  margin: 0 0 0.3rem;
-  color: #f5d698;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin: 0 0 0.25rem;
 }
 
-.phone,
-.email {
-  margin: 0;
-  color: #aaa;
-  font-size: 0.95rem;
+.user-details p {
+  margin: 0.2rem 0;
+  font-size: 0.875rem;
 }
 
-/* Menu */
+.user-details .phone {
+  color: var(--text-gray);
+}
+
+.user-details .email {
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+/* Sidebar Navigation Menu */
 .menu-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.5rem;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 18px;
-  color: #ddd;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  color: var(--nav-links);
   text-decoration: none;
-  border-radius: 12px;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+}
+
+.menu-item .item-icon {
+  color: var(--primary-icon-color);
+  font-size: 1.1rem;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 
 .menu-item:hover {
-  background: rgba(245, 214, 152, 0.1);
-  color: #f5d698;
+  background-color: var(--hover-bg);
+  color: var(--hover-color);
+}
+
+.menu-item:hover .item-icon {
+  color: var(--hover-color);
+  transform: translateX(2px);
 }
 
 .menu-item.active {
-  background: rgba(245, 214, 152, 0.15);
-  color: #f5d698;
-  font-weight: 600;
+  background-color: var(--bg-pink);
+  color: var(--text-light);
+  box-shadow: 0 2px 8px rgba(216, 27, 96, 0.3);
 }
 
-/* Main Content */
+.menu-item.active .item-icon {
+  color: var(--text-light);
+}
+
+/* Main Content Wrapper */
 .profile-content {
-  flex: 1;
-  background: #252b2e;
-  border-radius: 20px;
-  padding: 2.5rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  min-height: 600px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.75rem;
+  min-height: 400px;
 }
 
-/* Responsive */
+/* Responsive Styles */
 @media (max-width: 768px) {
+  /* Hides the aside sidebar on mobile/tablet viewports */
   .profile-sidebar {
-    width: 100%;
+    display: none;
   }
 
-  .profile-content {
-    padding: 2rem 1.5rem;
+  .profile-container {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .profile-banner {
+    height: 140px;
+    padding: 0 1rem 1rem;
+  }
+
+  .banner-title {
+    font-size: 1.75rem;
   }
 }
 </style>

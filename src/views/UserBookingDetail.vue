@@ -54,6 +54,16 @@
           @retry-payment="paymentRetry"
           @download-receipt="receiptDownload"
         />
+
+        <LeaveReviewCard
+          :booking="{
+            technicianName: booking.technicianName,
+            date: booking.endTime,
+            status: booking.status,
+            review: data.review,
+          }"
+          @leave-review="showReviewModal = true"
+        />
       </div>
     </div>
   </div>
@@ -63,6 +73,12 @@
     size="large"
     :message="paymentMessage"
     :subtext="paymentTitle"
+  />
+
+  <ReviewModal
+    v-if="showReviewModal"
+    @close="showReviewModal = false"
+    :id="booking.id"
   />
 </template>
 
@@ -81,6 +97,10 @@ import { useApi } from "@/components/composables/useFetch";
 import { useBooking } from "@/components/composables/useBooking";
 import { useToast } from "@/components/composables/useToast";
 import { useBookingSocket } from "@/components/composables/useBookingSocket";
+import LeaveReviewCard from "@/components/user/Booking/LeaveReviewCard.vue";
+import ReviewModal from "@/components/user/Booking/ReviewModal.vue";
+
+const showReviewModal = ref(false);
 
 const route = useRoute();
 const router = useRouter();

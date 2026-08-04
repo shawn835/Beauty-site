@@ -19,7 +19,7 @@
         :loading="loading"
         :fields="formFields"
         :meta="fieldsMeta"
-        :error="errors"
+        :errors="errors"
         @submit="submitContactForm"
       >
         <!-- Extra content below the form -->
@@ -42,6 +42,7 @@ import { useContactForm } from "../composables/useContactForm";
 import { useUserStore } from "../store/userStore";
 import { fieldsMeta } from "@/Utility/meta";
 import { useFormErrors } from "@/Utility/useFormErrors.js";
+import { resetForm } from "@/Utility/utils.js";
 const { errors, setErrors, clearErrors } = useFormErrors();
 
 const { show } = useToast();
@@ -51,7 +52,7 @@ const form = reactive({});
 
 const formFields = computed(() => {
   return Object.keys(fieldsMeta).filter((key) =>
-    ["name", "contactFormEmail", "contactFormPhone", "message"].includes(key),
+    ["name", "email", "phone", "message"].includes(key),
   );
 });
 
@@ -70,14 +71,13 @@ const submitContactForm = async (formdata) => {
       message: message || "message submitted successfully",
       type: "success",
     });
+
+    resetForm(form, formFields.value);
   } catch (error) {
     if (error.errors) {
-      setErrors(err.errors);
+      setErrors(error.errors);
       return;
     }
-    show({
-      message: error.message || "something went wrong",
-    });
   }
 };
 </script>

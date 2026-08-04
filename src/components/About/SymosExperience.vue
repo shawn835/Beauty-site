@@ -6,18 +6,6 @@
     :features="journey"
   />
   <section class="experience-section">
-    <div class="journey-container">
-      <div class="journey-step" v-for="(step, index) in journey" :key="index">
-        <div class="step-number">{{ index + 1 }}</div>
-
-        <div class="step-content">
-          <div class="step-icon">{{ step.icon }}</div>
-          <h3>{{ step.title }}</h3>
-          <p>{{ step.description }}</p>
-        </div>
-      </div>
-    </div>
-
     <!-- Highlight Bar -->
     <div class="experience-highlights">
       <div class="highlight-item">
@@ -48,7 +36,6 @@
   </section>
 </template>
 <script setup>
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import DisplayCard from "../DisplayCard.vue";
 
 const journey = [

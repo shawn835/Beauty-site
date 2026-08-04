@@ -64,6 +64,10 @@ defineProps({
   color: #f5d698;
 }
 
+.payment-status-badge {
+  padding-top: 1rem;
+}
+
 .payment-summary .amount-row {
   display: flex;
   justify-content: space-between;

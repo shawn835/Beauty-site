@@ -52,12 +52,6 @@ const submitRegister = async (registerData) => {
       setErrors(err.errors);
       return;
     }
-
-    show({
-      message: err.message || "Failed to register",
-      type: "error",
-      duration: 5000,
-    });
   }
 };
 </script>

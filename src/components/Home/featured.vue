@@ -1,4 +1,5 @@
 <template>
+  <Spinner v-if="loading" />
   <ServiceCard
     title="Our Signature Services"
     subtitle="Professional nail care with premium products and experienced technicians"
@@ -12,11 +13,12 @@ import { computed } from "vue";
 import { useApi } from "../composables/useFetch.js";
 import ServiceCard from "../services/ServiceCard.vue";
 import { useRouter } from "vue-router";
+import Spinner from "../Spinner.vue";
 const router = useRouter();
 
 const url = computed(() => `${import.meta.env.VITE_API_URL}/api/featured`);
 
-const { data } = useApi(url);
+const { data, loading } = useApi(url);
 const featuredServices = computed(() => data?.value?.featured);
 
 const viewAllServices = () => {

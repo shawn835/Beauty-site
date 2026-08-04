@@ -1,5 +1,6 @@
 <template>
-  <div class="inspiration-page">
+  <Spinner v-if="loadindServiceDetails" message="loading details..." />
+  <div class="inspiration-page" v-else>
     <!-- HERO SECTION -->
     <div class="hero-section">
       <div class="hero-image-container">
@@ -93,6 +94,7 @@ import { useRoute } from "vue-router";
 import { formatDuration } from "@/Utility/utils";
 import { useServiceBookingActions } from "../composables/useServiceBookingActions";
 import { useBookingStore } from "../store/useBookingStore";
+import Spinner from "../Spinner.vue";
 const { handleBookService } = useServiceBookingActions();
 const route = useRoute();
 const bookingStore = useBookingStore();
@@ -103,7 +105,9 @@ const url = computed(
   () => `${import.meta.env.VITE_API_URL}/api/public/subservices/${id.value}`,
 );
 
-const { data } = useApi(url, { credentials: "include" });
+const { data, loading: loadindServiceDetails } = useApi(url, {
+  credentials: "include",
+});
 
 const subService = computed(() => data.value?.subService);
 

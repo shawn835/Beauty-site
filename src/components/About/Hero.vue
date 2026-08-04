@@ -1,11 +1,13 @@
 <template>
   <section class="about-hero">
     <div class="hero-bg">
-      <img
-        src="https://picsum.photos/2000/1200?random=60"
-        alt="Symos Spa Experience"
-        class="hero-image"
-      />
+      <video class="hero-video" autoplay muted loop playsinline>
+        <source
+          src="https://media.istockphoto.com/id/528218554/video/manicure-procedure.mp4?s=mp4-640x640-is&k=20&c=G7Qrr1r5QCNPb_FCMZ1u6UT6IoM1zBTB_OUFOu2X8g0="
+          type="video/mp4"
+        />
+      </video>
+
       <div class="hero-overlay"></div>
     </div>
 
@@ -51,6 +53,16 @@
   color: white;
   overflow: hidden;
   margin-top: 2.8rem;
+}
+
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
 }
 
 .hero-bg {

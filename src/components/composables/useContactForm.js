@@ -15,9 +15,6 @@ export function useContactForm() {
 
       const data = await handleResponse(res);
       return data;
-    } catch (error) {
-      console.error("Error submitting contact form:", error);
-      throw error;
     } finally {
       loading.value = false;
     }

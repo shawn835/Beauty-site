@@ -8,21 +8,32 @@
     </div>
 
     <div class="team-grid">
-      <div v-for="technician in team" :key="technician.id" class="team-card">
+      <div
+        v-for="technician in technicianStore.technicians"
+        :key="technician.technicianId"
+        class="team-card"
+      >
         <div class="team-image">
-          <img :src="technician.image" :alt="technician.name" />
-          <div class="experience-badge">{{ technician.experience }} Years</div>
+          <img :src="technician.profilePhoto" :alt="technician.name" />
+          <div class="experience-badge">
+            {{ technician.yearsOfExperience }} Years experience
+          </div>
         </div>
 
         <div class="team-info">
           <h3>{{ technician.name }}</h3>
-          <p class="specialty">{{ technician.specialty }}</p>
+          <p class="specialty">all services</p>
 
-          <div class="team-footer">
-            <div class="rating">★★★★☆</div>
-            <button class="book-with-btn" @click="bookWith(technician)">
-              Book with {{ technician.name.split(" ")[0] }}
-            </button>
+          <div class="stats">
+            <div class="rating">
+              <span class="stars">★ {{ technician.rating }}</span>
+              <span class="reviews"
+                >({{ technician.totalReviews }} reviews)</span
+              >
+            </div>
+            <div class="bookings">
+              {{ technician.completedBookings }} bookings completed
+            </div>
           </div>
         </div>
       </div>
@@ -31,90 +42,113 @@
 </template>
 
 <script setup>
-const team = [
+import { ref } from "vue";
+
+import { useTechnicianStore } from "../store/TechnicianStore";
+const technicianStore = useTechnicianStore();
+
+const team = ref([
   {
     id: 1,
-    name: "Esther Wanjiku",
-    specialty: "Gel Polish & Nail Art Specialist",
-    experience: 6,
-    image: "https://picsum.photos/600/700?random=40",
+    name: "Aisha Mwangi",
+    specialty: "Senior Nail Artist",
+    experience: 8,
+    rating: 4.9,
+    reviews: 128,
+    bookings: 540,
+    tags: ["Friendly", "Certified"],
+    image: "https://picsum.photos/id/64/600/700",
   },
   {
     id: 2,
-    name: "Grace Muthoni",
-    specialty: "Spa Pedicure & Foot Care Expert",
-    experience: 8,
-    image: "https://picsum.photos/600/700?random=41",
+    name: "Fatima Hassan",
+    specialty: "Gel & Acrylic Specialist",
+    experience: 6,
+    rating: 4.8,
+    reviews: 96,
+    bookings: 412,
+    tags: ["Certified", "Detail-oriented"],
+    image: "https://picsum.photos/id/1027/600/700",
   },
   {
     id: 3,
-    name: "Aisha Njeri",
-    specialty: "Acrylic Extensions & Design",
+    name: "Grace Kimani",
+    specialty: "Nail Art Expert",
     experience: 5,
-    image: "https://picsum.photos/600/700?random=42",
+    rating: 4.9,
+    reviews: 84,
+    bookings: 367,
+    tags: ["Creative", "Friendly"],
+    image: "https://picsum.photos/id/201/600/700",
   },
   {
     id: 4,
-    name: "Lilian Chebet",
-    specialty: "Luxury Manicure & Bridal Nails",
+    name: "Sophie Wanjiku",
+    specialty: "Pedicure Specialist",
     experience: 7,
-    image: "https://picsum.photos/600/700?random=43",
+    rating: 4.7,
+    reviews: 112,
+    bookings: 489,
+    tags: ["Gentle", "Certified"],
+    image: "https://picsum.photos/id/338/600/700",
   },
-];
-
-const bookWith = (tech) => {
-  alert(`Booking flow opened with ${tech.name}`);
-  // router.push(`/book?technician=${tech.id}`)
-};
+]);
 </script>
 
 <style scoped>
 .team-section {
-  padding: 100px 24px;
-  background: var(--bg-dark);
-  color: var(--text-light);
+  padding: 5rem 2rem;
+  background: #1a1f22;
+  color: #e5e7eb;
 }
 
 .section-header {
   text-align: center;
-  max-width: 700px;
-  margin: 0 auto 70px;
+  max-width: 680px;
+  margin: 0 auto 3.5rem;
 }
 
 .section-header h2 {
-  font-size: 2.8rem;
-  margin-bottom: 16px;
+  font-size: 2.6rem;
+  color: #f5d698;
+  margin-bottom: 0.8rem;
 }
 
 .section-header p {
-  color: var(--text-gray);
-  font-size: 1.2rem;
+  color: #aaa;
+  font-size: 1.15rem;
+  line-height: 1.6;
 }
 
+/* Grid */
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 32px;
+  gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+/* Card */
 .team-card {
-  background: #3a4246;
+  background: #252b2e;
   border-radius: 20px;
   overflow: hidden;
-  transition: all 0.4s ease;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transition: all 0.35s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(245, 214, 152, 0.08);
 }
 
 .team-card:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 40px rgba(216, 27, 96, 0.15);
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  border-color: rgba(245, 214, 152, 0.3);
 }
 
+/* Image */
 .team-image {
   position: relative;
-  height: 380px;
+  height: 280px;
   overflow: hidden;
 }
 
@@ -131,75 +165,93 @@ const bookWith = (tech) => {
 
 .experience-badge {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background: var(--bg-pink);
-  color: white;
-  padding: 6px 16px;
-  border-radius: 30px;
+  top: 16px;
+  right: 16px;
+  background: #f5d698;
+  color: #2e3538;
+  font-weight: 700;
   font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  padding: 6px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Info */
 .team-info {
-  padding: 24px;
-  text-align: center;
+  padding: 1.6rem 1.5rem 1.8rem;
 }
 
 .team-info h3 {
-  margin: 0 0 6px 0;
-  font-size: 1.45rem;
+  margin: 0 0 0.35rem;
+  font-size: 1.4rem;
+  color: #f5d698;
 }
 
 .specialty {
-  color: var(--text-gray);
-  margin-bottom: 20px;
-  font-size: 1.05rem;
-  line-height: 1.4;
+  color: #aaa;
+  margin: 0 0 1.2rem;
+  font-size: 1rem;
 }
 
-.team-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
+/* Stats block */
+.stats {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
 }
 
 .rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.stars {
   color: #fbbf24;
+  font-weight: 700;
   font-size: 1.1rem;
 }
 
-.book-with-btn {
-  background: transparent;
-  border: 2px solid var(--bg-pink);
-  color: var(--bg-pink);
-  padding: 8px 20px;
-  border-radius: 30px;
+.reviews {
+  color: #bbb;
   font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
 }
 
-.book-with-btn:hover {
-  background: var(--bg-pink);
-  color: white;
+.bookings {
+  color: #ddd;
+  font-size: 0.98rem;
+}
+
+/* Tags */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: rgba(245, 214, 152, 0.12);
+  color: #f5d698;
+  font-size: 0.88rem;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 9999px;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .team-section {
-    padding: 70px 20px;
+    padding: 3.5rem 1.2rem;
   }
-  
+
+  .section-header h2 {
+    font-size: 2.1rem;
+  }
+
   .team-grid {
-    gap: 24px;
-  }
-  
-  .team-image {
-    height: 340px;
+    grid-template-columns: 1fr;
   }
 }
 </style>

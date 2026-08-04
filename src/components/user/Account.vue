@@ -1,41 +1,53 @@
 <template>
   <div class="account-details">
-    <div class="page-header">
-      <h1>Account Details</h1>
+    <!-- Page Header -->
+    <header class="page-header">
+      <div class="header-text">
+        <h1 class="page-title">Account Details</h1>
+        <p class="page-subtitle">
+          Manage your personal information and profile settings.
+        </p>
+      </div>
+
       <BaseButton
         v-if="!isEditing"
         class="edit-btn"
-        @click="enableEditing"
         label="Edit Profile"
         variant="outline"
         icon-left="pen"
+        @click="enableEditing"
       />
+    </header>
+
+    <!-- Main Card Body -->
+    <div class="account-card" :class="{ 'is-editing': isEditing }">
+      <BaseForm
+        :title="isEditing ? 'Edit Account Details' : 'Your Information'"
+        :subtitle="isEditing ? 'Update your personal information below' : ''"
+        :fields="formFields"
+        :buttonText="isEditing ? 'Save Changes' : ''"
+        :loading="loading"
+        :showButton="isEditing"
+        :form="form"
+        :meta="fieldsMeta"
+        :disabled="!isEditing"
+        class="account-form"
+        @submit="handleSubmit"
+      >
+        <!-- Form Actions Slot (Cancel + Submit handling) -->
+        <template #actions v-if="isEditing">
+          <div class="form-actions-wrapper">
+            <BaseButton
+              label="Cancel"
+              variant="warning"
+              fullWidth
+              size="medium"
+              @click="cancelEditing"
+            />
+          </div>
+        </template>
+      </BaseForm>
     </div>
-
-    <BaseForm
-      :title="isEditing ? 'Edit Account Details' : 'Your Information'"
-      :subtitle="isEditing ? 'Update your personal information' : ''"
-      :fields="formFields"
-      :buttonText="isEditing ? 'Save Changes' : ''"
-      :loading="loading"
-      :showButton="isEditing"
-      @submit="handleSubmit"
-      :form="form"
-      :meta="fieldsMeta"
-      :disabled="!isEditing"
-    >
-      <!-- Extra slot for Cancel button when editing -->
-
-      <template #actions v-if="isEditing">
-        <BaseButton
-          label="Cancel"
-          variant="warning"
-          size="medium"
-          full-width
-          @click="cancelEditing"
-        />
-      </template>
-    </BaseForm>
   </div>
 </template>
 
@@ -115,37 +127,86 @@ const handleSubmit = async (formData) => {
 };
 </script>
 <style scoped>
-/* Extra styles for Account Details */
+/* Page Container */
+.account-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Header Section */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.header-text .page-title {
+  color: var(--text-light);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.header-text .page-subtitle {
+  color: var(--text-gray);
+  font-size: 0.875rem;
+  margin: 0.35rem 0 0;
+}
+
+/* Edit Toggle Button */
 .edit-btn {
-  background: transparent;
-  border: 2px solid var(--bg-pink);
-  color: var(--bg-pink);
-  padding: 10px 24px;
-  border-radius: 50px;
+  background-color: var(--primary-button-background);
+  color: var(--primary-button-color);
+  border: 1px solid var(--primary-button-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: all 0.2s ease;
 }
 
 .edit-btn:hover {
-  background: rgba(216, 27, 96, 0.1);
+  background-color: var(--hover-bg);
+  color: var(--hover-color);
+  border-color: var(--hover-color);
 }
 
-/* Make disabled inputs look better */
-.form-input:disabled,
-.form-textarea:disabled {
-  background: #242a2d;
-  color: #aaa;
-  cursor: not-allowed;
-  border-color: #555;
+/* Form Container Card */
+.account-card {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: var(--gap);
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.account-card.is-editing {
+  background-color: rgba(255, 255, 255, 0.035);
+  border-color: rgba(216, 27, 96, 0.3); /* Subtle accent glow */
+}
+
+/* Responsive Scaling */
+@media (max-width: 600px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .edit-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .form-actions-wrapper {
+    flex-direction: column-reverse;
+  }
 }
 </style>

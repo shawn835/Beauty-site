@@ -11,8 +11,7 @@ export function useBooking() {
     try {
       const fd = mapBookingToFormData(payload);
 
-      console.log("payload", payload);
-
+     
       const res = await fetch(`${BASE}/api/book`, {
         method: "POST",
         body: fd,

@@ -1,5 +1,5 @@
 <template>
-  <section class="services-preview">
+  <section class="services-preview" v-if="services && services.length">
     <div class="section-header" v-if="showHeader">
       <h2>{{ title }}</h2>
       <p>{{ subtitle }}</p>
@@ -278,6 +278,11 @@ const handleViewAll = () => {
   margin-top: 60px;
 }
 
+.view-all {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+}
 /* Responsive */
 @media (max-width: 768px) {
   .services-preview {

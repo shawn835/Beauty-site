@@ -45,9 +45,8 @@
   /* Payment Status */
   --status-paid: #388e3c; /* Success Green */
   --status-success: #388e3c; /* Same as paid (for general success) */
-  --status-pending-payment: #f57c00; /* Orange for pending payment */
   --status-failed: #d32f2f; /* Clear Red for failed */
-  --status-refunded: #6d4c41; /* Brown for refunded */
+  --status-partial: #6d4c41; /* Brown for refunded */
 
   /* Backgrounds for badges (soft versions) */
   --bg-pending: #fff3e0;
@@ -59,7 +58,7 @@
 
   --bg-paid: #e8f5e9;
   --bg-failed: #ffebee;
-  --bg-refunded: #efe6e1;
+  --bg-partial: #efe6e1;
 }
 
 body {
@@ -160,12 +159,13 @@ button.disabled {
 
 /* booking ststus Shared styles for all badges */
 .status-badge {
-  padding: 6px 16px;
-  border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  display: inline-block;
+  text-transform: capitalize;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
 }
 
 .status-badge.pending {
@@ -202,13 +202,13 @@ button.disabled {
   background: var(--bg-failed);
   color: var(--status-failed);
 }
-.refunded {
-  background: var(--bg-refunded);
-  color: var(--status-refunded);
+.partial {
+  background: var(--bg-partial);
+  color: var(--status-partial);
 }
-.pending-payment {
-  background: var(--bg-pending);
-  color: var(--status-pending-payment);
+.in_progress {
+  background: var(--bg-in-progress);
+  color: var(--status-in-progress);
 }
 
 button:disabled {

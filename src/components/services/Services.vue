@@ -1,6 +1,6 @@
 <template>
   <Spinner v-if="loading" />
-  <div class="services-page" v-else>
+  <div class="services-page" v-if="!userStore.user">
     <!-- Services Grid -->
     <ServiceCard
       :title="activeFilter === null ? 'All Services' : categoryName"
@@ -37,8 +37,10 @@ import Paginator from "../Paginator.vue";
 import { useAppStore } from "../store/appStore";
 import ServiceCard from "./ServiceCard.vue";
 import { usePagination } from "../composables/usePagination";
+import { useUserStore } from "../store/userStore";
 import Spinner from "../Spinner.vue";
 const appStore = useAppStore();
+const userStore = useUserStore();
 const activeFilter = ref(null);
 
 const { nextPage, prevPage, limit, page, totalPages, setMeta } =
@@ -57,7 +59,7 @@ const url = computed(() => {
   return `${import.meta.env.VITE_API_URL}/api/users/services?${params.toString()}`;
 });
 
-const { data, loading, fetchData } = useApi(url);
+const { data, loading } = useApi(url);
 watch(data, (response) => {
   if (response) {
     setMeta(response);
