@@ -1,6 +1,6 @@
 <template>
   <Spinner v-if="loading" />
-  <div class="services-page" v-if="!userStore.user">
+  <div class="services-page" v-if="userStore.user">
     <!-- Services Grid -->
     <ServiceCard
       :title="activeFilter === null ? 'All Services' : categoryName"

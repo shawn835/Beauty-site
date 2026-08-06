@@ -7,7 +7,7 @@
     </div>
 
     <!-- Technician -->
-    <h3 class="technician-name">{{ booking.technicianName }}</h3>
+    <h3 class="technician-name">{{ booking?.technicianName }}</h3>
 
     <!-- BEFORE REVIEW -->
     <div v-if="!booking.review" class="before-review">
@@ -15,41 +15,30 @@
         How was your experience? We'd love to hear your feedback.
       </p>
 
-      <div class="stars-placeholder">
-        <span v-for="i in 5" :key="i" class="star empty"> ★ </span>
-      </div>
+      <StarRating :rating="review?.rating" size="md" />
 
-      <button class="leave-review-btn" @click="$emit('leave-review')">
-        Leave a Review
-      </button>
+      <BaseButton label="leave review" @click="$emit('leave-review')" />
     </div>
 
     <!-- AFTER REVIEW -->
     <div v-else class="after-review">
       <div class="review-meta">
-        <div class="stars-filled">
-          <span
-            v-for="i in 5"
-            :key="i"
-            class="star"
-            :class="{ filled: i <= booking.review.rating }"
-          >
-            ★
-          </span>
-        </div>
+        <StarRating :rating="booking?.review?.rating" size="md" />
 
         <span class="your-review-label">
-          Your review • {{ formatDate(booking.review.createdAt) }}
+          Your review • {{ formatDate(booking?.review?.createdAt) }}
         </span>
       </div>
 
-      <p class="review-text">"{{ booking.review.comment }}"</p>
+      <p class="review-text">"{{ booking?.review?.comment }}"</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { formatDate } from "@/Utility/utils";
+import StarRating from "@/components/StarRating.vue";
+import BaseButton from "@/components/BaseButton.vue";
 
 defineProps({
   booking: {
@@ -83,18 +72,6 @@ defineProps({
   margin-bottom: 0.8rem;
 }
 
-.status-badge {
-  padding: 5px 14px;
-  border-radius: 9999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.status-badge.completed {
-  background: #4ade80;
-  color: #1f2937;
-}
-
 .date {
   color: #aaa;
   font-size: 0.95rem;
@@ -114,42 +91,6 @@ defineProps({
   gap: 1.2rem;
 }
 
-.stars-placeholder {
-  display: flex;
-  gap: 4px;
-}
-
-.star {
-  font-size: 1.4rem;
-  color: #555;
-}
-
-.star.empty {
-  color: #555;
-}
-
-.star.filled {
-  color: #fbbf24;
-}
-
-.leave-review-btn {
-  background: #f5d698;
-  color: #2e3538;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  width: 100%;
-}
-
-.leave-review-btn:hover {
-  background: #f7dfa3;
-  transform: translateY(-2px);
-}
-
 /* After Review */
 .after-review {
   display: flex;
@@ -161,11 +102,6 @@ defineProps({
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.stars-filled {
-  display: flex;
-  gap: 3px;
 }
 
 .your-review-label {

@@ -1,254 +1,337 @@
 <template>
   <section class="testimonials-section">
     <div class="section-header">
-      <h2>What Our Clients Say</h2>
-      <p>Real experiences from real clients in nakuru</p>
+      <h2 class="title">What Our Clients Say</h2>
+      <p class="subtitle">Real experiences from real clients in Nakuru</p>
     </div>
 
-    <!-- Carousel -->
-    <div class="testimonial-carousel">
-      <button class="nav-btn prev" @click="prevSlide">←</button>
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <Spinner size="large" message="Loading testimonials..." />
+    </div>
 
-      <div
-        class="testimonial-track"
-        :style="{ transform: `translateX(-${current * 100}%)` }"
-      >
-        <div
-          v-for="(review, index) in reviews"
-          :key="index"
-          class="testimonial-card"
+    <!-- Testimonials Carousel (renders only when items exist) -->
+    <div
+      v-else-if="testimonials.length"
+      class="testimonial-carousel-container"
+      @touchstart="handleTouchStart"
+      @touchend="handleTouchEnd"
+    >
+      <div class="testimonial-carousel">
+        <button
+          class="nav-btn prev"
+          :disabled="current === 0"
+          aria-label="Previous Testimonial"
+          @click="prevSlide"
         >
-          <div class="stars">★★★★★</div>
+          <font-awesome-icon icon="fa-solid fa-chevron-left" />
+        </button>
 
-          <p class="review-text">"{{ review.text }}"</p>
+        <div class="carousel-window">
+          <div
+            class="testimonial-track"
+            :style="{ transform: `translateX(-${current * 100}%)` }"
+          >
+            <div
+              v-for="t in testimonials"
+              :key="t.id || t._id"
+              class="testimonial-card"
+            >
+              <div class="stars">
+                <StarRating :rating="t.rating" size="md" />
+              </div>
 
-          <div class="client-info">
-            <div class="client-avatar">
-              <img :src="review.avatar" :alt="review.name" />
-            </div>
-            <div>
-              <h4>{{ review.name }}</h4>
-              <p class="client-detail">
-                {{ review.location }} • {{ review.service }}
-              </p>
+              <p class="review-text">"{{ t.comment }}"</p>
+
+              <div class="client-info">
+                <h4 class="client-name">{{ t.name }}</h4>
+                <div v-if="t.services?.length" class="services">
+                  <span
+                    v-for="(service, i) in t.services"
+                    :key="i"
+                    class="service-tag"
+                  >
+                    {{ service }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <button
+          class="nav-btn next"
+          :disabled="current === testimonials.length - 1"
+          aria-label="Next Testimonial"
+          @click="nextSlide"
+        >
+          <font-awesome-icon icon="fa-solid fa-chevron-right" />
+        </button>
       </div>
 
-      <button class="nav-btn next" @click="nextSlide">→</button>
+      <!-- Pagination Dots -->
+      <div class="dots">
+        <span
+          v-for="(t, i) in testimonials"
+          :key="i"
+          class="dot"
+          :class="{ active: i === current }"
+          @click="goToSlide(i)"
+        ></span>
+      </div>
     </div>
 
-    <!-- Dots -->
-    <div class="dots">
-      <span
-        v-for="(review, i) in reviews"
-        :key="i"
-        class="dot"
-        :class="{ active: i === current }"
-        @click="goToSlide(i)"
-      >
-      </span>
+    <!-- Fallback Empty State -->
+    <div v-else class="empty-state">
+      <i class="fa-regular fa-comments empty-icon"></i>
+      <p>No client reviews available yet.</p>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import Spinner from "../Spinner.vue";
+import StarRating from "../StarRating.vue";
+import { useApi } from "../composables/useFetch";
+
+const url = `${import.meta.env.VITE_API_URL}/api/testimonials`;
+const { data, loading } = useApi(url);
+
+// Safely access data using optional chaining to avoid null errors
+const testimonials = computed(() => data.value?.testimonials || []);
 
 const current = ref(0);
+let autoplayTimer = null;
 
-const reviews = [
-  {
-    text: "Best gel polish I've had in nakuru. Lasted almost 3 weeks with zero chipping. Esther is amazing!",
-    name: "Michelle W.",
-    location: "Westlands",
-    service: "Gel Manicure",
-    avatar: "https://picsum.photos/150/150?random=50",
-  },
-  {
-    text: "The home service was such a luxury! They came with everything and my nails look incredible. Highly recommend.",
-    name: "Sarah K.",
-    location: "Karen",
-    service: "Home Spa Pedicure",
-    avatar: "https://picsum.photos/150/150?random=51",
-  },
-  {
-    text: "Professional, hygienic and the nail art was exactly what I wanted. My go-to place now.",
-    name: "Aisha N.",
-    location: "Lavington",
-    service: "Nail Art",
-    avatar: "https://picsum.photos/150/150?random=52",
-  },
-  {
-    text: "The team is so warm and friendly. I felt completely relaxed. Best pedicure experience ever.",
-    name: "Grace M.",
-    location: "Parklands",
-    service: "Spa Pedicure",
-    avatar: "https://picsum.photos/150/150?random=53",
-  },
-];
+// Touch Swipe State
+let touchStartX = 0;
+let touchEndX = 0;
 
 const nextSlide = () => {
-  current.value = (current.value + 1) % reviews.length;
+  if (!testimonials.value.length) return;
+  current.value =
+    current.value === testimonials.value.length - 1 ? 0 : current.value + 1;
 };
 
 const prevSlide = () => {
-  current.value = (current.value - 1 + reviews.length) % reviews.length;
+  if (!testimonials.value.length) return;
+  current.value =
+    current.value === 0 ? testimonials.value.length - 1 : current.value - 1;
 };
 
 const goToSlide = (index) => {
   current.value = index;
+  restartAutoplay();
 };
 
-// Auto-slide every 6 seconds
-setInterval(() => {
-  nextSlide();
-}, 6000);
-</script>
+const startAutoplay = () => {
+  autoplayTimer = setInterval(() => {
+    nextSlide();
+  }, 5000);
+};
 
+const stopAutoplay = () => {
+  if (autoplayTimer) clearInterval(autoplayTimer);
+};
+
+const restartAutoplay = () => {
+  stopAutoplay();
+  startAutoplay();
+};
+
+// Touch Gestures for Mobile Swiping
+const handleTouchStart = (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+};
+
+const handleTouchEnd = (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+};
+
+const handleSwipe = () => {
+  const swipeThreshold = 50;
+  if (touchStartX - touchEndX > swipeThreshold) {
+    nextSlide();
+    restartAutoplay();
+  } else if (touchEndX - touchStartX > swipeThreshold) {
+    prevSlide();
+    restartAutoplay();
+  }
+};
+
+onMounted(() => {
+  startAutoplay();
+});
+
+onUnmounted(() => {
+  stopAutoplay();
+});
+</script>
 <style scoped>
 .testimonials-section {
-  padding: 100px 24px;
-  background: var(--bg-dark);
-  color: var(--text-light);
+  padding: 5rem 2rem;
+  background: #1a1f22;
+  color: #e5e7eb;
+  text-align: center;
 }
 
 .section-header {
-  text-align: center;
-  margin-bottom: 60px;
+  max-width: 640px;
+  margin: 0 auto 3.5rem;
 }
 
 .section-header h2 {
-  font-size: 2.8rem;
-  margin-bottom: 12px;
+  font-size: 2.5rem;
+  color: #f5d698;
+  margin-bottom: 0.7rem;
 }
 
 .section-header p {
-  color: var(--text-gray);
-  font-size: 1.2rem;
+  color: #aaa;
+  font-size: 1.15rem;
 }
 
+/* Carousel */
 .testimonial-carousel {
   position: relative;
-  max-width: 800px;
+  max-width: 780px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.carousel-window {
+  flex: 1;
   overflow: hidden;
+  border-radius: 20px;
 }
 
 .testimonial-track {
   display: flex;
-  transition: transform 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .testimonial-card {
   min-width: 100%;
-  padding: 40px 30px;
-  background: #3a4246;
+  background: #252b2e;
+  padding: 3rem 2.5rem;
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-}
-
-.stars {
-  color: #fbbf24;
-  font-size: 1.8rem;
-  margin-bottom: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(245, 214, 152, 0.1);
 }
 
 .review-text {
   font-size: 1.25rem;
   line-height: 1.7;
-  margin-bottom: 32px;
+  color: #ddd;
   font-style: italic;
-  color: #e5e5e5;
+  margin: 0 0 2rem;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.client-info {
+.client-info h4 {
+  margin: 0 0 0.3rem;
+  font-size: 1.2rem;
+  color: #f5d698;
+}
+
+.services {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.service-tag {
+  background: rgba(245, 214, 152, 0.12);
+  color: #f5d698;
+  font-size: 0.9rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+/* Nav Buttons */
+.nav-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid rgba(245, 214, 152, 0.3);
+  background: #252b2e;
+  color: #f5d698;
+  font-size: 1.3rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
-  gap: 16px;
-}
-
-.client-avatar img {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--bg-pink);
-}
-
-.client-detail {
-  color: var(--text-gray);
-  margin: 2px 0 0;
-  font-size: 0.95rem;
-}
-
-.nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(46, 53, 56, 0.9);
-  color: white;
-  border: none;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 1.4rem;
-  cursor: pointer;
-  z-index: 10;
-  transition: all 0.3s;
+  justify-content: center;
 }
 
 .nav-btn:hover {
-  background: var(--bg-pink);
+  background: #f5d698;
+  color: #2e3538;
+  border-color: #f5d698;
 }
 
-.prev {
-  left: -25px;
-}
-.next {
-  right: -25px;
+:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
+/* Dots */
 .dots {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 40px;
+  margin-top: 2rem;
 }
 
 .dot {
   width: 12px;
   height: 12px;
-  background: #555;
   border-radius: 50%;
+  background: #555;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .dot.active {
-  background: var(--bg-pink);
-  width: 28px;
-  border-radius: 20px;
+  background: #f5d698;
+  transform: scale(1.25);
+}
+
+.dot:hover {
+  background: #f5d698;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .testimonials-section {
-    padding: 70px 20px;
+    padding: 3.5rem 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+
+  .testimonial-card {
+    padding: 2.2rem 1.5rem;
+  }
+
+  .review-text {
+    font-size: 1.1rem;
   }
 
   .nav-btn {
-    width: 42px;
-    height: 42px;
-    font-size: 1.2rem;
-  }
-
-  .prev {
-    left: 10px;
-  }
-  .next {
-    right: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
   }
 }
 </style>

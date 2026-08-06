@@ -43,6 +43,8 @@ import {
   faBan,
   faEyeSlash,
   faEye,
+  faChevronLeft,
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -87,6 +89,8 @@ library.add(
   faBan,
   faEyeSlash,
   faEye,
+  faChevronLeft,
+  faChevronRight,
 );
 
 export default FontAwesomeIcon;
