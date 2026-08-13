@@ -4,7 +4,6 @@ import { computed, reactive, ref, watch } from "vue";
 import { useFileUpload } from "../composables/useFileUpload";
 import { usePaymentCalculation } from "../composables/usePaymentCalculation";
 import { useUserStore } from "./userStore";
-const userStore = useUserStore();
 
 export const useBookingStore = defineStore("booking", () => {
   /**
@@ -13,6 +12,7 @@ export const useBookingStore = defineStore("booking", () => {
    * --------------------------------------------------------------------------
    */
 
+  const userStore = useUserStore();
   const selectedServices = ref([]);
   const selectedTechnician = ref(null);
   const paymentOption = ref("deposit");
@@ -98,6 +98,8 @@ export const useBookingStore = defineStore("booking", () => {
         service.subServiceId === payload.subServiceId,
     );
 
+    console.log("payload", payload);
+
     if (exists) return;
 
     selectedServices.value.push({
@@ -121,10 +123,24 @@ export const useBookingStore = defineStore("booking", () => {
     const serviceId = payload.serviceId;
     const subServiceId = payload.subServiceId ?? null;
 
+    // Parent service cannot be selected when one of its
+    // sub-services is already selected.
+    if (subServiceId === null) {
+      const hasSelectedSubService = selectedServices.value.some(
+        (service) =>
+          String(service.serviceId) === String(serviceId) &&
+          service.type === "subService",
+      );
+
+      if (hasSelectedSubService) {
+        return "blocked";
+      }
+    }
+
     const exists = selectedServices.value.some(
       (service) =>
-        service.serviceId === serviceId &&
-        service.subServiceId === subServiceId,
+        String(service.serviceId) === String(serviceId) &&
+        String(service.subServiceId ?? null) === String(subServiceId),
     );
 
     if (exists) {
@@ -144,6 +160,7 @@ export const useBookingStore = defineStore("booking", () => {
       (service) => service.subServiceId === (subServiceId ?? null),
     );
 
+  const totalSelectedServices = computed(() => selectedServices.value.length);
   /**
    * --------------------------------------------------------------------------
    * TECHNICIAN ACTIONS
@@ -189,6 +206,7 @@ export const useBookingStore = defineStore("booking", () => {
     // State
     selectedServices,
     selectedTechnician,
+    totalSelectedServices,
     paymentOption,
     form,
 

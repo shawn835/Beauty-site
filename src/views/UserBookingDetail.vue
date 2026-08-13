@@ -68,11 +68,12 @@
     </div>
   </div>
 
-  <Spinner
-    :show="showPaymentSpinner"
-    size="large"
+  <paymentSpinner
+    v-if="showPaymentSpinner"
+    :title="paymentTitle"
     :message="paymentMessage"
-    :subtext="paymentTitle"
+    :verification-expires-at="expiresAt"
+    @timeout="showPaymentSpinner = false"
   />
 
   <ReviewModal
@@ -84,6 +85,7 @@
 
 <script setup>
 import { computed, ref, onMounted, onBeforeUnmount } from "vue";
+import paymentSpinner from "@/components/paymentSpinner.vue";
 import Spinner from "@/components/Spinner.vue";
 import ReferenceImages from "@/components/ReferenceImages.vue";
 import BookingHeader from "@/components/user/Booking/BookingHeader.vue";
@@ -104,7 +106,7 @@ const showReviewModal = ref(false);
 
 const route = useRoute();
 const router = useRouter();
-const { cancelBooking, downloadReceipt, retryPayment } = useBooking();
+const { cancelBooking, fetchReceiptBlob, retryPayment } = useBooking();
 const bookingCode = computed(() => route.params.bookingCode);
 const { show } = useToast();
 
@@ -126,6 +128,7 @@ const paymentStatus = ref(null);
 const paymentLoading = ref(false);
 const paymentTitle = ref("");
 const paymentMessage = ref("");
+const expiresAt = ref(null);
 
 const { joinBooking, onBookingEvent, onBookingState, leaveBooking } =
   useBookingSocket();
@@ -135,6 +138,7 @@ const applyBookingState = async (payload) => {
   paymentLoading.value = payload.loading;
   paymentTitle.value = payload.title;
   paymentMessage.value = payload.message;
+  expiresAt.value = payload.verificationExpiresAt;
 
   // Show notification only when the flow has reached a terminal state.
   if (!payload.loading) {
@@ -142,9 +146,6 @@ const applyBookingState = async (payload) => {
       message: payload.message,
       type: payload.status === "success" ? "success" : "error",
     });
-
-    // Keep the final state visible briefly.
-    await new Promise((resolve) => setTimeout(resolve, 2000));
   }
 };
 
@@ -215,12 +216,24 @@ const receiptDownload = async (bookingId) => {
   isDownloading.value = true;
 
   try {
-    const data = await downloadReceipt(bookingId);
+    const blob = await fetchReceiptBlob(bookingId);
 
-    window.location.href = data.receiptUrl;
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Receipt-${bookingId}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
 
     show({
-      message: data.message || "Receipt downloaded successfully",
+      message: "Receipt downloaded successfully",
       type: "success",
     });
   } catch (error) {

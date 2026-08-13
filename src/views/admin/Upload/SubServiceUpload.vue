@@ -13,17 +13,20 @@
       :upload="upload"
     >
       <!-- Image Upload Section -->
-      <template #extra>
+      <template #form-extra>
         <div class="images-section">
           <!-- Image Previews -->
-          <div class="preview-grid" v-if="images.length">
+          <div class="preview-grid" v-if="upload.previews.value.length > 0">
             <div
-              v-for="(img, index) in images"
+              v-for="(img, index) in upload.previews.value"
               :key="index"
               class="preview-item"
             >
-              <img :src="img.previewUrl" alt="preview" />
-              <button class="remove-image-btn" @click="removeImage(index)">
+              <img :src="img" alt="preview" />
+              <button
+                class="remove-image-btn"
+                @click="upload.removeFile(index)"
+              >
                 ✕
               </button>
             </div>

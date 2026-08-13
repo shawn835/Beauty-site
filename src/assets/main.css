@@ -211,7 +211,7 @@ button.disabled {
   color: var(--status-in-progress);
 }
 
-button:disabled {
+:disabled {
   opacity: 0.75;
   cursor: not-allowed;
 }

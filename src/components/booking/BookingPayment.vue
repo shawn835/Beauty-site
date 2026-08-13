@@ -180,36 +180,26 @@
           variant="success"
           fullWidth
           iconRight="credit-card"
-          :disabled="!agreed || isSubmitting || isProcessing"
+          :disabled="!agreed || isSubmitting"
           @click="submitBooking"
         />
       </div>
     </div>
   </div>
-
-  <Spinner
-    :show="isSubmitting"
-    size="large"
-    message="initiating payment..."
-    subtext="Check your phone for M-Pesa prompt, do not close this page"
-  />
 </template>
 <script setup>
 import { useRouter } from "vue-router";
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref } from "vue";
 import { useBookingStore } from "../store/useBookingStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import BaseButton from "../BaseButton.vue";
-import Spinner from "../Spinner.vue";
 import { useToast } from "../composables/useToast";
-import { usePaymentPolling } from "../composables/usePaymentpolling";
 import { useBooking } from "../composables/useBooking";
 const router = useRouter();
 
 const agreed = ref(false);
 const bookingStore = useBookingStore();
 const { createBooking } = useBooking();
-const { isProcessing, stopPolling } = usePaymentPolling();
 const { show } = useToast();
 const isSubmitting = ref(false);
 

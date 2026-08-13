@@ -4,7 +4,12 @@
     <BaseButton
       v-if="userStore.user"
       @click="handleBooking"
-      label="secure a spot"
+      :label="
+        bookingStore.totalSelectedServices > 0
+          ? `Book (${bookingStore.totalSelectedServices})`
+          : 'Secure Spot'
+      "
+      variant="primary"
       size="medium"
     />
 
@@ -29,11 +34,13 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
+import { useBookingStore } from "../store/useBookingStore";
 import logged from "../user/logged.vue";
 import BaseButton from "../BaseButton.vue";
 
 const router = useRouter();
 const userStore = useUserStore();
+const bookingStore = useBookingStore();
 
 const handleBooking = () => {
   router.push("/book/appointment");

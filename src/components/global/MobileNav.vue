@@ -37,7 +37,11 @@
         <BaseButton
           v-if="userStore.user"
           @click="handleBooking"
-          label="book now"
+          :label="
+            bookingStore.totalSelectedServices > 0
+              ? `Book (${bookingStore.totalSelectedServices})`
+              : 'Secure Spot'
+          "
         />
 
         <BaseButton v-else @click="handleRegister" label="Register" />
@@ -97,12 +101,15 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useBookingStore } from "../store/useBookingStore";
+
 import BaseButton from "../BaseButton.vue";
 
 const currentView = ref("main");
 const emit = defineEmits(["close"]);
 const router = useRouter();
 const userStore = useUserStore();
+const bookingStore = useBookingStore();
 
 const openProfileMenu = () => {
   currentView.value = "profile";

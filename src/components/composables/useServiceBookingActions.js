@@ -11,6 +11,14 @@ export const useServiceBookingActions = () => {
     const serviceName =
       service.type === "service" ? service.serviceName : service.subServiceName;
 
+    if (result === "blocked") {
+      show({
+        message: `You already selected a sub-service from ${serviceName}.`,
+        type: "info",
+      });
+      return;
+    }
+
     show({
       message:
         result === "added"

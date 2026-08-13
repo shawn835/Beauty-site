@@ -11,7 +11,6 @@ export function useBooking() {
     try {
       const fd = mapBookingToFormData(payload);
 
-     
       const res = await fetch(`${BASE}/api/book`, {
         method: "POST",
         body: fd,
@@ -76,17 +75,18 @@ export function useBooking() {
     }
   };
 
-  const downloadReceipt = async (id) => {
-    try {
-      const res = await fetch(`${BASE}/api/receipt/${id}`, {
-        credentials: "include",
-      });
+  const fetchReceiptBlob = async (id) => {
+    const res = await fetch(`${BASE}/api/receipt/${id}`, {
+      credentials: "include",
+    });
 
-      const data = await handleResponse(res);
-      return data;
-    } finally {
-      loading.value = false;
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+
+      throw new Error(data?.message || "Failed to download receipt");
     }
+
+    return res.blob();
   };
 
   return {
@@ -94,7 +94,7 @@ export function useBooking() {
     createBooking,
     fetchBookingById,
     cancelBooking,
-    downloadReceipt,
+    fetchReceiptBlob,
     retryPayment,
   };
 }
