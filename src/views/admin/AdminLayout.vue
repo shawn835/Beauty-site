@@ -124,6 +124,12 @@ const navItems = [
     active: "technicians",
     icon: "star",
   },
+  {
+    label: "wallet",
+    route: "admin-wallet",
+    active: "wallet",
+    icon: "star",
+  },
 ];
 
 const activeRoute = computed(() => route.name);

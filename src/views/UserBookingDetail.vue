@@ -6,8 +6,7 @@
   <div v-else class="user-booking-detail">
     <BookingHeader
       :booking-code="booking.bookingCode"
-      :status="booking.status"
-      :formatted-status="bookingStatus"
+      :status="bookingStatus"
       @back="goBack"
     />
 
@@ -34,7 +33,7 @@
         <BookingPaymentSummary
           :payment="payment"
           :booking-price="payment.totalAmount"
-          :payment-status="payment.status"
+          :payment-status="paymentStatus"
         />
 
         <div v-if="booking.notes" class="card">
@@ -125,6 +124,7 @@ const isCancelling = ref(false);
 const isDownloading = ref(false);
 const isRetrying = ref(false);
 const paymentStatus = ref(null);
+const bookingStatus = ref(null);
 const paymentLoading = ref(false);
 const paymentTitle = ref("");
 const paymentMessage = ref("");
@@ -134,11 +134,19 @@ const { joinBooking, onBookingEvent, onBookingState, leaveBooking } =
   useBookingSocket();
 
 const applyBookingState = async (payload) => {
-  paymentStatus.value = payload.status;
+  if (payload.paymentStatus !== undefined) {
+    paymentStatus.value = payload.paymentStatus;
+  }
+
+  if (payload.bookingStatus !== undefined) {
+    bookingStatus.value = payload.bookingStatus;
+  }
   paymentLoading.value = payload.loading;
   paymentTitle.value = payload.title;
   paymentMessage.value = payload.message;
   expiresAt.value = payload.verificationExpiresAt;
+
+  console.log("payload", payload);
 
   // Show notification only when the flow has reached a terminal state.
   if (!payload.loading) {
@@ -258,24 +266,6 @@ const services = computed(() => details.value.services || []);
 const subServices = computed(() => details.value.subServices || []);
 const customImages = computed(() => details.value.customImages || []);
 const activityLog = computed(() => safeData.value.activity || []);
-const bookingStatus = computed(() => {
-  if (
-    ["paid", "partial", "failed", "pending"].includes(paymentStatus.value) &&
-    booking.value.status === "cancelled"
-  ) {
-    return "cancelled";
-  }
-
-  if (["processing", "pending"].includes(paymentStatus.value)) {
-    return "pending";
-  }
-
-  if (["paid", "partial"].includes(paymentStatus.value)) {
-    return "confirmed";
-  }
-
-  return booking.value.status;
-});
 
 const goBack = () => {
   router.push("/profile/user/bookings");

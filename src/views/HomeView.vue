@@ -1,7 +1,7 @@
 <template>
   <Hero />
   <featured />
-  <PromotionsSection />
+  <!-- <PromotionsSection /> -->
   <WhyChooseUs />
   <Team />
   <Testimonials />

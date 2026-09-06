@@ -1,7 +1,8 @@
 <template>
   <div class="logged-wrapper" v-if="userStore.user">
     <div class="logged-in">
-      welcome
+      {{ greetingData.text }}, <font-awesome-icon :icon="greetingData.icon" />
+
       <div>
         <router-link to="/profile/user">
           <span class="icon">
@@ -18,6 +19,8 @@
 import { computed } from "vue";
 import { useUserStore } from "../store/userStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { getGreeting } from "@/Utility/greetings";
+const greetingData = getGreeting();
 
 const userStore = useUserStore();
 

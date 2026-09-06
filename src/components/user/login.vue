@@ -74,30 +74,33 @@ const submitLogin = async (loginData) => {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
   background: #1a1f22;
 }
 
-@media (max-width: 1024px) {
-  .login-container {
-    grid-template-columns: 1fr;
-  }
-  .image-side {
-    display: none;
-  }
+.login-card {
+  width: 100%;
+  max-width: 440px;
+  background: #252b2e;
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(245, 214, 152, 0.1);
 }
 
-/* Forgot Password */
+/* Extra content under the form */
 .forgot-password {
   text-align: right;
-  margin: 0.8rem 0 1.5rem;
+  margin: 0.4rem 0 1.4rem;
 }
 
 .forgot-link {
   color: #f5d698;
   text-decoration: none;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: color 0.2s ease;
 }
 
 .forgot-link:hover {
@@ -107,16 +110,25 @@ const submitLogin = async (loginData) => {
 
 .extra-text {
   text-align: center;
-  margin-top: 1.8rem;
+  margin: 0;
   color: #aaa;
+  font-size: 0.98rem;
 }
 
 .extra-link {
   color: #f5d698;
   font-weight: 600;
+  text-decoration: none;
 }
 
 .extra-link:hover {
   text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 2rem 1.4rem;
+  }
 }
 </style>

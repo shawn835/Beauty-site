@@ -45,6 +45,9 @@ import {
   faEye,
   faChevronLeft,
   faChevronRight,
+  faSun,
+  faMoon,
+  faCloudSun,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -91,6 +94,9 @@ library.add(
   faEye,
   faChevronLeft,
   faChevronRight,
+  faSun,
+  faMoon,
+  faCloudSun,
 );
 
 export default FontAwesomeIcon;

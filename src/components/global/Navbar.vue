@@ -1,8 +1,5 @@
 <template>
   <header class="header">
-    <!-- MiniBar (now animated) -->
-    <!-- <MiniBar :progress="progress" /> -->
-
     <!-- Main Navbar -->
     <nav class="navbar">
       <div class="nav-container">
@@ -40,7 +37,6 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import MiniBar from "./MiniBar.vue";
 import DesktopNav from "./DesktopNav.vue";
 import NavbarActions from "./NavbarActions.vue";
 import MobileNav from "./MobileNav.vue";

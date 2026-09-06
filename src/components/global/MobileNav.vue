@@ -73,8 +73,8 @@
     <!-- PROFILE MENU -->
     <template v-else>
       <div class="welcome-section">
-        <h5>Welcome, {{ userStore.user.name }}</h5>
-        <p>{{ userStore.user.email }}</p>
+        {{ greeting.text }}, <font-awesome-icon :icon="greeting.icon" />
+        <p>{{ userStore.user.name }}</p>
 
         <p>Manage your account and bookings</p>
       </div>
@@ -102,6 +102,8 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useBookingStore } from "../store/useBookingStore";
+import { getGreeting } from "@/Utility/greetings";
+const greeting = getGreeting();
 
 import BaseButton from "../BaseButton.vue";
 
@@ -154,139 +156,198 @@ const goToAdmin = () => {
 </script>
 
 <style scoped>
+/* Overlay */
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: 999;
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
-  opacity: 1;
-  transition: opacity 0.3s ease;
+  z-index: 998;
 }
 
 /* Drawer */
 .mobile-drawer {
   position: fixed;
   top: 0;
-  right: -100%;
-  width: 85%;
-  max-width: 360px;
+  left: 0;
+  width: min(320px, 86vw);
   height: 100vh;
-  background: #2e3538;
-  box-shadow: -8px 0 25px rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  transition: right 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-  overflow-y: auto;
-  padding-bottom: 80px;
+  background: #1f2528;
+  z-index: 999;
+  transform: translateX(-105%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 1.4rem 1.2rem 1.6rem;
+  border-right: 1px solid rgba(245, 214, 152, 0.1);
+  box-shadow: 8px 0 30px rgba(0, 0, 0, 0.35);
 }
 
 .mobile-drawer.open {
-  right: 0;
+  transform: translateX(0);
 }
 
 /* Header */
 .drawer-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 20px 24px;
-  border-bottom: 1px solid #444;
+  min-height: 48px;
+  margin-bottom: 1.5rem;
 }
 
 .logo {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  color: white;
+  color: #f5d698;
+  letter-spacing: 0.5px;
 }
 
 .logo-pink {
-  color: var(--bg-pink);
+  color: #f76706;
 }
 
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 1.8rem;
-  color: #ddd;
+.back-btn {
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 10px;
+  color: #f5d698;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* Navigation */
+.back-btn:hover {
+  background: rgba(245, 214, 152, 0.1);
+}
+
+.arrow-left {
+  font-size: 1.1rem;
+}
+
+/* Nav */
+.mobile-nav {
+  flex: 1;
+  overflow-y: auto;
+}
+
 .mobile-nav ul {
   list-style: none;
-  padding: 20px 0;
-}
-
-li {
-  border-bottom: 2px solid #444;
-}
-
-.back-btn {
-  background: white;
-  border-radius: 6px;
-  padding: 6px;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .mobile-link {
-  display: block;
-  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
   color: #ddd;
   text-decoration: none;
-  font-size: 1.1rem;
-  transition: all 0.3s;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
 }
 
 .mobile-link:hover,
 .mobile-link.router-link-active {
-  background: #3a4246;
-  color: var(--bg-pink);
-  padding-left: 34px;
+  background: rgba(245, 214, 152, 0.12);
+  color: #f5d698;
 }
 
 /* Actions */
 .mobile-actions {
-  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0.8rem;
+  margin: 1.5rem 0 1.2rem;
 }
 
-/* Account */
-.mobile-account {
-  padding: 20px 24px;
-  border-top: 1px solid #444;
-  margin-top: 20px;
+/* Account entry */
+.mobile-account-entry {
+  margin-top: auto;
+  background: rgba(245, 214, 152, 0.08);
+  border: 1px solid rgba(245, 214, 152, 0.15);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.account-title {
-  color: var(--bg-pink);
-  margin-bottom: 12px;
+.mobile-account-entry:hover {
+  background: rgba(245, 214, 152, 0.14);
+}
+
+.account-info h3 {
+  margin: 0 0 0.25rem;
+  color: #f5d698;
   font-size: 1.1rem;
 }
 
-.account-info {
-  color: var(--text-light);
-  padding: 12px 16px;
+.account-info p {
+  margin: 0;
+  color: #aaa;
+  font-size: 0.92rem;
   display: flex;
-  flex-direction: column;
+  align-items: center;
   gap: 6px;
-  font-weight: 600;
-  background: #242a2d;
-  border-radius: 14px;
-  cursor: pointer;
 }
 
+.arrow-right {
+  font-size: 0.8rem;
+}
+
+/* PROFILE MENU ONLY */
 .welcome-section {
-  padding: 20px 24px;
-  border-bottom: 1px solid #444;
-  color: var(--text-light);
-  background: #242a2d;
-  border-radius: 14px;
-  margin: 20px;
+  margin-bottom: 1.5rem;
+  padding: 0.4rem 0.2rem 1.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #f5d698;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.welcome-section p {
+  margin: 0.45rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #cfcfcf;
+}
+
+.welcome-section p:last-child {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+.profile-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-links .mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  color: #e5e7eb;
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.profile-links .mobile-link:hover,
+.profile-links .mobile-link.router-link-active {
+  background: rgba(245, 214, 152, 0.12);
+  color: #f5d698;
 }
 </style>

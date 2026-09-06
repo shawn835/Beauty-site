@@ -23,7 +23,7 @@
 
     <div class="payment-status-badge">
       <span :class="['status-badge', payment.status]">
-        {{ payment.status }}
+        {{ paymentStatus }}
       </span>
     </div>
   </div>

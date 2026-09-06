@@ -1,18 +1,18 @@
 <template>
   <section class="testimonials-section">
+    <!-- Loading State -->
+    <div v-if="loading" class="loading-state">
+      <Spinner message="Loading testimonials..." />
+    </div>
+
     <div class="section-header">
       <h2 class="title">What Our Clients Say</h2>
       <p class="subtitle">Real experiences from real clients in Nakuru</p>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="loading" class="loading-state">
-      <Spinner size="large" message="Loading testimonials..." />
-    </div>
-
     <!-- Testimonials Carousel (renders only when items exist) -->
     <div
-      v-else-if="testimonials.length"
+      v-if="testimonials.length"
       class="testimonial-carousel-container"
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"

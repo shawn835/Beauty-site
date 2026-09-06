@@ -196,6 +196,11 @@ const router = createRouter({
           component: () =>
             import("@/views/admin/Technicians/technicianDetails.vue"),
         },
+        {
+path:'wallet',
+          name:'admin-wallet',
+          component: () => import("@/views/admin/Wallet/WalletView.vue"),
+        },
       ],
     },
   ],

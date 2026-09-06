@@ -7,7 +7,7 @@
     <div class="header-main">
       <h1>Booking #{{ bookingCode }}</h1>
       <span :class="['status-badge', status]">
-        {{ formattedStatus }}
+        {{ status }}
       </span>
     </div>
   </div>
@@ -20,10 +20,6 @@ defineProps({
     required: true,
   },
   status: {
-    type: String,
-    required: true,
-  },
-  formattedStatus: {
     type: String,
     required: true,
   },
