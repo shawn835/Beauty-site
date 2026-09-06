@@ -9,7 +9,7 @@
 
     <div class="team-grid">
       <div
-        v-for="technician in technicianStore.technicians"
+        v-for="technician in technicianStore.activeTechnicians"
         :key="technician.technicianId"
         class="team-card"
       >
@@ -42,57 +42,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-
 import { useTechnicianStore } from "../store/TechnicianStore";
 const technicianStore = useTechnicianStore();
-
-const team = ref([
-  {
-    id: 1,
-    name: "Aisha Mwangi",
-    specialty: "Senior Nail Artist",
-    experience: 8,
-    rating: 4.9,
-    reviews: 128,
-    bookings: 540,
-    tags: ["Friendly", "Certified"],
-    image: "https://picsum.photos/id/64/600/700",
-  },
-  {
-    id: 2,
-    name: "Fatima Hassan",
-    specialty: "Gel & Acrylic Specialist",
-    experience: 6,
-    rating: 4.8,
-    reviews: 96,
-    bookings: 412,
-    tags: ["Certified", "Detail-oriented"],
-    image: "https://picsum.photos/id/1027/600/700",
-  },
-  {
-    id: 3,
-    name: "Grace Kimani",
-    specialty: "Nail Art Expert",
-    experience: 5,
-    rating: 4.9,
-    reviews: 84,
-    bookings: 367,
-    tags: ["Creative", "Friendly"],
-    image: "https://picsum.photos/id/201/600/700",
-  },
-  {
-    id: 4,
-    name: "Sophie Wanjiku",
-    specialty: "Pedicure Specialist",
-    experience: 7,
-    rating: 4.7,
-    reviews: 112,
-    bookings: 489,
-    tags: ["Gentle", "Certified"],
-    image: "https://picsum.photos/id/338/600/700",
-  },
-]);
 </script>
 
 <style scoped>

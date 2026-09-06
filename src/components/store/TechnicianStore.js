@@ -170,13 +170,18 @@ export const useTechnicianStore = defineStore("technician", () => {
       );
 
       const data = await handleResponse(res);
-      
+
       return data;
     } catch (error) {
     } finally {
       isUpdating.value = false;
     }
   };
+
+  //filter active technicians
+  const activeTechnicians = computed(() => {
+    return technicians.value.filter((technician) => technician.isActive);
+  });
 
   return {
     // state
@@ -198,5 +203,6 @@ export const useTechnicianStore = defineStore("technician", () => {
     updateTechnician,
     toggleTechnicianStatus,
     toggleWorking,
+    activeTechnicians,
   };
 });

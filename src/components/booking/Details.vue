@@ -28,6 +28,7 @@
       <!-- Technician -->
       <div class="form-section">
         <h3>Preferred Technician</h3>
+        <!-- show only active technician using if -->
         <select
           :value="bookingStore.selectedTechnician?.technicianId || ''"
           @change="selectTechnician"
@@ -35,7 +36,7 @@
         >
           <option value="" disabled>select technician</option>
           <option
-            v-for="tech in technicianStore.technicians"
+            v-for="tech in technicianStore.activeTechnicians"
             :key="tech.technicianId"
             :value="tech.technicianId"
           >

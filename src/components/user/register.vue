@@ -51,6 +51,11 @@ const submitRegister = async (registerData) => {
     if (err.errors) {
       setErrors(err.errors);
       return;
+    }else {
+      show({
+        message: err.message || "Registration failed. Please try again.",
+        type: "error",
+      });
     }
   }
 };
