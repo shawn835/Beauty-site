@@ -15,7 +15,18 @@ import { useUserStore } from "./components/store/userStore";
 import { useRoute } from "vue-router";
 const route = useRoute();
 const isAuthPage = computed(() =>
-  ["login", "register", "verify"].includes(route.name),
+  [
+    "login",
+    "register",
+    "verify",
+    "reset-email",
+    "forgot-password",
+    "admin",
+    "admin-uploads",
+    "admin-services",
+    "admin-users",
+    "admin-uploads",
+  ].includes(route.name),
 );
 
 const userStore = useUserStore();
