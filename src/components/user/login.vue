@@ -39,7 +39,7 @@ import { useToast } from "../composables/useToast";
 import { useUserStore } from "../store/userStore";
 import { useRouter } from "vue-router";
 import { useFormErrors } from "@/Utility/useFormErrors.js";
-
+import { resetForm } from "@/Utility/utils.js";
 const router = useRouter();
 const { errors, setErrors, clearErrors } = useFormErrors();
 
@@ -55,16 +55,40 @@ formFields.value.forEach((field) => {
 const submitLogin = async (loginData) => {
   try {
     clearErrors();
-    const { owner, message } = await handleLogin(loginData);
-    show({ message: message || "logged in successfully", type: "success" });
-    userStore.setUser(owner);
+
+    const result = await handleLogin(loginData);
+
+    if (result.requiresVerification) {
+      userStore.setPendingVerificationEmail(result.email);
+
+      show({
+        message: result.message,
+        type: "info",
+      });
+
+      router.push("/token/confirmation");
+      return;
+    }
+
+    show({
+      message: result.message,
+      type: "success",
+    });
+
+    userStore.setUser(result.owner);
+
+    resetForm(form, formFields.value);
+
     router.push("/");
   } catch (error) {
     if (error.errors) {
       setErrors(error.errors);
       return;
     }
-    show({ message: error.message || "login failed" });
+
+    show({
+      message: error.message || "login failed",
+    });
   }
 };
 </script>

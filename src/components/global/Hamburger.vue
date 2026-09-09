@@ -33,6 +33,7 @@ defineProps({
   border-radius: 999px;
   transition: all 0.3s ease;
   transform-origin: center;
+  z-index: 1000;
 }
 
 /* shorter middle line */

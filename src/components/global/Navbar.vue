@@ -10,6 +10,18 @@
           </router-link>
         </div>
 
+        <!-- Mobile Booking Action -->
+        <BaseButton
+          v-if="userStore.user"
+          class="mobile-booking-btn"
+          @click="handleBooking"
+          :label="
+            bookingStore.totalSelectedServices > 0
+              ? `Book (${bookingStore.totalSelectedServices})`
+              : 'Secure Spot'
+          "
+        />
+
         <!-- Desktop Navigation -->
         <DesktopNav :navLinks="navLinks" />
 
@@ -17,13 +29,13 @@
         <div class="nav-right">
           <NavbarActions />
         </div>
+
+        <!-- Mobile Hamburger -->
+        <div class="hamburger-wrapper mobile-only">
+          <Hamburger :isOpen="menuOpen" @toggle="menuOpen = !menuOpen" />
+        </div>
       </div>
     </nav>
-
-    <!-- Floating Mobile Hamburger -->
-    <div class="hamburger-wrapper mobile-only">
-      <Hamburger :isOpen="menuOpen" @toggle="menuOpen = !menuOpen" />
-    </div>
 
     <!-- Mobile Navigation -->
     <MobileNav
@@ -34,14 +46,21 @@
     />
   </header>
 </template>
-
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import DesktopNav from "./DesktopNav.vue";
 import NavbarActions from "./NavbarActions.vue";
 import MobileNav from "./MobileNav.vue";
 import Hamburger from "./Hamburger.vue";
+import BaseButton from "../BaseButton.vue";
+import { useUserStore } from "../store/userStore.js";
+import { useBookingStore } from "../store/useBookingStore.js";
+import { useRouter } from "vue-router";
+const router = useRouter();
+
 const menuOpen = ref(false);
+const userStore = useUserStore();
+const bookingStore = useBookingStore();
 
 const navLinks = [
   { text: "Home", path: "/" },
@@ -89,12 +108,6 @@ const animate = () => {
   requestAnimationFrame(animate);
 };
 
-// normalized progress (0 → 1)
-const progress = computed(() => {
-  const p = smooth.value / 180;
-  return Math.min(Math.max(p, 0), 1);
-});
-
 onMounted(() => {
   window.addEventListener("scroll", handleScroll, { passive: true });
   animate();
@@ -103,16 +116,21 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
 });
+
+const handleBooking = () => {
+  router.push("/book/appointment");
+};
 </script>
 
 <style scoped>
 /* ================= HEADER ================= */
+
 .header {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 3000;
 }
 
 /* ================= LOGO ================= */
@@ -129,14 +147,15 @@ onUnmounted(() => {
 }
 
 /* ================= NAVBAR ================= */
+
 .navbar {
   background: rgba(46, 53, 56, 0.97);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid #444;
-
   padding: 1rem 0;
-
   will-change: transform;
+  position: relative;
+  z-index: 3100;
 }
 
 .navbar.scrolled {
@@ -145,6 +164,7 @@ onUnmounted(() => {
 }
 
 /* ================= CONTAINER ================= */
+
 .nav-container {
   max-width: 1400px;
   margin: 0 auto;
@@ -156,25 +176,26 @@ onUnmounted(() => {
 }
 
 /* ================= RIGHT SIDE ================= */
+
 .nav-right {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+/* ================= MOBILE BOOKING BUTTON ================= */
+
+.mobile-booking-btn {
+  display: none;
+}
+
 /* ================= MOBILE ONLY ================= */
+
 .mobile-only {
   display: none;
 }
 
-/* hamburger button */
-.hamburger-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  position: relative;
-  z-index: 1100;
-}
+/* ================= NO SCROLL ================= */
 
 .no-scroll {
   overflow: hidden;
@@ -186,6 +207,8 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .mobile-only {
     display: flex;
+    position: relative;
+    z-index: 3200;
   }
 
   .desktop-nav,
@@ -193,11 +216,32 @@ onUnmounted(() => {
     display: none;
   }
 
+  /* Mobile navbar layout */
+  .nav-container {
+    padding: 0 16px;
+    gap: 10px;
+  }
+
+  /* Keep logo from taking too much space */
+  .logo a {
+    font-size: 1.45rem;
+  }
+
+  /* Mobile booking button */
+  .mobile-booking-btn {
+    display: inline-flex;
+
+    font-size: 0.75rem;
+    padding: 7px 12px;
+    min-height: 34px;
+
+    white-space: nowrap;
+  }
+
+  /* Hamburger stays in normal flex layout */
   .hamburger-wrapper {
-    position: fixed;
-    top: 28px;
-    right: 24px;
-    z-index: 1200;
+    display: flex;
+    flex-shrink: 0;
   }
 }
 </style>

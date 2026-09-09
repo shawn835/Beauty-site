@@ -1,5 +1,5 @@
 <template>
-  <section class="services-preview" v-if="services && services.length">
+  <section class="services-preview">
     <div class="section-header" v-if="showHeader">
       <h2>{{ title }}</h2>
       <p>{{ subtitle }}</p>
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="services-grid">
+    <div class="services-grid" v-if="services && services.length > 0">
       <div
         v-for="service in services"
         :key="service.subServiceId"
@@ -62,6 +62,10 @@
           />
         </div>
       </div>
+    </div>
+
+    <div class="empty" v-else>
+      <p>No services available for this category at the moment.</p>
     </div>
 
     <div class="view-all" v-if="showViewAll">
@@ -269,6 +273,16 @@ const handleViewAll = () => {
   color: white;
   border-color: var(--bg-pink);
   box-shadow: 0 8px 20px rgba(216, 27, 96, 0.25);
+}
+
+.empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: var(--text-gray);
+  font-size: 1.1rem;
+  font-style: italic;
 }
 
 /* Pagination Wrapper */

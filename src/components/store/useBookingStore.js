@@ -98,8 +98,6 @@ export const useBookingStore = defineStore("booking", () => {
         service.subServiceId === payload.subServiceId,
     );
 
-    console.log("payload", payload);
-
     if (exists) return;
 
     selectedServices.value.push({

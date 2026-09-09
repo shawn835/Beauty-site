@@ -1,16 +1,18 @@
 import { ref } from "vue";
-import router from "@/router/router";
 import { handleResponse } from "@/Utility/response";
-
+import { useUserStore } from "../store/userStore";
 import { delay } from "@/Utility/utils.js";
 
 export function useUserApi() {
   const loading = ref(false);
+  const userStore = useUserStore();
 
   const handleRegister = async (form) => {
     loading.value = true;
+
     try {
       await delay(800);
+
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -18,19 +20,18 @@ export function useUserApi() {
       });
 
       const data = await handleResponse(res);
-      // For email verification
-      localStorage.setItem("pendingEmail", form.email);
-      setTimeout(() => router.push("/token/confirmation"), 1500);
+
+      userStore.setPendingVerificationEmail(data.email);
+
       return data;
     } finally {
       loading.value = false;
     }
   };
-
   const handleLogin = async (form) => {
     loading.value = true;
     try {
-      await delay(800); // Simulate network delay
+      await delay(800);
 
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/login`, {
         method: "POST",
@@ -40,14 +41,7 @@ export function useUserApi() {
       });
 
       const data = await handleResponse(res);
-
-      for (const key in form) {
-        if (Object.hasOwn(form, key)) {
-          form[key] = "";
-        }
-      }
-
-      router.push("/");
+      console.log("Login data:", data);
 
       return data;
     } finally {
@@ -125,7 +119,6 @@ export function useUserApi() {
       });
 
       const data = await handleResponse(res);
-      router.push("/login");
       return data;
     } finally {
       loading.value = false;

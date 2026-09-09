@@ -5,6 +5,7 @@ export const useUserStore = defineStore("user", {
   state: () => ({
     user: null,
     loading: false,
+    pendingVerificationEmail: null,
   }),
   actions: {
     setUser(user) {
@@ -33,6 +34,14 @@ export const useUserStore = defineStore("user", {
       } finally {
         this.loading = false;
       }
+    },
+
+    setPendingVerificationEmail(email) {
+      this.pendingVerificationEmail = email;
+    },
+
+    clearPendingVerificationEmail() {
+      this.pendingVerificationEmail = null;
     },
   },
 });

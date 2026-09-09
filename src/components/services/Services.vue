@@ -53,7 +53,7 @@ const url = computed(() => {
   });
 
   if (activeFilter.value) {
-    params.set("serviceId", String(activeFilter.value));
+    params.set("id", String(activeFilter.value));
   }
 
   return `${import.meta.env.VITE_API_URL}/api/users/services?${params.toString()}`;

@@ -22,16 +22,19 @@
 </template>
 <script setup>
 import { reactive, computed } from "vue";
+import { useRouter } from "vue-router";
 import { useUserApi } from "@/components/composables/userApi";
 import BaseForm from "../BaseForm.vue";
 import { useToast } from "../composables/useToast";
 import { fieldsMeta } from "@/Utility/meta";
 import { useFormErrors } from "@/Utility/useFormErrors.js";
+import { resetForm } from "@/Utility/utils.js";
 const { show } = useToast();
 const { handleRegister, loading } = useUserApi();
 
 const { errors, setErrors, clearErrors } = useFormErrors();
 const formFields = computed(() => ["name", "phone", "email", "password"]);
+const router = useRouter();
 const form = reactive({});
 formFields.value.forEach((field) => {
   form[field] = "";
@@ -41,22 +44,41 @@ const submitRegister = async (registerData) => {
   try {
     clearErrors();
 
-    const { message } = await handleRegister(registerData);
+    const { message, type } = await handleRegister(registerData);
+
+   
+    if (type === "info") {
+      show({
+        message:
+          message ||
+          "An unverified account already exists. Please verify your email.",
+        type: "info",
+      });
+
+      resetForm(form, formFields.value);
+
+      setTimeout(() => router.push("/token/confirmation"), 1200);
+      return;
+    }
 
     show({
       message: message || "Registered successfully!",
-      type: "success",
+      type: type || "success",
     });
+
+    resetForm(form, formFields.value);
+
+    setTimeout(() => router.push("/token/confirmation"), 1200);
   } catch (err) {
     if (err.errors) {
       setErrors(err.errors);
       return;
-    }else {
-      show({
-        message: err.message || "Registration failed. Please try again.",
-        type: "error",
-      });
     }
+
+    show({
+      message: err.message || "Registration failed. Please try again.",
+      type: "error",
+    });
   }
 };
 </script>

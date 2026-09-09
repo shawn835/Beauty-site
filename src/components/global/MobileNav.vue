@@ -35,16 +35,10 @@
       <!-- Actions -->
       <div class="mobile-actions">
         <BaseButton
-          v-if="userStore.user"
-          @click="handleBooking"
-          :label="
-            bookingStore.totalSelectedServices > 0
-              ? `Book (${bookingStore.totalSelectedServices})`
-              : 'Secure Spot'
-          "
+          v-if="!userStore.user"
+          @click="handleRegister"
+          label="Register"
         />
-
-        <BaseButton v-else @click="handleRegister" label="Register" />
 
         <BaseButton
           v-if="userStore.user?.role === 'admin'"
@@ -101,7 +95,6 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../store/userStore";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useBookingStore } from "../store/useBookingStore";
 import { getGreeting } from "@/Utility/greetings";
 const greeting = getGreeting();
 
@@ -111,7 +104,6 @@ const currentView = ref("main");
 const emit = defineEmits(["close"]);
 const router = useRouter();
 const userStore = useUserStore();
-const bookingStore = useBookingStore();
 
 const openProfileMenu = () => {
   currentView.value = "profile";
@@ -134,11 +126,6 @@ const props = defineProps({
     default: () => [],
   },
 });
-
-const handleBooking = () => {
-  router.push("/book/appointment");
-  emit("close");
-};
 
 const handleRegister = () => {
   router.push("/register");

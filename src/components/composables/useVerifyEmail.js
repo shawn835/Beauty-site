@@ -1,8 +1,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { handleResponse } from "@/Utility/response";
+import { useUserStore } from "../store/userStore";
+
 export const useVerifyEmail = () => {
-  const email = ref(localStorage.getItem("pendingEmail") || "");
+  const userStore = useUserStore();
   const loading = ref(false);
   let timer = ref(60);
   const router = useRouter();
@@ -35,13 +37,16 @@ export const useVerifyEmail = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: token, email: email.value }),
+          body: JSON.stringify({
+            code: token,
+            email: userStore.pendingVerificationEmail,
+          }),
         },
       );
 
       const data = await handleResponse(res);
 
-      localStorage.removeItem("pendingEmail");
+      userStore.clearPendingVerificationEmail();
       router.push("/login");
       return data;
     } catch (err) {
@@ -60,12 +65,11 @@ export const useVerifyEmail = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ email: email.value }),
+          body: JSON.stringify({ email: userStore.pendingVerificationEmail }),
         },
       );
 
       const data = await handleResponse(res);
-      console.log(data);
 
       timer.value = 60;
       startTimer();

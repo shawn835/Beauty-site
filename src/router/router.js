@@ -197,8 +197,8 @@ const router = createRouter({
             import("@/views/admin/Technicians/technicianDetails.vue"),
         },
         {
-path:'wallet',
-          name:'admin-wallet',
+          path: "wallet",
+          name: "admin-wallet",
           component: () => import("@/views/admin/Wallet/WalletView.vue"),
         },
       ],
@@ -229,9 +229,17 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // Logged-in users should not go to login/register
-  const guestPages = ["/login", "/register"]; // adjust as needed
-  if (userStore.user && guestPages.includes(to.path)) {
+  // Logged-in users should not go to login/register/token/confirmation/forgot-password/reset-password pages
+  const authPages = [
+    "/login",
+    "/register",
+    "/token",
+    "/token/confirmation",
+    "/forgot-password",
+    "/reset-password",
+  
+  ];
+  if (userStore.user && authPages.includes(to.path)) {
     return next("/");
   }
 

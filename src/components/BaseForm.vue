@@ -82,9 +82,6 @@
               class="form-input password-input"
               :required="meta[field]?.required"
               :disabled="disabled"
-              autocapitalize="off"
-              autocorrect="off"
-              spellcheck="false"
             />
             <button
               type="button"
