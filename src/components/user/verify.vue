@@ -51,19 +51,23 @@ sendCodeField.value.forEach((field) => {
 const submitCode = async (tokenData) => {
   try {
     const { message } = await handleVerifyToken(tokenData);
+
     resetForm(form, sendCodeField.value);
+
     show({
       message: message || "Verification successful!",
       type: "success",
     });
-    setTimeout(() => {
-      router.push("/login");
-    }, 1200);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    await router.push("/login");
   } catch (err) {
+    console.error("Verification/redirect error:", err);
+
     show({
       message: err.message || "Verification failed",
       type: "error",
-      duration: 5000,
     });
   }
 };
