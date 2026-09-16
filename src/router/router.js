@@ -1,0 +1,253 @@
+import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/components/store/userStore";
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: () => import("@/views/HomeView.vue"),
+    },
+    {
+      path: "/test",
+      name: "test",
+      component: () => import("@/views/admin/test.vue"),
+    },
+    {
+      path: "/services",
+      name: "services",
+      component: () => import("@/views/ServicesView.vue"),
+    },
+    {
+      path: "/services/:subServiceId",
+      name: "services-details",
+      component: () => import("@/components/services/Inspo.vue"),
+    },
+    {
+      path: "/about",
+      name: "about us",
+      component: () => import("@/views/AboutView.vue"),
+    },
+    {
+      path: "/contact",
+      name: "contact us",
+      component: () => import("@/views/ContactView.vue"),
+    },
+    {
+      path: "/book/appointment",
+      name: "booking",
+      component: () => import("@/views/BookingView.vue"),
+      meta: { requiresAuth: true },
+    },
+
+    {
+      path: "/user/bookings/:bookingCode",
+      name: "booking-view",
+      component: () => import("@/views/UserBookingDetail.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: () => import("@/components/user/register.vue"),
+    },
+
+    {
+      path: "/login",
+      name: "login",
+      component: () => import("@/components/user/login.vue"),
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot password",
+      component: () => import("@/components/user/ForgotPassword.vue"),
+    },
+    {
+      path: "/reset-password",
+      name: "reset password",
+      component: () => import("@/components/user/ResetPassword.vue"),
+    },
+    {
+      path: "/verify-email-change",
+      name: "verify-email-change",
+      component: () => import("@/components/user/EmailChange.vue"),
+    },
+    {
+      path: "/reset-email",
+      name: "reset-email",
+      component: () => import("@/components/user/EmailChange.vue"),
+    },
+    {
+      path: "/token/confirmation",
+      name: "verify",
+      component: () => import("@/components/user/verify.vue"),
+    },
+    {
+      path: "/verify/receipt",
+      name: "verify-receipt",
+      component: () => import("@/components/user/VerifyBooking.vue"),
+    },
+    {
+      path: "/comingsoon",
+      name: "coming soon",
+      component: () => import("@/components/Home/comingSoon.vue"),
+    },
+    {
+      path: "/unauthorized",
+      name: "coming soon",
+      component: () => import("@/views/Unauthorized.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)",
+      component: () => import("@/components/global/NotFound.vue"),
+      meta: { hideLayout: true },
+    },
+
+    {
+      path: "/profile/user",
+      name: "profile",
+      component: () => import("@/views/ProfileView.vue"),
+      meta: { requiresAuth: true },
+      children: [
+        {
+          path: "",
+          redirect: { name: "user-account" },
+        },
+
+        {
+          path: "account",
+          name: "user-account",
+          component: () => import("@/components/user/Account.vue"),
+        },
+        {
+          path: "bookings",
+          name: "user-bookings",
+          component: () => import("@/components/user/Bookings.vue"),
+        },
+        {
+          path: "security",
+          name: "user-security",
+          component: () => import("@/components/user/Security.vue"),
+        },
+        {
+          path: "favourites",
+          name: "user-favourites",
+          component: () => import("@/components/user/Favourites.vue"),
+        },
+      ],
+    },
+
+    {
+      path: "/admin",
+      name: "admin",
+      component: () => import("@/views/admin/AdminLayout.vue"),
+      meta: { requiresAuth: true, requiresAdmin: true, hideLayout: true },
+      children: [
+        {
+          path: "dashboard",
+          name: "admin-dashboard",
+          component: () => import("@/views/admin/DashboardView.vue"),
+        },
+        {
+          path: "bookings",
+          name: "admin-bookings",
+          component: () => import("@/views/admin/Bookings/BookingsView.vue"),
+        },
+
+        {
+          path: "bookings/:bookingCode",
+          name: "admin-booking-details",
+          component: () =>
+            import("@/views/admin/Bookings/AdminBookingDetails.vue"),
+          props: true,
+        },
+        {
+          path: "services",
+          name: "admin-services",
+          component: () => import("@/views/admin/Services/ServicesView.vue"),
+        },
+        {
+          path: "services/:serviceName/:subServiceId",
+          name: "admin-service-details",
+          component: () =>
+            import("@/views/admin/Services/ServiceDetailsView.vue"),
+        },
+        {
+          path: "users",
+          name: "admin-users",
+          component: () => import("@/views/admin/UsersView.vue"),
+        },
+        {
+          path: "payments",
+          name: "admin-payments",
+          component: () => import("@/views/admin/PaymentsView.vue"),
+        },
+        {
+          path: "uploads",
+          name: "admin-uploads",
+          component: () => import("@/views/admin/Upload/UploadView.vue"),
+        },
+        {
+          path: "technicians",
+          name: "admin-technicians",
+          component: () =>
+            import("@/views/admin/Technicians/techniciansView.vue"),
+        },
+
+        {
+          path: "technicians/:technicianId",
+          name: "admin-technician-details",
+          component: () =>
+            import("@/views/admin/Technicians/technicianDetails.vue"),
+        },
+        {
+          path: "wallet",
+          name: "admin-wallet",
+          component: () => import("@/views/admin/Wallet/WalletView.vue"),
+        },
+      ],
+    },
+  ],
+
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0, behavior: "smooth" };
+  },
+});
+
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  if (!userStore.user) {
+    await userStore.fetchUser();
+  }
+
+  // Protected routes
+  if (to.meta.requiresAuth && !userStore.user) {
+    return next("/login");
+  }
+
+  // Admin routes
+  if (to.meta.requiresAdmin) {
+    if (!userStore.user || userStore.user.role !== "admin") {
+      return next("/login");
+    }
+  }
+
+  // Logged-in users should not go to login/register/token/confirmation/forgot-password/reset-password pages
+  const authPages = [
+    "/login",
+    "/register",
+    "/token",
+    "/token/confirmation",
+    "/forgot-password",
+    "/reset-password",
+  ];
+  if (userStore.user && authPages.includes(to.path)) {
+    return next("/");
+  }
+
+  next();
+});
+
+export default router;

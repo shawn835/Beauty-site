@@ -1,0 +1,47 @@
+import { defineStore } from "pinia";
+import { handleResponse } from "@/Utility/response";
+
+export const useUserStore = defineStore("user", {
+  state: () => ({
+    user: null,
+    loading: false,
+    pendingVerificationEmail: null,
+  }),
+  actions: {
+    setUser(user) {
+      this.user = user;
+    },
+
+    clearUser() {
+      this.user = null;
+    },
+
+    async fetchUser() {
+      this.loading = true;
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/me`, {
+          credentials: "include",
+        });
+
+        const data = await handleResponse(res);
+        const { userData: user } = data;
+
+        this.user = user;
+        return user;
+      } catch (err) {
+        this.user = null;
+        return null;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    setPendingVerificationEmail(email) {
+      this.pendingVerificationEmail = email;
+    },
+
+    clearPendingVerificationEmail() {
+      this.pendingVerificationEmail = null;
+    },
+  },
+});

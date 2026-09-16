@@ -1,0 +1,343 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Red+Hat+Display:ital,wght@0,300..900;1,300..900&display=swap");
+* {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+:root {
+  --bg-dark: #2e3538;
+  --bg-grey: #ccc;
+  --bg-pink: #d81b60;
+  --bg-light: #fff;
+  --text-dark: #2e3538;
+  --text-light: #fff;
+  --text-gray: #ccc;
+  --dark-gray: #666;
+  --overlay-color: rgba(0, 0, 0, 0.4);
+
+  --text-secondary: #faeee9;
+  --text-heading: #201c27;
+  --nav-links: #f5d698;
+  --button-text: #f5d698;
+  --button-background: #2e3538;
+  --primary-button-color: #f5d698;
+  --primary-button-background: #2e3538;
+  --secondary-button-color: #2e3538;
+  --secondary-button-background: #f5d698;
+  --primary-icon-color: #f5d698;
+  --secondary-icon-color: #2e3538;
+  --hover-color: #f76706;
+  --hover-bg: #2e3538;
+  --footer-bg: #2e3538;
+  --gap: 2rem;
+
+  /* Booking Status */
+  --status-pending: #f57c00; /* Warm Orange - Good visibility */
+  --status-confirmed: #1976d2; /* Trustworthy Blue */
+  --status-in-progress: #7b1fa2; /* Elegant Purple */
+  --status-completed: #388e3c; /* Fresh Green */
+  --status-cancelled: #d32f2f; /* Strong Red */
+  --status-no-show: #6d4c41; /* Deep Brown */
+
+  /* Payment Status */
+  --status-paid: #388e3c; /* Success Green */
+  --status-success: #388e3c; /* Same as paid (for general success) */
+  --status-failed: #d32f2f; /* Clear Red for failed */
+  --status-partial: #6d4c41; /* Brown for refunded */
+
+  /* Backgrounds for badges (soft versions) */
+  --bg-pending: #fff3e0;
+  --bg-confirmed: #e3f2fd;
+  --bg-in-progress: #f3e5f5;
+  --bg-completed: #e8f5e9;
+  --bg-cancelled: #ffebee;
+  --bg-no-show: #efe6e1;
+
+  --bg-paid: #e8f5e9;
+  --bg-failed: #ffebee;
+  --bg-partial: #efe6e1;
+}
+
+body {
+  font-family: "Lora", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  background-color: var(--bg-dark);
+}
+
+.more-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+a {
+  font-weight: 600;
+  color: var(--bg-dark);
+  font-size: 17px;
+}
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.close {
+  position: fixed;
+  top: 0;
+  right: 0;
+  color: var(--primary-icon-color);
+  z-index: 100;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+input,
+textarea,
+select {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px 4px;
+  border: none;
+  outline: none;
+}
+
+button {
+  border-radius: 12px;
+  padding: 12px 18px;
+  border: none;
+  font-size: medium;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.form-extra {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-grey);
+}
+
+.extra-text {
+  margin: 0;
+}
+
+.extra-link {
+  color: var(--text-pink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.extra-link:hover {
+  text-decoration: underline;
+}
+
+.status-badge {
+  padding: 8px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+}
+
+/* booking ststus Shared styles for all badges */
+.status-badge {
+  text-transform: capitalize;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+
+.status-badge.pending {
+  background: var(--bg-pending);
+  color: var(--status-pending);
+}
+.status-badge.confirmed {
+  background: var(--bg-confirmed);
+  color: var(--status-confirmed);
+}
+.status-badge.in-progress {
+  background: var(--bg-in-progress);
+  color: var(--status-in-progress);
+}
+.status-badge.completed {
+  background: var(--bg-completed);
+  color: var(--status-completed);
+}
+.status-badge.cancelled {
+  background: var(--bg-cancelled);
+  color: var(--status-cancelled);
+}
+.status-badge.no-show {
+  background: var(--bg-no-show);
+  color: var(--status-no-show);
+}
+
+/* Payment Status */
+.paid {
+  background: var(--bg-paid);
+  color: var(--status-paid);
+}
+.failed {
+  background: var(--bg-failed);
+  color: var(--status-failed);
+}
+.partial {
+  background: var(--bg-partial);
+  color: var(--status-partial);
+}
+.in_progress {
+  background: var(--bg-in-progress);
+  color: var(--status-in-progress);
+}
+
+:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+/* ====================== FONT AWESOME ICON STYLING ====================== */
+
+/* Specific Icon Styling */
+.bottle-droplet {
+  color: #a855f7;
+}
+.sparkles {
+  color: #fbbf24;
+}
+.hand-sparkles {
+  color: var(--bg-pink);
+}
+.shoe-prints {
+  color: #10b981;
+}
+.palette {
+  color: #8b5cf6;
+}
+.gem {
+  color: #ec4899;
+}
+.house {
+  color: #3b82f6;
+}
+.soap {
+  color: #22d3ee;
+}
+.mitten {
+  color: var(--bg-pink);
+}
+.user-doctor {
+  color: #14b8a6;
+}
+.car-side {
+  color: #f97316;
+}
+.fire {
+  color: #f43f5e;
+}
+.flask {
+  color: #6366f1;
+}
+.hospital {
+  color: #0ea5e9;
+}
+.comments {
+  color: #3b82f6;
+}
+.hands {
+  color: #eab308;
+}
+.door-open {
+  color: #22c55e;
+}
+.spa {
+  color: #c026d3;
+}
+.chair {
+  color: #ec4899;
+}
+
+.clock {
+  color: #22d3ee;
+}
+
+.location,
+.map-marker-alt {
+  color: #f97316;
+}
+
+.envelope,
+.envelope-open {
+  color: #a855f7;
+}
+
+.camera {
+  color: #ec4899;
+}
+
+.star {
+  color: #fbbf24;
+}
+
+.check,
+.check-circle,
+.circle-check {
+  color: #10b981;
+}
+
+.heart,
+.heart-pulse {
+  color: #ef4444;
+}
+
+.user,
+.user-tie,
+.circle-user {
+  color: var(--bg-pink);
+}
+
+.lock,
+.lock-keyhole {
+  color: #22d3ee; /* Cyan - Security/Trust */
+}
+
+.calendar,
+.calendar-days {
+  color: #a855f7;
+}
+
+.bolt,
+.bolt-lightning {
+  color: #fbbf24;
+}
+
+.phone,
+.phone-volume {
+  color: #10b981;
+}
+
+@media (max-width: 992px) {
+  .image {
+    margin: auto;
+    padding: 0 12px;
+  }
+}
