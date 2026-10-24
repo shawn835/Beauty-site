@@ -205,122 +205,169 @@ const filterGroups = [
 </script>
 
 <style scoped>
+/* =========================================
+   BOOKING FILTER PANEL STYLING
+   ========================================= */
 .filter-bar-container {
-  background: var(--bg-dark);
-  color: var(--text-light);
-  padding: 0.5rem 0.9rem;
-  border-radius: 16px;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
 }
 
 .filter-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  /* margin-bottom: 1.2rem; */
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .filter-title {
-  color: var(--text-light);
-  font-size: 1.35rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-heading);
   margin: 0;
 }
 
+/* Filter Belt (Collapsible section) */
 .filter-belt {
-  display: none;
+  display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 1.25rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease,
+    margin-top 0.3s ease;
+  margin-top: 0;
 }
 
 .filter-belt.show {
-  display: flex;
+  max-height: 1000px; /* Generous height allowance for transition */
+  opacity: 1;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--bg-grey);
 }
 
+/* Filters Grid Layout */
 .filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.4rem 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
 }
 
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 0.4rem;
 }
 
 .filter-group label {
+  font-size: 0.85rem;
   font-weight: 600;
-  color: var(--nav-links);
-  font-size: 0.95rem;
+  color: var(--dark-gray);
 }
 
+/* Form Controls (Inputs & Selects) */
 .filter-input {
-  background: var(--bg-dark);
-  border: 1px solid rgba(245, 214, 152, 0.3);
-  color: var(--text-light);
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: all 0.3s;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--bg-grey);
+  background-color: #fafafa;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease;
 }
 
 .filter-input:focus {
-  outline: none;
-  border-color: var(--hover-color);
-  box-shadow: 0 0 0 3px rgba(247, 103, 6, 0.2);
+  border-color: var(--bg-pink);
+  background-color: var(--bg-light);
+  box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
 }
 
+/* Search input wrapper alignment */
 .search-input-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
-  padding-left: 45px;
+  padding-right: 2.5rem;
 }
 
 .search-icon {
   position: absolute;
-  left: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--nav-links);
-  font-size: 1.1rem;
+  right: 0.85rem;
+  font-size: 0.9rem;
+  pointer-events: none;
+  opacity: 0.6;
 }
 
+/* Date Range Customization */
 .date-range {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.5rem;
 }
 
 .date-separator {
-  color: var(--text-gray);
+  font-size: 0.85rem;
+  color: var(--dark-gray);
   font-weight: 500;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
+/* Filter Action Buttons Layout */
 .filter-actions {
   display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.05);
 }
 
-/* Responsive */
+/* =========================================
+   MOBILE RESPONSIVENESS (Phones)
+   ========================================= */
 @media (max-width: 768px) {
   .filter-bar-container {
-    padding: 1.2rem 1rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
   }
 
   .filters-grid {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
+    grid-template-columns: 1fr; /* Full stack on mobile */
+  }
+
+  .date-range {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .date-separator {
+    text-align: center;
   }
 
   .filter-actions {
-    justify-content: stretch;
+    flex-direction: column-reverse; /* Stack buttons nicely, action button prominent on top */
+    width: 100%;
+  }
+
+  .filter-actions :deep(button),
+  .filter-actions button {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

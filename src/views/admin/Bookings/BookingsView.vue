@@ -77,15 +77,18 @@ watch(data, (response) => {
 </script>
 <style scoped>
 .admin-bookings-container {
-  padding: 20px;
-  border-radius: 15px;
-  font-family: "Lora", serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+/* Mobile adjustments */
 @media (max-width: 768px) {
   .admin-bookings-container {
-    margin: 20px;
-    padding: 10px;
+    gap: 1rem;
   }
 }
 </style>

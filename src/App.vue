@@ -1,8 +1,11 @@
 <template>
   <ToastContainer />
-  <navbar v-if="!isAuthPage" />
+
+  <navbar v-if="showPublicLayout" />
+
   <RouterView />
-  <footerSection v-if="!isAuthPage" />
+
+  <footerSection v-if="showPublicLayout" />
 </template>
 
 <script setup>
@@ -28,6 +31,14 @@ const isAuthPage = computed(() =>
     "admin-uploads",
   ].includes(route.name),
 );
+
+const showPublicLayout = computed(() => {
+  return (
+    !isAuthPage.value &&
+    !route.meta.hideLayout &&
+    !route.path.startsWith("/admin")
+  );
+});
 
 const userStore = useUserStore();
 onMounted(async () => {

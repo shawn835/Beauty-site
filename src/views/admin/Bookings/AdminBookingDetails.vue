@@ -68,7 +68,7 @@
               icon-left="phone"
               variant="outline"
             />
-            <BaseButton
+          git   <BaseButton
               icon-left="comments"
               variant="primary"
               label="whatsapp"
@@ -161,40 +161,6 @@
               {{ payment.status }}
             </span>
           </div>
-
-          <!-- Transaction History -->
-          <!-- <div class="transaction-history">
-            <h4>Transaction History</h4>
-            <div
-              v-for="(tx, i) in booking.transactions"
-              :key="i"
-              class="transaction-item"
-            >
-              <div class="tx-left">
-                <strong>{{ tx.method }}</strong>
-                <small>{{ tx.phone }}</small>
-              </div>
-              <div class="tx-center">
-                <span>KES {{ tx.amount }}</span>
-                <small>{{ tx.timestamp }}</small>
-              </div>
-              <div class="tx-right">
-                <span :class="['tx-status', tx.status.toLowerCase()]">
-                  {{ tx.status }}
-                </span>
-                <small v-if="tx.receipt">Receipt: {{ tx.receipt }}</small>
-              </div>
-            </div>
-          </div> -->
-
-          <div class="payment-actions">
-            <BaseButton
-              label="resend STK push"
-              size="small"
-              variant="outline"
-              @click="resendSTK"
-            />
-          </div>
         </div>
         <!-- Customer History -->
         <div class="card">
@@ -242,7 +208,7 @@ import ReferenceImages from "@/components/ReferenceImages.vue";
 import { useApi } from "@/components/composables/useFetch";
 import { useBooking } from "@/components/composables/useBooking.js";
 import { useToast } from "@/components/composables/useToast.js";
-const { downloadReceipt } = useBooking();
+const { fetchReceiptBlob } = useBooking();
 const { show } = useToast();
 const isDownloading = ref(false);
 
@@ -319,12 +285,24 @@ const receiptDownload = async (bookingId) => {
   isDownloading.value = true;
 
   try {
-    const data = await downloadReceipt(bookingId);
+    const blob = await fetchReceiptBlob(bookingId);
 
-    window.location.href = data.receiptUrl;
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Receipt-${bookingId}.pdf`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+    }, 1000);
 
     show({
-      message: data.message || "Receipt downloaded successfully",
+      message: "Receipt downloaded successfully",
       type: "success",
     });
   } catch (error) {
@@ -341,188 +319,373 @@ const receiptDownload = async (bookingId) => {
 </script>
 
 <style scoped>
+/* =========================================
+   BOOKING DETAIL CONTAINER & LAYOUT
+   ========================================= */
 .booking-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: "Segoe UI", system-ui, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-  min-height: 100vh;
 }
 
+/* Header Section */
 .booking-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  justify-content: space-between;
+  background-color: var(--bg-light);
+  padding: 1.25rem 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  gap: 1rem;
   flex-wrap: wrap;
-  gap: 15px;
+}
+
+.booking-code {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .booking-code h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-heading);
   margin: 0;
-  font-size: 1.8rem;
-  color: var(--text-light);
 }
 
 .header-actions {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
+/* Main Content Grid (Two Columns) */
 .booking-content {
   display: grid;
-  grid-template-columns: 2fr 1.3fr;
-  gap: 24px;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
 }
 
+.left-column,
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards */
 .card {
-  background: #3a4246;
+  background-color: var(--bg-light);
   border-radius: 12px;
-  padding: 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-h3 {
-  margin-top: 0;
-  color: var(--bg-pink);
-  border-bottom: 1px solid #555;
-  padding-bottom: 12px;
+.card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 0.25rem 0;
+  border-bottom: 1px solid var(--bg-grey);
+  padding-bottom: 0.5rem;
 }
 
+/* Info Grid (Customer Details) */
 .info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 16px 0;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.info-item strong {
+  font-size: 0.75rem;
+  color: var(--dark-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .info-item span {
-  color: var(--text-gray);
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 500;
 }
 
-.phone-link {
-  color: var(--bg-pink);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
+/* Contact Actions (Call / WhatsApp) */
 .contact-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
 }
 
-.whatsapp {
-  background: #25d366;
-  color: white;
+.contact-actions :deep(button),
+.contact-actions button {
+  flex: 1;
 }
 
-.service-item {
-  padding: 14px 0;
-  border-bottom: 1px solid #555;
+/* Services Booked List */
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.service-item,
+.sub-service-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+  font-size: 0.9rem;
 }
 
 .service-main {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
 }
 
-.price {
+.service-main .check,
+.sub-service .check {
+  color: var(--status-completed);
+  font-weight: bold;
+}
+
+.service-main .price,
+.sub-service .price {
   margin-left: auto;
-  color: var(--bg-pink);
   font-weight: 600;
+  color: var(--text-dark);
 }
 
-.sub-services {
-  margin-top: 10px;
-  padding-left: 28px;
+.service-main .duration,
+.sub-service .duration {
+  font-size: 0.8rem;
+  color: var(--dark-gray);
+  margin-left: 0.75rem;
 }
 
 .sub-service {
-  color: var(--text-gray);
-  font-size: 0.95rem;
-  margin: 6px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--bg-grey);
+  margin-top: 0.25srem;
 }
 
+.subtotale,
 .subtotal {
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 2px solid var(--bg-pink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--bg-grey);
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+
+.total-price {
+  color: var(--bg-pink);
   font-size: 1.1rem;
+}
+
+/* Payment Summary Styling */
+.payment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.amount-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--dark-gray);
 }
 
-.payment-card .amount-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid #555;
+.amount-row strong {
+  color: var(--text-dark);
 }
 
-.payment-actions {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-top: 10px;
-}
-
-.balance strong {
-  color: #f59e0b;
+.amount-row.balance {
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--bg-grey);
+  font-weight: 600;
 }
 
 .text-danger {
-  color: #ef4444;
+  color: var(--status-failed) !important;
 }
 
-.transaction-item {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  padding: 12px 0;
-  border-bottom: 1px solid #444;
-  font-size: 0.95rem;
-}
-
-.tx-status.success {
-  color: #10b981;
-}
-.tx-status.failed {
-  color: #ef4444;
-}
-
-.activity-timeline .log-item {
+.payment-status {
   display: flex;
-  gap: 16px;
-  padding: 10px 0;
-  border-bottom: 1px solid #444;
+  margin-top: 0.25rem;
+}
+
+.payment-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Customer History */
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Activity Timeline */
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.log-item {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
 }
 
 .log-time {
-  color: var(--text-gray);
-  width: 60px;
-  flex-shrink: 0;
+  color: var(--dark-gray);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .booking-content {
-    grid-template-columns: 1fr;
-  }
+.log-text {
+  color: var(--text-dark);
 }
 
-@media (max-width: 640px) {
-  .header-actions {
+.notes-text {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+  margin: 0;
+  background-color: #fafbfc;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--bg-grey);
+}
+
+/* =========================================
+   STATUS BADGES (Using your exact roots)
+   ========================================= */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Status colors map */
+.status-badge.pending,
+.status-badge.Pending {
+  background-color: var(--bg-pending);
+  color: var(--status-pending);
+}
+.status-badge.confirmed,
+.status-badge.Confirmed {
+  background-color: var(--bg-confirmed);
+  color: var(--status-confirmed);
+}
+.status-badge.in-progress,
+.status-badge.In-Progress {
+  background-color: var(--bg-in-progress);
+  color: var(--status-in-progress);
+}
+.status-badge.completed,
+.status-badge.Completed {
+  background-color: var(--bg-completed);
+  color: var(--status-completed);
+}
+.status-badge.cancelled,
+.status-badge.Cancelled {
+  background-color: var(--bg-cancelled);
+  color: var(--status-cancelled);
+}
+.status-badge.no-show,
+.status-badge.No-Show {
+  background-color: var(--bg-no-show);
+  color: var(--status-no-show);
+}
+.status-badge.paid,
+.status-badge.Paid,
+.status-badge.success,
+.status-badge.Success {
+  background-color: var(--bg-paid);
+  color: var(--status-paid);
+}
+.status-badge.failed,
+.status-badge.Failed {
+  background-color: var(--bg-failed);
+  color: var(--status-failed);
+}
+.status-badge.partial,
+.status-badge.Partial {
+  background-color: var(--bg-partial);
+  color: var(--status-partial);
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (Phones)
+   ========================================= */
+@media (max-width: 768px) {
+  .booking-header {
     flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
   }
 
-  .info-grid {
-    grid-template-columns: 1fr;
+  .booking-code {
+    justify-content: space-between;
+  }
+
+  .header-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .booking-content {
+    grid-template-columns: 1fr; /* Stack columns into a single phone-friendly stream */
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .info-grid,
+  .history-grid {
+    grid-template-columns: 1fr; /* Single column stats on mobile */
   }
 }
 </style>

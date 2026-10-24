@@ -34,15 +34,15 @@
   --gap: 2rem;
 
   /* Booking Status */
-  --status-pending: #f57c00; /* Warm Orange - Good visibility */
-  --status-confirmed: #1976d2; /* Trustworthy Blue */
-  --status-in-progress: #7b1fa2; /* Elegant Purple */
-  --status-completed: #388e3c; /* Fresh Green */
-  --status-cancelled: #d32f2f; /* Strong Red */
-  --status-no-show: #6d4c41; /* Deep Brown */
+  --status-pending: #f57c00; 
+  --status-confirmed: #1976d2; 
+  --status-in-progress: #7b1fa2; 
+  --status-completed: #388e3c;
+  --status-cancelled: #d32f2f; 
+  --status-no-show: #6d4c41;
 
   /* Payment Status */
-  --status-paid: #388e3c; /* Success Green */
+  --status-paid: #388e3c;
   --status-success: #388e3c; /* Same as paid (for general success) */
   --status-failed: #d32f2f; /* Clear Red for failed */
   --status-partial: #6d4c41; /* Brown for refunded */

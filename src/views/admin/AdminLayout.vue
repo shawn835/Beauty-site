@@ -146,223 +146,343 @@ watch(
 );
 </script>
 
-<style scoped>
+<style>
+/* Base Layout */
 .dashboard-container {
   display: flex;
   height: 100vh;
+  width: 100vw;
   overflow: hidden;
-  background: #1a1f22;
+  background-color: var(--bg-grey);
+  font-family: inherit;
 }
 
+/* =========================================
+   SIDEBAR STYLING (Mobile-First / Responsive)
+   ========================================= */
 .sidebar {
   width: 260px;
-  background: #252b2e;
-  border-right: 1px solid rgba(245, 214, 152, 0.12);
+  background-color: var(--bg-dark);
+  color: var(--text-light);
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  height: 100vh;
-  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
 }
 
-.sidebar-collapsed {
-  width: 72px;
+/* Collapsed state for Desktop */
+.sidebar.sidebar-collapsed {
+  width: 80px;
 }
 
-.sidebar-header,
-.sidebar-footer {
-  flex-shrink: 0;
+.sidebar-header {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.sidebar-nav {
-  flex: 1;
-  overflow-y: auto;
-  padding: 1.5rem 0;
-  scrollbar-width: thin;
-}
-
-/* ==================== MAIN AREA ==================== */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.top-bar {
-  height: 72px;
-  background: #252b2e;
-  border-bottom: 1px solid rgba(245, 214, 152, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  flex-shrink: 0;
-}
-
-.content-area {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto; /* Only this scrolls */
-  background: #1a1f22;
-}
-
-/* Rest of your styles */
 .logo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 1.8rem 1.5rem;
-  color: #f5d698;
+  gap: 0.85rem;
   cursor: pointer;
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: 0.5px;
+  color: var(--nav-links);
 }
 
 .spa-icon {
-  font-size: 1.9rem;
+  font-size: 1.5rem;
+  color: var(--primary-icon-color);
+  min-width: 1.5rem;
+  text-align: center;
 }
 
 .logo-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
+  white-space: nowrap;
+  text-transform: capitalize;
+}
+
+/* Navigation List */
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 1.5rem;
-  color: #ddd;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background 0.2s,
+    color 0.2s;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  border-left: 4px solid transparent;
 }
 
-.nav-item:hover,
-.nav-item.active {
-  background: rgba(245, 214, 152, 0.12);
-  color: #f5d698;
+.nav-item svg {
+  min-width: 1.25rem;
+  font-size: 1.2rem;
+  color: var(--primary-icon-color);
+  text-align: center;
+}
+
+.nav-item:hover {
+  background-color: var(--hover-bg);
+  color: var(--hover-color);
 }
 
 .nav-item.active {
-  border-left: 4px solid #f5d698;
+  background-color: rgba(245, 214, 152, 0.08);
+  color: var(--nav-links);
+  border-left-color: var(--hover-color);
+  font-weight: 600;
 }
+
+/* Sidebar Footer */
 .sidebar-footer {
-  padding: 1.5rem;
+  padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--footer-bg);
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
 }
 
 .user-avatar {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
+  background: var(--bg-pink);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.user-details small {
-  color: #888;
-}
-
-/* ==================== MAIN CONTENT ==================== */
-.main-content {
-  flex: 1;
+.user-details {
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-/* Top Bar */
+.user-details strong {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.user-details small {
+  color: var(--text-gray);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/* =========================================
+   MAIN CONTENT & TOP BAR
+   ========================================= */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-light);
+}
+
 .top-bar {
-  height: 72px;
-  background: #252b2e;
-  border-bottom: 1px solid rgba(245, 214, 152, 0.1);
+  height: 70px;
+  background-color: var(--bg-light);
+  border-bottom: 1px solid var(--bg-grey);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2rem;
-  z-index: 90;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+  gap: 1rem;
 }
 
 .top-bar-left {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
+  min-width: 0; /* Allows text truncation if needed */
 }
 
 .toggle-btn {
   background: none;
   border: none;
-  color: #ddd;
-  font-size: 1.4rem;
+  font-size: 1.25rem;
+  color: var(--text-dark);
   cursor: pointer;
-  padding: 8px;
+  padding: 0.5rem;
   border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .page-title {
-  font-size: 1.65rem;
-  color: #f5d698;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-heading);
   margin: 0;
-  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .top-bar-right {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
+/* Search Bar */
 .search-bar {
   display: flex;
   align-items: center;
-  background: #2e3538;
-  border-radius: 9999px;
-  padding: 8px 16px;
-  width: 260px;
+  background-color: #f4f6f8;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  transition: border-color 0.2s;
+}
+
+.search-bar:focus-within {
+  border-color: var(--bg-pink);
+  background-color: var(--bg-light);
+}
+
+.search-bar svg {
+  color: var(--dark-gray);
+  font-size: 0.9rem;
 }
 
 .search-bar input {
-  background: transparent;
   border: none;
+  background: none;
   outline: none;
-  color: white;
-  margin-left: 10px;
-  width: 100%;
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  width: 140px;
 }
 
-.notifications,
-.profile {
+.notifications {
+  position: relative;
   cursor: pointer;
-  font-size: 1.35rem;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.notifications:hover,
-.profile:hover {
-  background: rgba(245, 214, 152, 0.1);
-}
-
-.avatar {
-  width: 38px;
-  height: 38px;
-  background: #f5d698;
-  color: #2e3538;
+  font-size: 1.2rem;
+  color: var(--dark-gray);
+  padding: 0.5rem;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  transition: background 0.2s;
 }
 
-/* Content Area */
+.notifications:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--text-dark);
+}
+
+.profile .avatar {
+  font-size: 1.5rem;
+  width: 36px;
+  height: 36px;
+  background: var(--bg-pink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .content-area {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
-  background: #1a1f22;
+  padding: 1.5rem;
+  background-color: #f9fafb;
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (The Magic Part ✨)
+   ========================================= */
+@media (max-width: 768px) {
+  /* Hide search bar on smaller phones to save top bar space */
+  .search-bar {
+    display: none;
+  }
+
+  .page-title {
+    font-size: 1rem;
+  }
+
+  .top-bar {
+    padding: 0 1rem;
+  }
+
+  /* Make sidebar behave like a toggleable overlay drawer on mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    box-shadow: none;
+  }
+
+  /* When sidebar is NOT collapsed on mobile, slide it in over the screen */
+  .sidebar:not(.sidebar-collapsed) {
+    transform: translateX(0);
+    width: 280px;
+    box-shadow: 10px 0 25px var(--overlay-color);
+  }
+
+  /* Optional backdrop overlay when mobile menu is active */
+  .dashboard-container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--overlay-color);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .dashboard-container:has(.sidebar:not(.sidebar-collapsed))::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 </style>
